@@ -1,0 +1,50 @@
+---
+title: "Data Wrangling for Visualization, Part 2"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Data Wrangling for Visualization, Weather Data Part 2
+
+In the previous notebook, you learned how to subset and re-shape a large dataset to create a simple line graph showing changes in yearly max and min temperatures for Hanover, NH. If nothing else, the results clearly show steadily warming local temperatures.
+
+However, the advanced capabilities of computational graphics mean that we can represent data trends in far higher resolution.
+
+In this notebook, we will visualize temperature fluctuations at the daily rather than yearly level.
+
+# 1. Setup
+
+## 1.1 Import necessary packages
+
+```{r}
+library(tidyverse)
+
+
+```
+
+## 1.2 Import Data
+
+```{r}
+df <- read.csv("../data/Hanover_weather-data_1884-2025.csv")
+
+```
+
+# 2. Planning
+
+```         
+```
+
+## 5. Visualizing
+
+# EXERCISE:
+
+Create a similar graph, but this time showing the average yearly rain and snowfall for Hanover.
+
+## Exploring the Dataset
+
+## Wide to Long
+
+## Long to Wide
+
+## Factors & Data Type Conversion

@@ -1,0 +1,150 @@
+---
+title: "Introduction to Data Visualization, Part 2"
+subtitle: "From Data Exploration to Communication & Storytelling"
+
+
+  
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+date: "2026"
+format: 
+  revealjs:
+    theme: night
+    navigation-mode: vertical
+    chalkboard: true
+editor: visual
+logo: "../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png"
+---
+
+# Introduction to Data Visualization, Part 2 
+
+## Goals
+
+1.  ??
+
+# Climate Change
+
+<!--CLIMATE CHANGE - hockey stick graphic-->
+
+![The iconic "hockey stick" graph that became the focus of intense climate debate. First published by Michael Mann, Raymond S. Bradley, and Malcolm Hughes in "Northern hemisphere temperatures during the past millennium: Inferences, uncertainties, and limitations," Geophysical Research Letters (1999). It achieved a wider audience with its publication in a 2001 report by the Intergovernmental Panel on Climate Change of the United Nations.](https://psu-gatsby-files-prod.s3.amazonaws.com/s3fs-public/hockeystick.gif)
+
+::: notes
+The coronavirus pandemic may have been "The first visualized global crisis in history". However, visualizations had played a role in helping us understand other crises of the past and present. Climate scientists produced this now-classic line graph in 1998 at a time when few in the public were paying attention to the imminent threat of climate change at a global scale.
+
+Note: lacking temperature readings for most of human history before the 19th century, the scientists had to estimate pre-modern historical climate variation using different types of "proxy" data (tree rings, corals, ice cores, and historical records like shipping logs).
+
+The Hockey Stick achieved greater prominence after a 2001 UN report on climate change included this graph. It quickly became a central symbol of the "climate wars.
+:::
+
+------------------------------------------------------------------------
+
+## "Off the Charts"
+
+Al Gore, *An Inconvenient Truth* (2006) and ["off-the-charts" climate change](https://www.youtube.com/watch?v=9tkDK2mZlOo)".
+
+::: notes
+This graph took on a new life in 2006 with the release of Al Gore's climate change documentary *An Inconvenient Truth*.
+
+\[play video\]
+:::
+
+------------------------------------------------------------------------
+
+![](http://www.meteo.psu.edu/holocene/public_html/Mann/images/Mann_HockeyStickClimateWars.jpg)
+
+<!--ELECTION MAPS, GRAPHS, NYT NEEDLE-->
+
+::: notes
+The release of this graph and new climate science research provoked a backlash from the fossil fuels industry and other corporations that felt threatened by the implications of this research. One of the creators of this graphic wrote a book about the subsequent turmoil.
+:::
+
+# Visualized Elections
+
+![CNN Electoral results from 2024 presidential election](images/CNN_pres-elec-2024_map.png){fig-alt="Map showing which states were awarded to Trump and Harris"}
+
+::: notes
+:::
+
+------------------------------------------------------------------------
+
+![CNN tables and bar plots showing results from state ballot initiatives](images/CNN_2024election_ballot-measures_min-wage.png)
+
+------------------------------------------------------------------------
+
+![New York Times election needle (election night Nov. 2020)](images/NYT_election-needle_2020.png)
+
+::: notes
+:::
+
+# Data Viz: not always scary
+
+![](images/restaurant_how-busy.png)
+
+::: notes
+:::
+
+------------------------------------------------------------------------
+
+![The Pudding's study of music genres (according to Spotify)](images/music-genres_spotify.png)
+
+::: notes
+:::
+
+------------------------------------------------------------------------
+
+["Music genres"](https://pudding.cool/2023/10/genre/) *The Pudding* (October 2023).
+
+------------------------------------------------------------------------
+
+![The separation of "Latin" music into sub-genres (The Pudding).](images/music-latin-genres_spotify.png)
+
+::: notes
+:::
+
+# Data Viz: Not always impersonal
+
+![](images/emotion-wheel.png)
+
+["Emotion Wheel"](https://pudding.cool/2022/12/emotion-wheel/) *The Pudding* (Dec. 2022).
+
+::: notes
+:::
+
+------------------------------------------------------------------------
+
+![](images/emotion-wheel2.png)
+
+::: notes
+:::
+
+# Data Viz: Not always big (or even digital)
+
+<!--NOT ALL DATA VIZ SCARY, SOME CAN BE FUN-->
+
+## Dear Data {.scrollable}
+
+![](images/dear-data_week-of-laughter1.jpeg){.nostretch .scrollable}
+
+Giorgia Lupi and Stefanie Posavec, [\*Dear Data\*](https://www.dear-data.com/theproject) (Princeton: Princeton Architectural Press, 2016).
+
+<!--UBIQUITOUS USE - DAILY EXAMPLES - RESTAURANT - HOW BUSY; OTHERS??-->
+
+::: notes
+:::
+
+# Data Viz: The Course
+
+<!--overview of course-->
+
+# Data Viz: The Practice
+
+<!--the practice of data visualization-->
+
+1.  Begin with data and a question
+2.  Many of the best visualizations start with pencil, paper, and an idea
+3.  Conduct **exploratory data analysis & visualization** to explore hidden patterns in your data
+4.  Perform other types of analysis (statistical, textual, qualitative, etc.)
+5.  Prepare visualizations to help you convey your findings (and to allow others to explore the data)
+    1.  think about what visual variables (location, color, size, shape, transparency, etc.) best represent your data variables.
+    2.  consider your purpose (are you trying to persuade? or let the viewer come to their own conclusions?)
+    3.  consider your audience

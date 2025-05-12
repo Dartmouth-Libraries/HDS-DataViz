@@ -1,0 +1,190 @@
+---
+title: "Data Wrangling for Visualization"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Data Wrangling for Visualization
+
+In this lesson we will import a dataset of local weather data.
+
+When searching for local weather data, I found [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) found on NOAA's National Centers for Environmental Information website. I chose "Hanover", the type of data I wanted, and the date range (earliest to present). Next, I requested this data, and downloaded it from a link they sent me.
+
+# 1. Setup
+
+## 1.1 Import necessary packages
+
+```{r}
+library(tidyverse)
+
+
+```
+
+## 1.2 Import Data
+
+```{r}
+df <- read.csv("../data/Hanover_weather-data_1884-2025.csv")
+
+```
+
+# 2. Review Data
+
+To learn more about this data, we can review some descriptive statistics of the data using the functions below. Do you notice any of the following:
+
+-   missing data?
+
+-   data fields with inconsistent formats?
+
+-   any extreme outliers?
+
+We should also review the Climate Online documentation (which is in the "week2/data" folder) for more information on what these fields or columns are recording and how this data was measured / recorded / computed.
+
+```{r}
+head(df)
+```
+
+```{r}
+summary(df)
+```
+
+```{r}
+# install.packages("Hmisc")
+library(Hmisc)
+describe(df)
+```
+
+# 3. Planning
+
+We would like to examine changes in Hanover's temperature over time.
+
+Brainstorm how you would need to modify this dataset to do this analysis. Write your thoughts below:
+
+```         
+```
+
+# 4. Subsetting the dataset
+
+For our first analysis of temperature change, we will focus on the variables `TMAX` (daily maximum temperature) and `TMIN` (daily minimum temperature). We will also average these two variables by year, which will allow us to greatly reduce the size of the dataset.
+
+To do that, we will need to follow these steps:
+
+1.  keep only needed columns
+2.  extract the year from the `DATE` column and place it in the new column `YEAR`.
+3.  group the dataset by year by calculating the average `TMAX` and `TMIN` for each year.
+
+To keep select columns we can use the `select` function:
+
+```{r}
+subdf <- df |>
+    select(NAME, DATE, TMIN, TMAX)
+```
+
+If all dates were recorded in a consistent format, i.e. YYYY-MM-DD, we could just extract the first four characters from the `DATE` column using **mutate()** to create a new column and **substr()** to extract the first four characters from the `DATE` column:
+
+```         
+subdf <- subdf |>
+    mutate(YEAR = substr(DATE, 1, 4))
+```
+
+Unfortunately, often things aren't so simple. Let's review the `DATE` column again:
+
+```{r}
+print(head(subdf$DATE))
+print(tail(subdf$DATE))
+```
+
+We can use the **lubridate** package (already imported) to standardize dates:
+
+```{r}
+library(lubridate)
+subdf <- subdf |>
+    mutate(DATE2 = parse_date_time(DATE, orders = c("ymd", "mdy"))) |>
+    mutate(DATE2 = as.Date(DATE2))
+```
+
+```{r}
+print(head(subdf$DATE2))
+print(tail(subdf$DATE2))
+```
+
+Now we can create the new `YEAR` column using **lubridate** as well (we could also use **substr** as well now that the dates are all in the same format):
+
+```{r}
+subdf <- subdf |>
+    mutate(YEAR = year(ymd(DATE2)))
+```
+
+To group the dataset by year and calculate average minimum and maximum temperatures across an entire year we should use the **group_by** function to group by `YEAR` and the **summarise()** function to create a new column that calculates the average of `TMAX` and `TMIN` by year.
+
+```{r}
+yearly_temps <- subdf |>
+    group_by(YEAR) |>
+    summarise(
+        avg_TMAX = mean(TMAX, na.rm = TRUE),
+        avg_TMIN = mean(TMIN, na.rm = TRUE)
+    )
+```
+
+If you review the new dataframe by running `view(yearly_temps)` or opening `yearly_temps` using the Environment pane to the right, you may notice it is missing data for the years 1884 - 1892. Furthermore, on first glance, the temperatures for 1893 seem abnormally high. Closer review of the dataset indicates that the the first recorded temperatures are from the summer of 1893. This data also ends in March 2025, thus producing abnormally low averages for 2025. So, for consistency, let's remove all years before 1894 and after 2024:
+
+```{r}
+yearly_temps <- yearly_temps |>
+    filter(YEAR >= 1894 & YEAR <= 2024)
+```
+
+We could have done this all, of course, in one code cell. Below, I am creating a dataframe with the slightly different name `yearly_temps2` so we can verify that, indeed, they produce the same results.
+
+*Note: now that I know the code works, I did not create any intermediary dataframes (i.e. `subdf`*) or intermediary data columns (`DATE2`).
+
+```{r}
+yearly_temps2 <- df |>
+    select(NAME, DATE, TMIN, TMAX) |>
+    mutate(DATE = parse_date_time(DATE, orders = c("ymd", "mdy"))) |>
+    mutate(DATE = as.Date(DATE)) |>
+    mutate(YEAR = year(ymd(DATE))) |>
+    group_by(YEAR) |>
+    summarise(
+        avg_TMAX = mean(TMAX, na.rm = TRUE),
+        avg_TMIN = mean(TMIN, na.rm = TRUE)
+    ) |>
+    filter(YEAR >= 1894 & YEAR <= 2024)
+```
+
+We should save this dataset before doing anything else:
+
+```{r}
+write.csv(yearly_temps, "../data/Hanover_yearly-temp-averages_1894-2024.csv")
+```
+
+## 5. Visualizing
+
+```{r}
+ggplot(data=yearly_temps) +
+    geom_line(aes(x=YEAR, y=avg_TMAX), color="red") +
+    geom_line(aes(x=YEAR, y=avg_TMIN), color="blue")
+```
+
+We can add a 10-day rolling average using the **rollmean()** function from
+
+```{r}
+ggplot(data=yearly_temps, aes(x=YEAR)) +
+    geom_line(aes(y=avg_TMAX), color="red", size=1, alpha=0.5) + 
+    geom_line(aes(y=rollmean(avg_TMAX, 10, na.pad=TRUE)), linetype="dashed") +
+    geom_line(aes(y=avg_TMIN), color="blue", size=1, alpha=0.5)+
+    geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), linetype="dashed")
+```
+
+# EXERCISE:
+
+Create a similar graph, but this time showing the average yearly rain and snowfall for Hanover.
+
+\*\*OR, download data for your hometown from NOAA and create a similar graph (temperature, snowfall, precipitation, etc.)
+
+## Exploring the Dataset
+
+## Wide to Long
+
+## Long to Wide
+
+## Factors & Data Type Conversion

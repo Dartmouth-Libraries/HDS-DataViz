@@ -1,0 +1,91 @@
+---
+title: "How about that weather?"
+subtitle: "GGPlot with Weather Data"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# 1. Set up
+
+In this notebook, will work with some time-series weather data.
+
+When searching for local weather data, I found [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) found on NOAA's National Centers for Environmental Information website. I chose "Hanover", the type of data I wanted, and the date range (earliest to present). Next, I requested this data, and downloaded it from a link they sent me. Finally, I ran the following code to create a series of visualizations.
+
+## 1.1 Import necessary packages
+
+```{r}
+library(tidyverse)
+#install.packages("zoo")
+library(zoo)
+```
+
+## 1.2 import data
+
+```{r}
+year_avgs <- read.csv("../../data/Hanover_temp-yearaverages.csv", row.names=1)
+
+tail(year_avgs)
+```
+
+# 2. Graph Yearly Temperature Data
+
+```{r}
+ggplot() +
+    geom_line(data=year_avgs |> filter (type=="maxtemp" & Year < 2024), aes(x=Year, y=T_yravg), color="red") +
+    geom_line(data=year_avgs |> filter (type=="mintemp" & Year < 2024), aes(x=Year, y=T_yravg))
+```
+
+## 2.1 Adjust temperature data (long to wide), add color, and a rolling average
+
+```{r}
+year_avgs_wide <- year_avgs |>
+    pivot_wider(names_from = type, values_from = T_yravg)
+```
+
+```{r}
+ggplot(year_avgs_wide |> filter(Year<2025), aes(x=Year)) +
+    geom_line(aes(y=maxtemp), color="red", size=1, alpha=0.5) + 
+    geom_line(aes(y=rollmean(maxtemp, 10, na.pad=TRUE)), linetype="dashed") +
+    geom_line(aes(y=mintemp), color="blue", size=1, alpha=0.5)+
+    geom_line(aes(y=rollmean(mintemp, 10, na.pad=TRUE)), linetype="dashed")
+```
+
+# 3. Daily Weather Data
+
+## 3.1 Import data
+
+```{r}
+temps <- read.csv("../../data/Hanover-temps21c_w-daynums.csv")
+```
+
+## 3.2 Examine daily temperature data
+
+```{r}
+head(temps)
+```
+
+```{r}
+colnames(temps)
+```
+
+## 3.3 Graph one year of daily temp data
+
+```{r}
+library(viridis)
+ggplot(temps |> filter(Year == 2022), aes(x=daynum, y=maxdiff20c, fill=maxdiff20c)) +
+    geom_bar(stat="identity") +
+    scale_fill_viridis(option = "plasma")
+    #scale_fill_gradient(low = "blue", high = "red")
+
+```
+
+## 3.4 Graph multiple years of daily temp data
+
+```{r fig.width=14, fig.height = 60}
+#options(repr.plot.width=30, repr.plot.height=50)
+ggplot(temps |> filter(Year>2015), aes(x=daynum, y=maxdiff20c, fill=maxdiff20c)) +
+    geom_bar(stat="identity") +
+    facet_wrap(~Year, ncol=1) +
+    scale_fill_viridis(option = "plasma")
+```

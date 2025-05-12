@@ -1,0 +1,97 @@
+---
+title: "Gapminder - Interactive Visualizations with plotly"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Title
+
+```{r}
+library(tidyverse)
+library(plotly)
+```
+
+```{r}
+gapdf <- read.csv("../data/gapminder.csv")
+head(gapdf)
+
+```
+
+```{r}
+fig <- plot_ly(data = gapdf, 
+                x = ~gdpPercap, 
+                y = ~lifeExp, 
+                frame = ~year, 
+                ids = ~country, 
+                type = 'scatter', 
+                mode = 'markers',
+                marker = list(size = ~pop / 5000000,  # Scale size for better visualization
+                              color = ~continent,
+                              colorscale = "Viridis",
+                              showscale = TRUE#, 
+                              #sizeref = 5.0,  # Adjust size scaling
+                              #size_max = 30
+                              ),
+                text = ~country,
+                hoverinfo = "text") %>%
+  layout(#logx = TRUE,  # Log scale for x-axis
+         xaxis = list(title = "GDP per Capita", type="log", range = c(2, 6)),
+         yaxis = list(title = "Life Expectancy", range = c(25, 90))) 
+
+```
+
+```{r}
+fig
+```
+
+```{r}
+p <- ggplot(gapdf, aes(x=gdpPercap, y=lifeExp)) +
+  geom_point()
+
+p
+```
+
+```{r}
+
+```
+
+```{r}
+p <- ggplot(gapdf, aes(x=gdpPercap, y=lifeExp, size = pop, color = continent,frame = year)) +
+  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+       caption = "(Based on data from Hans Rosling - gapminder.com)", 
+       color = 'Continent',size = "Population (millions)") + 
+  ylim(30,100) +
+  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10", labels=c("100", "1000", "10,000", "100,000")) +
+  geom_point(aes(text=country))
+
+ggplotly(p)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

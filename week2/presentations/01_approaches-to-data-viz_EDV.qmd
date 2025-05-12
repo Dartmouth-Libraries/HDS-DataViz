@@ -1,0 +1,42 @@
+---
+title: "Approaches to Data Visualization"
+subtitle: ""
+
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+format: 
+  revealjs:
+    theme: night
+    navigation-mode: vertical
+    chalkboard: true
+editor: visual
+logo: "../hds_images/logo_white.png"
+---
+
+# Key Considerations for designing data visualizations?
+
+1.  **Who**: Intended Audience
+2.  **When**: Stage in the Research Process
+3.  **How**: Visual Variables
+4.  **What**: Plot Type
+5.  **Why**: Goal, Intended Outcome
+
+## WHEN: Visualization & the Research Lifecycle
+
+[![Exploranation as proposed by Höst et al. in "Nano for the Public: An Exploranation Perspective".](images/exploranation.png)](https://www.researchgate.net/publication/339194585_Nano_for_the_Public_An_Exploranation_Perspective)
+
+------------------------------------------------------------------------
+
+[![Confirmatory vs. Exploratory Data Analysis. From Cook et al. "The Foundation is Available for Thinking about Data Visualization Inferentially."](images/cda_vs_eda.jpg)](https://www.researchgate.net/publication/353594473_The_Foundation_is_Available_for_Thinking_about_Data_Visualization_Inferentially)
+
+# Exploring Data: Exploratory Viz 1
+
+# Sharing Data: Exploratory Viz 2
+
+# Persuading with Data
+
+# Telling Stories with Data
+
+# Humanizing Data
+
+![Data Humanism - A Visual Manifesto, from Giorgia Lupi, "Data Humanism - A Visual Manifesto"](https://images.squarespace-cdn.com/content/v1/550de105e4b05c49fa2bba03/1532010285164-6Y4L8YI7NCD15NDX54IS/datahumanism.jpeg?format=2500w)

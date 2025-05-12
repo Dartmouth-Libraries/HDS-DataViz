@@ -1,0 +1,73 @@
+---
+title: "History of Data Visualization"
+subtitle: "From Data Exploration to Communication & Storytelling"
+title-slide-attributes: 
+  data-background-image: ../hds_images/history-of-dataviz/DuBois.png
+  data-background-size: contain
+  data-background-opacity: "0.3"
+  
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+format: 
+  revealjs:
+    theme: night
+    navigation-mode: vertical
+    chalkboard: true
+editor: visual
+logo: "../hds_images/logo_white.png"
+---
+
+# History of Data Visualization, Part 2
+
+# Maps
+
+## Early Maps
+
+![The Yü Chi Thu Map (China, 11th century A.D.): an example of a sophisticated geographic map centuries before the creation of the first "data" or "statistical maps".](images/Tufte_21_Chinese-map_cropped.png)
+
+## An Early Road Atlas
+
+![A road map from John Ogilby's 1675 road atlas of Great Britain.](https://infowetrust.com/wp-content/uploads/2017/01/1675-Ogilby_-_The_Road_From_LONDON_to_the_LANDS_END.jpg)
+
+::: notes
+:::
+
+# A Data Visualization of Data Visualization History
+
+![Snapshot from RJ Andrews' "Map of Firsts"](https://infowetrust.com/wp-content/uploads/2019/12/history-essay-banner.jpg)
+
+Essay with accompanying interactive graphic: RJ Andrews, ["Interacting with History: 300 years of information graphic milestones"](https://infowetrust.com/project/history-essay) (2017).
+
+# Data Visualization & Public Health
+
+## John Snow (1854)
+
+![John Snow's map of cholera cases (1854).](images/Snow-cholera.jpg)
+
+## Florence Nightingale
+
+![Florence Nightingale's "Diagram of the Causes of Mortality" for the Crimean War (1858).](images/Nightingale.jpg)
+
+::: notes
+\[see Cairo, How Charts Lie, Concl.\]
+:::
+
+## 1918 Influenza Epidemic
+
+![1918 Influenza - line plot of cases in major northern cities.](images/1918_flu_lineplot_1919.jpg)
+
+------------------------------------------------------------------------
+
+![Map of geographic distribution of influenza cases (1918).](images/1918_flu_map_1921.jpg)
+
+# The Megascope: Visualizations & Social Progress
+
+## DuBois
+
+::: notes
+## The Opportunity Atlas
+
+\[or save this for later?\]
+:::
+
+## 

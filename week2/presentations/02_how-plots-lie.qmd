@@ -1,0 +1,138 @@
+---
+title: "How to lie with visualizations"
+subtitle: "...and, thus, how to tell the truth"
+
+title-slide-attributes: 
+  data-background-image: geisel_vertical_blk_1.png
+  data-background-size: contain
+  data-background-opacity: "0.3"
+  
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+format: 
+  revealjs:
+    theme: solarized
+    logo: ../../general-images/geisel_vertical_blk_1.png
+    navigation-mode: vertical
+    chalkboard: true
+
+editor: visual
+---
+
+# Interactive Review
+
+Review the following 5 sets of data visualizations. For each:
+
+1.  Identify how it may be misleading. What choices did the creator of the visualization make that may mislead the viewer?
+2.  Propose a solution: what can be changed about this graphic to make it more truthful?
+
+# Example 1: Temperature Graphs
+
+![A Climate chart posted by the *National Review* in 2015.](images/PDF16.NationalReviewTemperatures.svg)
+
+::: notes
+### Problem?
+
+While technically correct in the sense that the data on the x and y axes are accurate; this is extremely misleading. As a response in the *Washington Post* points out, the scale of the graphic, "intentionally hides the actual change in the temperatures. Its akin to suggesting that Shaquille O'Neal and Mini-Me are the same height because they're both tiny compared to the planet Jupiter."
+:::
+
+![Adding meaningful context to the National Review climate chart.](images/PDF18.NationalReviewGOOD.svg)
+
+::: notes
+any thing outside the white would mean an apocalypse: the collapse of most of humanity
+:::
+
+------------------------------------------------------------------------
+
+![Reducing the temperature extents to more meaningful numbers.](images/PDF19.TemperatureGOOD.svg)
+
+------------------------------------------------------------------------
+
+## Problem
+
+-   use of misleading axis extents
+
+## Solution
+
+-   line graphs are intended to show change over time.
+
+    -   Choose meaningful y axis extents (i.e. historical maximum and minimum levels)
+
+    -   Choose a meaningful time range (x axis)
+
+::: notes
+:::
+
+# Example 2
+
+![From Alberto Cairo, \*How Charts Lie\*, Ch. 4.](images/PDF9.BiggestBoxOfficeBLUE.png)
+
+::: notes
+### Problem?
+:::
+
+------------------------------------------------------------------------
+
+![Converting box office revenues into 2018 dollars. Cairo, Ch. 4.](images/PDF10.BiggestBoxOfficeADJUSTED.png)
+
+------------------------------------------------------------------------
+
+![Calculating box office revenue per theater (in 2018 dollars). Cairo, Ch. 4.](images/PDF11.PerTheatre.png)
+
+------------------------------------------------------------------------
+
+![Using a different measure of box office success: revenue vs. budget. Cairo, Ch. 4.](images/PDF12.BudgetVersusBoxOffice.png)
+
+## Solution
+
+-   Need to normalize numbers
+
+    -   by proportion of total (population, number of theaters, etc.)
+
+    -   adjust for inflation
+
+# Example 3
+
+![UFO sightings according to dataset compiled by the National UFO Reporting Center.](images/nuforc_ufo-sightings-map.png)
+
+::: notes
+### Problem?
+:::
+
+------------------------------------------------------------------------
+
+![UFO sightings (2001 - 2020) hot spots adjusted for population (county sightings per 10,000 people).](images/Medina_etal2023_UFO-hotspots_popstd.png)
+
+# Example 4
+
+![Correlation between popularity of the first name "Stevie" and Lululemon stock price.](images/2277_popularity-of-the-first-name-stevie_correlates-with_lululemons-stock-price.svg)
+
+------------------------------------------------------------------------
+
+## Misleading Relationships
+
+spurious relationships
+
+[spurious correlations](https://tylervigen.com/spurious-correlations) by tyler vigen.
+
+------------------------------------------------------------------------
+
+![](images/1110_unhealthy-air-quality-in-claremont-new-hampshire_correlates-with_google-searches-for-shrek.svg)
+
+------------------------------------------------------------------------
+
+![AI-generated image showing the correlation between Google searches for "Shrek" and air pollution in Claremont, NH.](images/1110_unhealthy-air-quality-in-claremont-new-hampshire_correlates-with_google-searches-for-shrek_ai-image_1705268616.jpg)
+
+# Example 5
+
+![Map of the world (Mercater projection).](images/PDF31.Mercator.svg)
+
+## Misleading Sizes
+
+map projections
+
+![The size of Greenland compared to equatorial countries in South America (from thetruesize.com)](images/true-size-of-greenland.png)
+
+## 
+
+## 

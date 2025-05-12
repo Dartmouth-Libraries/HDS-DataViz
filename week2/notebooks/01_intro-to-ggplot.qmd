@@ -1,0 +1,554 @@
+---
+title: "Intro to GGPlot"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# *Let Sleeping Mammals Lie*: An intro to exploratory data visualization with R and ggplot
+
+Jeremy Mikecz\
+Research Data Services\
+Dartmouth Libraries
+
+Too often, researchers only begin to visualize their data at the end of the research process. They seek to create plots, graphs, and maps to share visual patterns of which they were already aware.
+
+However, visualization should begin early in this process. As soon as you have assembled a workable dataset, create some plots and other visualizations to uncover patterns hidden in the dataset. **Exploratory data visualization** allows researchers to not only answer existing questions about their data but to also pose new questions altogether. <!--# insert more on EDA Viz -->
+
+## 0. Setup
+
+### *For Advanced Users (everyone else skip)*
+
+For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project. One way to do that in R is using the [**packrat**](https://rstudio.github.io/packrat/) package.
+
+```{r}
+## to install packrat:
+#install.packages("packrat")
+
+## setting up the packrat virtual environment in the current directory:
+#packrat::init()
+
+## turn packrat on
+#packrat::on
+```
+
+### 0.1. Install & Import Tidyverse
+
+Tidyverse is a system of packages for data wrangling and analysis. It provides a different method and syntax for working with data tables (often called "data frames" in data science; but, tidyverse dataframes are known as "tibbles".) from base R. For more on tidyverse and tibbles see the **Intro to Tidyverse** notebook and the many resources listed in this notebook.
+
+```{r}
+## to install all packages included in tidyverse.
+#install.packages("tidyverse")
+
+
+
+## but we want to open ggplot2 with tidyverse:
+library(tidyverse)
+```
+
+### 0.2. The ggplot2 library
+
+To create visualizations in R we will use the popular **ggplot** package.
+
+To learn more about ggplot outside this lesson, see:
+
+-   ggplot2 [cheat sheet](https://github.com/rstudio/cheatsheets/blob/main/data-visualization.pdf)
+
+-   ggplot2 library [home page](https://ggplot2.tidyverse.org/) (with links to suggested tutorials / learning materials)
+
+-   ggplot2 book: Wickham, [*ggplot2: Elegant Graphics for Data Analysis*](https://ggplot2-book.org/)(3rd edition).
+
+-   Specific Visualization tutorials:
+
+    -   ggplot2 cookbook: Chang, [*R Graphics Cookbook*](https://r-graphics.org/) *(2024).*
+
+    -   [*R Graph Gallery*](https://r-graph-gallery.com/)
+
+-   ggplot extensions: <https://exts.ggplot2.tidyverse.org/gallery/>
+
+This lesson does not teach when to use what type of visualization. For more help on that see the *R Graph Gallery* site linked above.
+
+We do not need to install or import ggplot because it is include with tidyverse. However, if you ever need to install or open ggplot separately use:
+
+```{r}
+## 
+#install.packages("ggplot2")
+#library(ggplot2)
+```
+
+### 0.3. Grammar of Graphics
+
+The "gg" in ggplot stands for Grammar of Graphics. GGplot was developed by Hadley Wickham following the Grammar of Graphics model, which.... **\[explain more\]**
+
+-   CU-Boulder Coursera course video on [Grammar of Graphics](https://www.youtube.com/watch?v=RCaFBJWXfZc)
+
+-   Hadley Wickham, ["A Layered Grammar of Graphics"](https://vita.had.co.nz/papers/layered-grammar.html) in *Journal of Computational and Graphical Statistics* (2010).
+
+-   [Cornell course guide](https://info5940.infosci.cornell.edu/notes/dataviz/grammar-of-graphics/)
+
+-   Wickham, [*ggplot2: Elegant Graphics for Data Analysis*](https://ggplot2-book.org/)(3rd edition)
+
+    -   especially Introduction and "The Grammar" chapters (Chapters 13-17)
+
+## 1. Importing Data (preloaded datasets)
+
+When conducting your own research, you will likely need to import your dataset into R and R Studio. Instructions for doing so are available in [Wickham, *R for Data Science*, Ch. 11](https://r4ds.had.co.nz/data-import.html).
+
+However, when you are learning R, it is often easiest to experiment with their preloaded datasets. Fortunately, with the installation of the **tidyverse packages** we have access to dozens of "play" datasets. Let's take a quick look at what is available using the `data()` function:
+
+```{r}
+data()
+```
+
+For this lesson we will use the **msleep** dataset, which contains data about the sleep times and weights of various mammal species.
+
+::: callout-tip
+## Exercise 1.
+
+*Before we begin, do you have a particular hypothesis about what types of animals sleep the most?*
+:::
+
+```         
+# hypothesis:
+```
+
+We can begin by simply opening the **msleep dataset** by typing `msleep`. However, let's first examine the available metadata for the dataset using the `help()` function:
+
+```{r}
+help(msleep)
+#?msleep    #does the same thing
+```
+
+Metadata for this dataset should appear in the **Help pane** at the right-hand side of R Studio.
+
+::: callout-note
+*A Note about functions: Functions in programming allow us to repeat common tasks. We can use "base R" functions available to all R programs (such as the help() function), use functions provided by packages (like the many functions included with the tidyverse packages), or create our own functions.*
+
+*The common syntax for calling a function is:* `function_name(arguments)`. *We'll come back to that in a second.*...
+:::
+
+First, let's view the dataset by typing in its name below:
+
+```{r}
+msleep
+```
+
+How many species (rows) are included in this dataset? How many data fields / variables (columns) for each?
+
+## 2. Exploring a Dataset before visualization (with summary functions)
+
+In R, we can run some basic functions to get a quick overview of a dataset. Run the following functions, analyzing what each does and what you can (and cannot) learn from each.
+
+```         
+head(dataset_name)
+class(dataset_name)
+dim(dataset_name)
+colnames(dataset_name)
+str(dataset_name)
+summary(dataset_name)
+```
+
+```{r}
+head(msleep)   # try "head(msleep, 3)" to see what that does differently
+```
+
+```{r}
+class(msleep)
+```
+
+```{r}
+dim(msleep)
+```
+
+```{r}
+colnames(msleep)
+```
+
+```{r}
+str(msleep)
+```
+
+```{r}
+summary(msleep)
+```
+
+### 2.1 Numerical Data
+
+One of the most useful ways to get summary data from a dataframe (or, in this case, a dplyr/tidyverse version of a dataframe known as a "tibble" - see *Intro to Tidyverse* notebook) is with the **summary() function**. Look at the results from the use of this function above. Then try to answer the following questions:
+
+::: callout-tip
+## Exercise 2.1
+
+1.  What are the two main data types stored in this dataset?
+
+2.  What are the maximum and minimum sleep times (in hours per day) for mammals in this dataset?
+
+3.  Which columns have missing values ("NA's")? How many rows are missing data for these fields?
+:::
+
+### 2.2 Categorical Data
+
+You may have noticed that while the **summary()** function returns valuable information for the columns with numerical data, it does not provide any information about the columns containing "character" data (in this case, also known as categorical data). From the **head()** and **str()** functions above, we do have an idea of some of the values found in each column. However, it would be valuable to know how many unique categories are found in these columns and how frequently they appear.
+
+We can use the **distinct()** function to identify a list of unique values in the "genus" column. To apply it to one column of the dataset, let's practice using the piping syntax of tidyverse:
+
+```         
+dataset_name |>
+  function(column)
+```
+
+```{r}
+msleep |>
+  distinct(genus)
+```
+
+To generate a frequency count of the values found in a column we can use the function **count()**. To sort the results, we can also add the parameter `sort=TRUE`.
+
+```{r}
+msleep |>
+  count(genus, sort=TRUE)
+```
+
+Let's explore a different column: "conservation" (for conservation status of the mammals):
+
+```{r}
+msleep |>
+  count(conservation, sort=TRUE)
+```
+
+The dataset did not come with a dictionary defining these abbreviations. However, after a few minutes browsing online I found this:
+
+::: callout-note
+**Explanation of "conservation" field"**:
+
+According to the documentation retrieved by `help(msleep)` we know that conservation status was a field added to the original msleep dataset from Wikipedia. An online search reveals this field is using 9 categories established by the International Union for Conservation of Nature (IUCN) for threatened species:
+
+-   not evaluated (not included here?)
+
+-   data deficient (not included here?)
+
+-   least concern ("lc")
+
+-   near threatened ("nt")
+
+-   vulnerable ("vu")
+
+-   endangered ("en")
+
+-   critically endangered ("cd")
+
+-   extinct in the wild (?)
+
+-   extinct (?)
+:::
+
+::: callout-tip
+### Exercise 2.2.
+
+Try applying these same summary functions to a different preloaded dataset to better understand the data it contains.
+:::
+
+```{r}
+#
+
+
+```
+
+## 3. Tidyverse / dplyr verbs for Data Wrangling
+
+To modify and "wrangle" datasets, the tidyverse commonly uses the following verbs / functions:
+
+-   **select()**: to select specific columns by their names or data types
+
+-   **arrange()**: to order rows by one or more columns
+
+-   **rename()**: to rename columns
+
+-   **mutate()**: to create columns
+
+-   **filter()**: to filter out rows by a given condition
+
+-   **distinct()**: to keep only distinct / unique rows
+
+-   **gather()**: to make "wide" data longer
+
+-   **spread()**: to make "long" data wider
+
+-   **separate()**: to split a single column into multiple columns
+
+-   **unite()**: to combine multiple columns into one
+
+[More tidyverse verbs and functions here](https://dplyr.tidyverse.org/reference/index.html). Review the *Intro to Tidyverse* notebook for practice using some of these functions.
+
+## 4. Visualizing Data Distributions
+
+The package we will be using to visualize data in R is the popular `ggplot2` package, which has already been installed here as part of the **tidyverse** packages.
+
+### 4.1. Grammar of Graphics
+
+**What is the "Grammar of Graphics"?**
+
+**Key Components of "Grammar of Graphics" plots**
+
+Plot = Data + Mapping (how data variables are to be visualized)
+
+Five mapping components:
+
+| Component | Description |
+|------------------------------------|------------------------------------|
+| layer | includes **geoms** (geometric elements visible in the plot like points, lines, polygons, etc.) and **stats** (statistical transformations that summarize the data, simplifying it for visualization; i.e. binning or counting observations to make a histogram, or fitting a linear model) |
+| scale | maps data values to visual variables like color, shape, and size |
+| coord | describes how data will be placed spatially and what coordinate system will be used |
+| facet | describes how to split data and display it in "small multiples" |
+| theme | control stylistic choices such as font size and color palettes |
+
+### 4.2. Histograms - Numerical Data
+
+Histograms are useful for visualizing the distribution of numerical data for a particular variable.
+
+For this simple plot type, we can use the built-in `hist` function in base R:
+
+```{r}
+hist(msleep$sleep_total)
+
+```
+
+Of course, ggplot allows us to create the same thing.
+
+The conventional syntax to plot with ggplot is:
+
+```         
+ggplot(data=dataset_name, aes(columns assigned to particular visual variables such as x coord, y coord, color fill, color outline, etc.)) +   
+    geom_name(any_additional_arguments)
+```
+
+Thus, to create a histogram, we will want to use **geom_histogram** as our geom_name and set x as the column we want to inspect:
+
+```{r}
+ggplot(data=msleep, aes(x = sleep_total)) +
+  geom_histogram()   #binwidth=4
+```
+
+However, the gglot version doesn't look as nice. Since ggplot allows a lot more customization, we will need to be more specific in our instructions, adding in parameters for the color fill (`fill`), color outline (`color`), and `binwidth`.
+
+```{r}
+ggplot(data=msleep, aes(x = sleep_total)) +
+  geom_histogram(binwidth=2, color="black", fill="gray") 
+
+```
+
+::: callout-tip
+### Exercise 4.2
+
+Choose another data field or column containing numerical data besides total sleep. Create a histogram for this field.
+:::
+
+```{r}
+#
+
+```
+
+### 4.3. Bar Plots - Categorical Data
+
+A histogram is a type of bar plot designed to show the distribution of numerical data by placing this data into "bins" covering a particular range of numerical values.
+
+More conventional bar plots visualize the number of items found in different categories. In ggplot, we can use either the **geom_histogram()** function (but in a different way) or the **geom_bar()** function. Since we are interested in counts of categorical data (i.e. the number of carnivores vs. herbivores in the dataset), we will need to pass the argument `stat='count'` into both geoms.
+
+Let's try it first with **geom_histogram()**.
+
+```{r}
+ggplot(data=msleep, aes(x=vore)) +
+  geom_histogram(stat="count")  #try without stat = count
+```
+
+We can produce the exact same output with **geom_bar()**.
+
+```{r}
+ggplot(data=msleep, aes(x=vore)) +
+  geom_bar(stat="count")
+```
+
+We can re-order (or re-\*arrange\* using tidyverse terminology) the columns using the **fct_infreq()** function which is imported with tidyverse as part of the **forcats** package. *Note: it still places the NA's on the furthest right, regardless of their frequency.*
+
+Syntax:
+
+```         
+...aes(x=fct_infreq(column_name)...)
+```
+
+```         
+```
+
+```{r}
+ggplot(msleep, aes(x=fct_infreq(vore), fill=vore)) +
+  geom_bar(stat="count")
+
+```
+
+We can even divide each bar into stacks by assigning the categories in another column to the **fill** parameter. Let's place the `order` column on the x axis and pass in the `conservation` column into the fill parameter.
+
+```{r}
+ggplot(msleep, aes(x=order, fill=conservation)) +
+  geom_bar(stat="count")
+```
+
+::: callout-tip
+### Exercise 4.3.
+
+1.  Try modifying one of the above bar graphs, transforming the bars from vertical to horizontal.
+2.  Create a bar plot for a different data column / field not included above.
+:::
+
+```{r}
+#
+
+
+```
+
+## 5. Other Ways to Visualize Distribution
+
+### 5.1. Boxplots
+
+\![box plot diagram](https://r-graph-gallery.com/img/other/boxplot_explanation.png)
+
+```{r}
+ggplot(msleep, aes(y=sleep_total, x=fct_rev(vore)))+
+  geom_boxplot()
+
+```
+
+We can experiment with modifying this plot a little more using additional R packages:
+
+```{r}
+#install.packages("viridis")
+library(viridis)
+ggplot(msleep, aes(y=sleep_total, x=fct_rev(vore), fill=vore))+
+  geom_boxplot()+
+  geom_jitter(color="darkred", size=1, alpha=0.8)+
+  scale_fill_viridis(discrete = TRUE, alpha=0.6)
+
+```
+
+```{r}
+#install.packages("ggridges")
+library(ggridges)
+ggplot(msleep, aes(x=sleep_total, y=fct_rev(order), fill=order, alpha=0.6))+
+  geom_density_ridges()+
+  theme_ridges() 
+```
+
+::: callout-note
+### Exercise 5.1
+
+Create a box plot, ridge plot, or other plot to further explore the distribution of data in one or more columns of the dataset. Choose columns not inspected above.
+:::
+
+```{r}
+#
+
+```
+
+## 5.2. Relationships - Scatter Plots
+
+This dataset seems to be especially suited to examining relationships in the animal world. More specifically: what types of animals (by genus, order, size, diet) sleep the most / least? What is the relationship between length of sleep cycles and Rem sleep to total daily sleep?
+
+Let's first examine the relationship between size and total sleep. We can add in diet and other variables later.
+
+For a scatter plot we will want to use `geom_point()`.
+
+```{r}
+ggplot(msleep, aes(x=sleep_total, y=bodywt)) +
+  geom_point() 
+```
+
+You may notice two extremely heavy animals in this scatter plot. Can you guess what they are?
+
+We can discover what these two animals are by using tidyverse's **filter()** function to filter out all animals less than a given weight in kilograms:
+
+```{r}
+msleep |>
+  filter(bodywt>1000)
+```
+
+We can also create a histogram to examine the distribution of animal weights in the dataset.
+
+```{r}
+ggplot(msleep, aes(x=bodywt)) +
+  geom_histogram(binwidth=250)
+```
+
+Given the way a few heavy animals skews the distribution of animal weights in this dataset, perhaps we should try distributing weights using a logarithmic scale. We can do that by adding:
+
+`scale_y_continuous(trans="log10")`
+
+```{r}
+ggplot(msleep, aes(x=sleep_total, y=bodywt)) +
+  geom_point() +
+  scale_y_continuous(trans="log10")
+```
+
+We can also adjust the `size` and transparency (`alpha`) values for our points:
+
+```{r}
+ggplot(msleep, aes(x=sleep_total, y=bodywt)) +
+  geom_point(size=2, alpha=0.5, color="red") +
+  scale_y_continuous(trans="log10")
+```
+
+... and add a smoothed trend line using `geom_smooth()`:
+
+```{r}
+ggplot(msleep, aes(x=sleep_total, y=bodywt)) +
+  geom_point(size=2, alpha=0.5, color="red") +
+  scale_y_continuous(trans="log10") +
+  geom_smooth() 
+```
+
+We can remove the confidence interval bar with: `geom_smooth(se=FALSE)`.
+
+```{r}
+ggplot(msleep, aes(x=sleep_total, y=bodywt, color=vore)) +
+  geom_point(size=2, alpha=0.5) +
+  scale_y_continuous(trans="log10") +
+  geom_smooth(se=FALSE)
+  
+```
+
+::: callout-tip
+### Exercise 5.2: Create your own scatter plot
+
+Think about which data variables you would like to plot and what visual variables (spatial location, color, size, shape, etc.) you could use to represent these data variables. Then create your own scatter plot visualizing the relationship between these variables.
+:::
+
+```{r}
+
+#
+
+```
+
+## 6. More Complex Plots for Exploratory Data Visualization
+
+### 6.1. [Scatterplot Matrix](https://r-graph-gallery.com/199-correlation-matrix-with-ggally.html)
+
+```{r}
+install.packages("GGally")
+```
+
+```{r}
+library(GGally)
+ggpairs(msleep, columns=6:11, ggplot2::aes(color=vore))
+```
+
+::: callout-tip
+## For Continued Practice
+
+1.  Create a new notebook. Choose another preloaded dataset. Explore the data within using the methods introduced here.
+:::
+
+## Appendix 1. Cross Tabs
+
+```{r}
+xtabs(data=msleep, ~vore + order)
+```
+
+Aesthetics in plot vs. layers: <https://ggplot2-book.org/layers#sec-plots-and-layers>

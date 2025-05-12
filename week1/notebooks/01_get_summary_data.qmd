@@ -1,0 +1,78 @@
+---
+title: "Summary Data"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+jupyter: ir
+---
+
+# Get Summary Data (Practice with preloaded datasets)
+
+## 1. Retrieve Pre-loaded Datasets
+
+Base R and some of its core data science packages (like tidyverse and its dependencies) come with preloaded datasets. We can use these preloaded to practice our data science skills.
+
+First, to view the available preloaded datasets, run the following cell:
+
+```{r}
+data()
+```
+
+```{r}
+help(starwars) 
+```
+
+In this lesson we will work with the **Star Wars** dataset that loads with the **dplyr** library (part of the tidyverse package).
+
+```{r}
+starwars
+```
+
+## Get Summary Data about a Dataframe
+
+```{r}
+head(starwars)
+```
+
+```{r}
+dim(starwars) 
+```
+
+```{r}
+colnames(starwars)
+```
+
+```{r}
+table(starwars$species)
+```
+
+```{r}
+xtabs(data=starwars, ~species + homeworld) 
+```
+
+```{r}
+summary(starwars)
+```
+
+## 
+
+## Retrieve Data
+
+Get one row
+
+```{r}
+starwars[1,]
+```
+
+Get one cell
+
+```{r}
+starwars$name[4]
+```
+
+Get item in list
+
+```{r}
+print(starwars$starships[1]) 
+starwars$starships[[1]][1]
+```

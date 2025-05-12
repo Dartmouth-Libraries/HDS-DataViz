@@ -1,0 +1,372 @@
+---
+title: "tidyverse intro"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+#jupyter: ir
+---
+
+# Introduction to Tidyverse
+
+Tidyverse is a system of R packages for data wrangling and analysis. It provides a different method and syntax for working with data tables (often called "data frames" in data science; but, tidyverse dataframes are known as "tibbles") from base R.
+
+For additional help learning how to use R's tidyverse system of packages, see:
+
+-   Wickham, Çetinkaya-Rundel, and Grolemund, [*R for Data Science*](https://r4ds.hadley.nz/)
+
+-   Grolemund, [A Tidyverse Cookbook](https://rstudio-education.github.io/tidyverse-cookbook/) (2020).!
+
+-   package documentation: [tidyverse](https://tidyverse.tidyverse.org/)
+
+-   [tidyr cheatsheet](https://github.com/rstudio/cheatsheets/blob/main/tidyr.pdf)
+
+-   [*Tidyverse style guide*](https://style.tidyverse.org/)
+
+For a more detailed introduction to working with tidy data in R see:
+
+-   Wickham, Çetinkaya-Rundel, and Grolemund, *R for Data Science*, Ch. 5 ["Data Tidying"](https://r4ds.hadley.nz/data-tidy).
+
+-   Grolemund, [A Tidyverse Cookbook](https://rstudio-education.github.io/tidyverse-cookbook/) (2020).
+
+-   Silge and Robinson, [Text Mining with R](https://www.tidytextmining.com/), Ch. 1 "The tidy text format".
+
+## *Optional*: Working with Virtual Environments
+
+If you are using R for a variety of different projects, you may risk encountering dependency conflicts. These occur when you may need Package *A* for a text analysis project and that package requires version 1.0 of Package *B*, while Package *C* for a machine-learning projects requires version 2.0 of Package *B*.
+
+Setting up a virtual environment allows you to avoid such conflicts. Often, programmers use a different virtual environment for each project (and each project should be stored in a separate project folder). This also provides another benefit. When sharing code with others, programmers can send a list of packages (and their specific versions) to collaborators so that they can reproduce the exact same environment on their machines. This, in turn, ensures that the experience of running the team's code is exactly the same for project members each working on their own computers.
+
+In Python, users typically use the **venv** library to create and use virtual environments. In R, users often use the **Packrat** library / package.
+
+To set up a local virtual environment with packrat:\\
+
+1.  First, install packrat using `install.packages("packrat")`.
+2.  From within your project folder, initialize it using the command `packrat::init()`.
+3.  R should activite your new virtual environment automatically whenever you work in that project folder. To ensure it is activated, however, you can run the code `packrat::on()`. To deactivate, simply run `packrat::off()`.
+
+```{r}
+#install.packages("packrat")
+#packrat::init()
+#packrat::on
+```
+
+## Getting Started with Tidyverse
+
+Data analysis usually involves working with two-dimensional datasets known as dataframes. There are different ways to work with dataframes in R, these include:
+
+-   using core R dataframe functions
+
+-   using the **tibble** a type of dataframe used with the tidyverse collection of packages
+
+-   using other dataframe types like **data.table** for speed and to facilitate working with large datasets (i.e. with millions of rows)
+
+In these lessons, we will work with [tidyverse](https://www.tidyverse.org/) a collection of packages designed for data science. Tidyverse works with **tibbles**, a customized and newer form of dataframes. For more on the differences between tibbles and dataframes see the [explanation here](https://r4ds.had.co.nz/tibbles.html). Key packages in tidyverse include (borrowing from Kyle Walker's [**Analyzing US Census Data: Methods, Maps, and Models in R**](https://walker-data.com/census-r/index.html)**)**:
+
+```         
+    * readr (Wickham and Hester 2021), which contains tools for importing and exporting datasets;
+
+    * dplyr (Wickham et al. 2021), a powerful framework for data wrangling tasks;
+
+    * tidyr (Wickham 2021b), a package for reshaping data;
+
+    * purrr (Henry and Wickham 2020), a comprehensive framework for functional programming and iteration;
+
+    * ggplot2 (Wickham 2016), a data visualization package based on the Grammar of Graphics
+```
+
+```{r}
+## install tidyverse with:
+#install.packages("tidyverse")
+
+## update tidyverse with:
+#tidyverse_update()
+
+## import tidyverse with:
+library(tidyverse)
+
+## see what packages are included with tidyverse:
+tidyverse_packages()
+```
+
+## Combine functions into a pipe
+
+Using the symbol `|>` we can chain multiple functions together.
+
+::: callout.note
+Previously, `%>%` was commonly used for pipes. Now, it is recommended to use `|>` instead. In R Studio, you can use the keyboard shortcut `CTRL/CMD + SHIFT + M` to create a pipe. However, you can update R Studio's default pipe using the instructions in *R for Data Science*, [Ch. 3.4](https://r4ds.hadley.nz/data-transform.html#sec-the-pipe).
+:::
+
+Each new function in the pipeline operates on the results produced by the previous function.
+
+Chaining functions together in a pipe like this:
+
+```         
+starwars |>
+  group_by(species) |>
+  summarise(avg_height = mean(height, na.rm = TRUE)) |>
+  arrange(avg_height)
+```
+
+```{r}
+starwars |>
+  group_by(species) |>
+  summarise(avg_height = mean(height, na.rm = TRUE)) |>
+  arrange(avg_height)
+```
+
+produces the same results as nesting a series of functions within another:
+
+```         
+arrange(
+  summarise(
+    group_by(starwars, species), 
+    avg_height = mean(height, na.rm = TRUE)
+  ), 
+  avg_height
+)
+```
+
+or calling each function in order:
+
+```         
+x1 <- starwars 
+x2 <- group_by(x1, species)
+x3 <- summarise(x3, avg_height = mean(height, na.rm = TRUE))
+arrange(x3, avg_height)
+```
+
+By default `|>` passes the result of the left hand side to the the first unnamed argument of the function on the right hand side. To override this default, use `_` as a placeholder within the function call on the right hand side. `|>` will evaluate `_` as the result of the left hand side, instead of passing the result to the first unnamed argument.
+
+```{r}
+
+starwars |>
+  lm(mass ~ height, data = _)
+
+# the old piping syntax
+#starwars %>%
+#  lm(mass ~ height, data = .)
+```
+
+```{r}
+
+```
+
+```         
+```
+
+## Tidy Data
+
+From the [Tidyverse cookbook](https://rstudio-education.github.io/tidyverse-cookbook/tidy.html):
+
+Data tidying refers to reshaping your data into a tidy data frame or [tibble](https://rstudio-education.github.io/tidyverse-cookbook/how-to-use-this-book.html#tidy-data). Data tidying is an important first step for your analysis because every tidyverse function will expect your data to be stored as **Tidy Data**.
+
+Tidy data is tabular data organized so that:
+
+1.  Each column contains a single variable
+
+2.  Each row contains a single observation
+
+Tidy data is not an arbitrary requirement of the tidyverse; it is the ideal data format for doing data science with R. Tidy data makes it easy to extract every value of a variable to build a plot or to compute a summary statistic. Tidy data also makes it easy to compute new variables; when your data is tidy, you can rely on R's rowwise operations to maintain the integrity of your observations. Moreover, R can directly manipulate tidy data with R's fast, built-in vectorised observations, which lets your code run as fast as possible.
+
+The definition of Tidy Data isn't complete until you define variable and observation, so let's borrow two definitions from [*R for Data Science*](https://r4ds.had.co.nz/exploratory-data-analysis.html):
+
+1.  A **variable** is a quantity, quality, or property that you can measure.
+
+2.  An **observation** is a set of measurements made under similar conditions (you usually make all of the measurements in an observation at the same time and on the same object).
+
+As you work with data, you will be surprised to realize that what is a variable (or observation) will depend less on the data itself and more on what you are trying to do with it. With enough mental flexibility, you can consider anything to be a variable. However, some variables will be more useful than others for any specific task. In general, if you can formulate your task as an equation (math or code that contains an equals sign), the most useful variables will be the names in the equation.
+
+### Create a tibble from scratch
+
+Rarely will you ever create a dataframe or tibble from scratch except to create small practice datasets.
+
+Here, we create a small practice dataset about the popular murder mystery TV show, [*Only Murders in the Building*](https://www.imdb.com/title/tt11691774/)
+
+```{r}
+omitb <- tribble(~name, ~occupation, ~apartment, ~is_suspect, ~is_dead,
+            "Charles", "washed-up actor", "14C", "no", "no",
+            "Mabel", "unemployed never-was", "12E", "maybe", "no",
+            "Oliver", "theater director", "10D", "no", "no",
+            "Howard", "childless cat guy", "3D", "yes", "no",
+            "Bunny", "petty despot", "12A", "no", "maybe"
+)
+omitb
+```
+
+We can add a new row by piping the function **add_row.** To figure out how do so, we can review the [function's documentation](https://tibble.tidyverse.org/reference/add_row.html). Note: the default is to add the new row to the bottom of the tibble. To add it before the first row we need to set the argument `.before = 1`.
+
+```{r}
+omitb <- omitb |>
+  add_row(name="Jan", occupation = "2nd-chair basoonist", 
+          is_suspect="yes", is_dead="no", .before=1)
+
+omitb
+```
+
+Above we used the **tribble** function to create a **tibble** (tribble vs. tibble - confusing right?) by using a syntax that lines up the rows neatly in a way that will preview the result.
+
+You can also create the same tibble using the **tibble** function and passing in a list with the values of column:
+
+```{r}
+tibble(name = c("Charles", "Mabel", "Oliver", "Howard", "Bunny"),
+       occupation = c("washed-up actor", "unemployed never-was", "theater director", "childless cat guy", "petty despot"),
+       apartment = c("14C", "12E", "10D", "3D", "12A"),
+       is_suspect = c("no", "no", "no", "yes", "no"),
+       is_dead = c("no", "no", "no", "no", "maybe"),
+       )
+```
+
+## Dataframes vs. tibbles
+
+```{r}
+df <- read.csv("../data/census1970.csv") 
+
+```
+
+### Convert a dataframe into a tibble
+
+```{r}
+head(df)
+
+```
+
+```{r}
+df2tib <- as_tibble(df)
+```
+
+## 3. Tidyverse / dplyr verbs for Data Wrangling
+
+To modify and "wrangle" datasets, the tidyverse commonly uses the following verbs / functions:
+
+-   **select()**: to select specific columns by their names or data types
+
+-   **arrange()**: to order rows by one or more columns
+
+-   **rename()**: to rename columns
+
+-   **mutate()**: to create columns
+
+-   **filter()**: to filter out rows by a given condition
+
+-   **distinct()**: to keep only distinct / unique rows
+
+-   **gather()**: to make "wide" data longer
+
+-   **spread()**: to make "long" data wider
+
+-   **separate()**: to split a single column into multiple columns
+
+-   **unite()**: to combine multiple columns into one
+
+[More tidyverse verbs and functions here](https://dplyr.tidyverse.org/reference/index.html).
+
+# Common Data Science Operations in Tidyverse
+
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| Task                               | Python - Pandas                          | Base R                     | Tidyverse (R)                   |
++====================================+==========================================+============================+=================================+
+| **Sort table by column**           | df.sort_values('col')                    | sort(df\$col)              | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | arrange(col)                    |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Filter rows**                    | df.loc\[df\['col'\]\>0,:\]               | df\[df\[col\] \> 0, \]     | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | filter(col \> 0)                |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Subset columns**                 |                                          |                            | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | select(col)                     |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Create a new column**            | df.loc\[:, "square"\] = df\[col\] \*\* 2 | df\$square = df\[col\] \^2 | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | mutate(square = col \^ 2)       |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Perform calculation on column**  | sum(df\["col"\])                         | sum(df\$col)               | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | summarise(sumcol = sum(col))    |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Delete duplicate rows**          | df.drop_duplicates()                     | df\[!duplicated(df), \]    | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | distinct()                      |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Group/Apply/Combine**            | df.groupby("col").sum()                  | by(df, col, sum(x))        | df %\>%                         |
+|                                    |                                          |                            |                                 |
+|                                    |                                          | ???                        | group_by(col) %\>%              |
+|                                    |                                          |                            |                                 |
+|                                    |                                          |                            | summarise(groupsum = sum(col2)) |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+| **Reshape data from wide to long** | *pd.wide_to_long()*                      | *melt()*                   | *use pivot_longer()*            |
++------------------------------------+------------------------------------------+----------------------------+---------------------------------+
+
+## Sort Table (tibble)
+
+```{r}
+starwars |>
+  arrange(homeworld)  #descending order: arrange(desc(homeworld))
+```
+
+## Filter Table
+
+```{r}
+starwars |>
+  filter(species=="Droid")
+```
+
+## Subset Tibble by Column Names
+
+```{r}
+starwars |>
+  select(name, homeworld, species)  #reorder names here to reorder columns
+
+```
+
+### For a range of columns
+
+```{r}
+starwars |>
+  select(name:hair_color, species)
+
+```
+
+### Rename columns
+
+```{r}
+starwars |>
+  rename(character = name, planet = homeworld)
+```
+
+```{r}
+starwars$vehicles[1]
+```
+
+## Split-Apply-Combine
+
+```{r}
+starwars |>
+  group_by(species)
+```
+
+```{r}
+starwars |> 
+  group_by(species) |>
+  summarise(avg_height = mean(height, na.rm = TRUE)) 
+```
+
+```{r}
+starwars |>    
+  group_by(species) |>   
+  summarise(avg_height = mean(height, na.rm = TRUE)) |>  
+  arrange(avg_height) 
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
