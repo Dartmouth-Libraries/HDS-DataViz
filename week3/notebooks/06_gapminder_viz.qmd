@@ -35,172 +35,184 @@ library(tidyverse)
     Now let's import this dataset:
 
 ```{r}
-gapdf <- read.csv("../data/gapminder.csv")
-head(gapdf)
+df <- read.csv("../data/gapminder.csv")
+head(df)
 ```
 
 ## 2. First Plot: 1 year, two variables
 
-Let's first create a scatterplot of this dataset for one year (1957) and two variables (`lifeExp` = life expectancy and `gdpPercap` = gdpPercap).
+Let's first create a scatterplot of this dataset for one year (1982) and two variables (`lifeExp` = life expectancy and `gdpPercap` = gdpPercap).
 
 ```{r}
-gap1957 <- gapdf |>
-  filter(year == 1957)
 
 ```
 
-### 2.1 Basic scatter plot
-
 ```{r}
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+# let's store the year we want to examine in variable
+# so we can easily change it later
+yr = 1982
+tempdf <- df |>
+  filter(year == yr)
+
+ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
   geom_point()
 ```
 
 ### 2.2 Adjust scale
 
+**Copy and paste the code above into the cell below. For the rest of this lesson, you will be copying and pasting existing code into new code cells before adding one additional line of code at a time. Adding code one line at a time will help you see what each line accomplishes. If you ever get stuck, please review the notebook that starts with *"complete\_"*.**
+
+In the code cell below, besides adding the **option()** function inputed for you, paste the code from the previous cell and then add the following code to it:
+
+```         
+# use scale_x_continuous to transform the scale of the 
+# x axis to a logarithmic scale
+... +
+    scale_x_continuous(trans="log10")
+```
+
 ```{r}
 # to create larger plots (jnbs!)
 options(repr.plot.width=10, repr.plot.height=8)
 
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+# Paste code from previous cell below
+
+# use scale_x_continuous to transform the scale of the 
+# x axis to a logarithmic scale
+ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
   geom_point()+
   scale_x_continuous(trans="log10")
 ```
 
-### 2.3 Identify outliers
-
-Using the **filter()** function to identify outliers.
-
-Notice, there appears to be an outlier in this dataset: one country with a 1957 per capita GDP greater than \$100,000. Let's find out what country this is:
-
-```{r}
-gap1957 |> 
-  filter(gdpPercap > 100000)
-```
-
-Now that we know what country that is, we can filter the full dataset (for 1952 - 2007) to see if its 1957 per capita GDP is in line with other years.
-
-```{r}
-gapdf |>
-  filter(country == "Kuwait")
-```
-
-If you do some research on Kuwait's history, it does appear there is a rational explanation for this: the explosion of oil revenues the country experienced after World War II.
-
-However, let's suppose we suspected Kuwait's status as an outlier was due to a possible data error. In that case, we may choose to remove Kuwait from our dataset, which we can do:
-
-```{r}
-gap1957 <- gap1957 |>
-  filter(country != "Kuwait")
-
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
-  geom_point()+
-  scale_x_continuous(trans="log10")
-```
-
-### 2.4 Add a trend line
-
-Let's add one more feature: a smoothed trend line.
-
-The `geom_smooth()` function in ggplot allows us to overlay a trend line on a scatterplot. By defaults, the line added is a LOESS smooth line. Other options are include linear models ("lm"), generalized linear models ("glm"), or generalized additive models ("gam"). Set these alternative models by using the argument: `method = 'lm'.`
-
-```{r}
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
-  geom_point() +
-  geom_smooth() + #se=FALSE, conf interval 0.95 by default, can change using level=
-  scale_x_continuous(trans="log10") 
-```
-
-Quick experiment: what happens when you re-run the code above, but place `geom_smooth()+` above `geom_point()`?
-
-```{r}
-p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
-  geom_point() +
-  geom_smooth() +
-  scale_x_continuous(trans="log10") 
-
-p + geom_text(data = filter(gap1957, country == "United States"),
-               aes(label = country),
-               vjust = -1,
-               color = "purple",
-               size = 5
-              )
-```
-
-```{r}
-p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
-  geom_point(aes(color = country == "United States")) +
-  geom_smooth() +
-  scale_x_continuous(trans="log10") 
-
-p + scale_color_manual(values = c("FALSE" = "gray", "TRUE" = "purple"))+
-  geom_text(data = filter(gap1957, country == "United States"),
-               aes(label = country),
-               vjust = -1,
-               color = "purple",
-               size = 5
-              )
-
-```
-
-::: callout-tip
-### Exercise 2:
-
-Create a similar plot, but this time for the year 1987. In this plot, label two countries: 1) the wealthiest country (by per capita GDP), and 2) the country with the longest life expectancy.
-:::
+*Note: we can see a clearer relationship between the per capita GDP of countries and the life expectancy of their people now that we represent GDP on a logarithmic scale.*
 
 ## 3. Plot other years
 
-If we want to quickly change a value in our plot code, it might make sense to assign it to a variable. Try, plugging in different years (gapminder dataset covers 1952 to 2007 at five-year intervals, so: 1952, 1957, 1962....).
+If we want to quickly change a value in our plot code, it might make sense to assign it to a variable. Copy and paste the ggplot code above, but this time also pasting and modifying the code that set the year filter, i.e.:
+
+```         
+yr = [choose new year]
+tempdf <- df |>
+  filter(year == yr)
+```
+
+this time plugging in different years (gapminder dataset covers 1952 to 2007 at five-year intervals, so: 1952, 1957, 1962....).
 
 ```{r}
-yr = 1997
-gaptemp = gapdf |>
+yr = 1982
+tempdf <- df |>
   filter(year == yr)
 
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp)) +
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp)) +
   geom_point() +
   scale_x_continuous(trans="log10") 
 ```
 
 ### 3.2 Color as a visual variable
 
-```{r}
-yr = 1997
-gaptemp = gapdf |>
-  filter(year == yr)
+Now add the argument `color=continent` to the **aes()** command within ggplot like this:
 
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent)) +
+```         
+ggplot(df_name, aes(other_arguments..., color=continent)) +
+    ...
+```
+
+Note: we use **aes()** to match visual variables (i.e. *color*) with data variables (i.e. *continent*). If you want to set the color as a constant, you would do so outside aes() and using the name of hex# of a color, such as:
+
+```         
+ggplot(df_name, aes(other_arguments...)) +
+    geom_point(color="blue")
+```
+
+Pasting in your previous code, set `color=continent` in the **aes()**.
+
+```{r}
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent)) +
+  geom_point() +
+  scale_x_continuous(trans="log10") 
+```
+
+### Exercise 3.2 Visual variables vs. constants
+
+Try setting `color=continent` for **aes()** and `color="blue"` in geom_point(). This is bad practice to set the color as both a constant and a variable, but let's see which one ggplot uses (or does it return an error?).
+
+```{r}
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent)) +
+  geom_point(size=3, alpha=0.6, color="blue") +
+  scale_x_continuous(trans="log10") 
+```
+
+### 3.3 Size and transparency as constants
+
+Now that we know we can set visual variables to constant values, add the following arguments to geom_point():
+
+```         
+size=3
+alpha=0.6
+```
+
+```{r}
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent)) +
   geom_point(size=3, alpha=0.6) +
   scale_x_continuous(trans="log10") 
 ```
 
-### 3.3 Size as visual variable
+The size value is probably self-explanatory. `alpha` sets the opacity of the points, with 1.0 signifying completely opaque shapes and 0 completely transparent.
+
+Experiment with different sizes and alpha values.
+
+### 3.4 Size as visual variable
+
+However, we can also use size to represent a variable rather than a constant. Let's use it to represent population. Add in an argument to your code that uses the population data variable to determine the size of each point (\*be sure to remove the `size=[constant]` argument first!\*):
 
 ```{r}
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
   geom_point(alpha=0.6) +
-  scale_x_continuous(trans="log10")+
-  scale_size_continuous(range = c(1, 15))
+  scale_x_continuous(trans="log10")
 ```
+
+All these points seem a little small, especially those for the largest countries. We can set minimum and maximum values for the size of these points using
+
+```         
+scale_size_continuous(range = c([min_size], [max_size]))
+```
+
+Try inserting different values for `[min_size]` and `[max_size]`. For me, the values (1, 15) seemed to work well.
+
+```{r}
+ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+  geom_point(alpha=0.6) +
+  scale_x_continuous(trans="log10") + 
+  scale_size_continuous(range=c(1, 15))
+  
+```
+
+\*There are, of course, more sophisticated ways to "bin" or "scale" data that is represented by the `size` parameter. You can do more digging into this on your own. The focus here is on how to customize these arguments rather than best practices for doing so.\*
 
 ## 4. Plot Customization
 
-```{r}
-yr = 1997
-gaptemp = gapdf |>
-  filter(year == yr)
-
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
-  geom_point(alpha=0.6) +
-  scale_x_continuous(trans="log10")+
-  scale_size_continuous(range = c(1, 15))
-```
-
 ### 4.1 Themes
 
+Perhaps the simplest way to customize your plots is to choose a pre-existing **theme**. Let's do so, but with a little *wrinkle*.
+
+Like almost anything with **R** we can store our ggplot code in memory. For example, try the following:
+
+```         
+p <- {copy and paste your previous ggplot code here}
+```
+
+Then, in the same or new code cell, add the following code to choose a different theme:
+
+```         
+p + theme_minimal() + ggtitle("theme_minimal()")
+p + theme_grey() + ggtitle ("theme_grey()")
+p + theme_bw() + ggtitle("theme_bw()")
+```
+
+Add both to the cell below:
+
 ```{r}
-p <- ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+p <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
   geom_point(alpha=0.6) +
   scale_x_continuous(trans="log10")+
   scale_size_continuous(range = c(1, 15))
@@ -208,42 +220,86 @@ p <- ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
 p + theme_minimal() + ggtitle("theme_minimal()")
 p + theme_grey() + ggtitle ("theme_grey()")
 p + theme_bw() + ggtitle("theme_bw()")
-
+p + theme_dark() + ggtitle("theme_dark()")
 ```
 
-Try placing the theme above the geom_point.
-
-```{r}
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
-  scale_x_continuous(trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  theme_minimal() + 
-  geom_point(alpha=0.6)
-```
+For more themes see the complete list of [**ggplot**'s stock themes](https://ggplot2.tidyverse.org/reference/ggtheme.html). None are particularly creative or striking, but at least they allow some customization. For more on customizing these existing themes see the [themes](https://ggplot2-book.org/themes#sec-themes) section of the **ggplot2 book**. Also, check out **Appendix 2** in this notebook, where I demonstrate how to create your own theme.
 
 ### 4.2 Titles & Labels
 
-```{r}
-p <- ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
-  scale_x_continuous(trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) 
-  
+Take your existing code, but now add a title. We can do so using the variable `p` rather than copying and pasting in previous code.
+
+However, if you want to be able to quickly reuse this code for other years, it may be useful to call the current value of the variable `yr` rather than inputting the year directly. For that we can use the **sprintf()** function as follows:
+
+```         
+p <- p + 
+    ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) 
+    
+# to output results call p:
 p
 ```
 
+For **sprintf** strings, `%d` serves as a stand-in for numerical variables and `%s` represents character variables.
+
 ```{r}
-p + labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+p <- p +
+  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) 
+p
+ 
+```
+
+We can see the value of using the `yr` variable with the title when we change the value of that variable.
+
+```{r}
+yr = 2002
+tempdf <- df |>
+    filter(year == yr)
+
+p2 <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(trans="log10") +
+    scale_size_continuous(range = c(1, 15)) + 
+    ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) 
+
+# we need to set yr back to 1982 as that is the variable stored with plot `p`
+yr = 1982
+
+p2
+
+```
+
+**Adding other Labels**
+
+You can add x-axis, y-axis labels, captions, and legend lables using ggplot's **lab()** function. Try the following, but replacing the information between `{}` with the appropriate labels:
+
+```         
+p <- p + labs(x="{x axis label}", y = "{x axis label}", 
+       caption = "{caption - additional detail about plot}", 
+       color = '{label for data used for color variable}',
+       size = "{label for data used for size variable}") 
+```
+
+```{r}
+p <- p + labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
        caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") 
+       color = 'Continent',
+       size = "Population") 
+p
 ```
 
 ### 4.3 Ticks
 
-```{r}
-p + scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10")
+We can also customize the location of our axes ticks by adding the argument
 
+```         
+breaks = c(100, 1000, 10000, 100000)
+```
+
+to **scale_x_continuous**:
+
+```{r}
+p <- p + scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10")
+p
 ```
 
 ### 4.4 Alternative Color Palettes
@@ -254,64 +310,58 @@ There are many different color palettes and scales that can be used to customize
 #install.packages("viridis")
 library(viridis)
 
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop)) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) +
-  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
-       caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") +
-  scale_color_viridis(discrete=TRUE, option="cividis") + 
-  theme_gray()
+p <- p +
+    scale_color_viridis(discrete=TRUE, option="turbo") + 
+    theme_minimal()
+    
+p
 ```
 
-### 4.5 Smooth bumpy edges, change plot size, and save
+### 4.5 Saving plot: also smooth bumpy edges with vector format (.svg) and set plot size
+
+We can save the plot using
 
 ```{r}
 
-#wrapper <- function(x, ...) 
-#  {
-#    paste(strwrap(x, ...), collapse = "\n")
-#  }
+ggsave(file=sprintf("../images/gapminder_%d.svg", yr), plot=p, width=6, height=5)
 
-#install.packages("svglite")
-library(svglite)
+```
 
-ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop)) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) +
-  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+## 5. Plotting Time
+
+When not representing time on one of the axes (as in time-series line plots), there are two other common solutions to represent change over time:
+
+1.  represent different time periods with small multiples (known as facets) - good for printed graphics
+2.  represent the passage of time with animated plots - good for graphics published online.
+
+To represent time, however, we need to re-compile our ggplot code to include the full dataset (`df`), which includes different years:
+
+```{r}
+p_all <- ggplot(df, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(trans="log10") +
+    scale_size_continuous(range = c(1, 15)) +
+    labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
        caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") +
-  scale_color_viridis(discrete=TRUE, option="cividis") + 
-  theme_gray()
-
-ggsave(file=sprintf("../images/gapminder_%d.svg", yr), width=5, height=4)
-
-
+       color = 'Continent',
+       size = "Population") +
+    scale_color_viridis(discrete=TRUE, option="turbo") + 
+    theme_minimal()
+    
 ```
 
 ## 5. Small Multiples (facets)
 
+To create small multiples below, we will use the **facet_wrap()** function. Howe
+
 ```{r}
-ggplot(gapdf, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop)) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) +
-  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
-       caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") +
-  scale_color_viridis(discrete=TRUE, option="cividis") + 
-  theme_gray()+
-  facet_wrap(~year, ncol=3)
+p_facets <- p_all +
+    facet_wrap(~year, ncol=3)
+p_facets
 
-ggsave(file="../images/gapminder.svg", width=10, height=12)
-ggsave(file="../images/gapminder.png", width=10, height=12)
-
+# the plot below may be a little too small to represent these small multiples
+# but, we can save it at a larger size:
+ggsave(file="../images/gapminder_facets.svg", width=10, height=12)
 ```
 
 # Interactive Visualizations using plotly
@@ -320,44 +370,131 @@ ggsave(file="../images/gapminder.png", width=10, height=12)
 
 Rendering the **gapminder** dataset as an interactive and animated plot will allow us to visualize change over time.
 
-In this case, there are two principal options for writing code for plotly. We could create a plotly visualization using plotly syntax. Or, we could use the [**ggplotly package**](https://plotly.com/ggplot2/)to render code written using ggplot syntax in plotly. Since we have been using ggplot thusfar, let's use the latter option.
+Normally, to create interactive visualizations with plotly we would need to translate our code into plotly syntax. Fortunately, however, we can also use the [**ggplotly package**](https://plotly.com/ggplot2/)to automatically render ggplot code with plotly. Since we have been using ggplot thusfar, let's use the latter option.
+
+We need to copy and paste the full code once again, however, as we need to add specify the `frame` argument in the **aes()**. The argument `frame` sets the variable we will use for each step of the animation, which should be our time variable `year`:
+
+```         
+aes(..., frame=year)
+```
 
 Note: *Creating plotly graphs using plotly syntax is much faster.*
 
 ```{r}
 library(plotly)
 
-p <- ggplot(gapdf, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop)) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) +
-  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+p_all2 <- ggplot(df, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop, frame=year)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(trans="log10") +
+    scale_size_continuous(range = c(1, 15)) +
+    labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
        caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") +
-  scale_color_viridis(discrete=TRUE, option="cividis") + 
-  theme_gray()
+       color = 'Continent',
+       size = "Population") +
+    scale_color_viridis(discrete=TRUE, option="turbo") + 
+    theme_minimal()
 
-ggplotly(p)
+ggplotly(p_all2)
+```
+
+We can customize the speed of the playback using **animation_opts()** and its parameter `frame`:
+
+```{r}
+ggplotly(p_all2) |>
+  animation_opts(frame=1000)
+```
+
+## Appendix 1: Identifying & Labeling Outliers
+
+One of many benefits of visualizing our data is the identification of unexpected outliers. The code below creates a scatter plot, but this time for the year 1957. What outlier(s) do you notice here?
+
+```{r}
+yr = 1957
+tempdf <- df |>
+    filter(year == yr)
+p <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+  geom_point(alpha=0.6) +
+  scale_x_continuous(trans="log10")+
+  scale_size_continuous(range = c(1, 15))
+p
+```
+
+We can then identify this outlier....
+
+### A1.1 Identify outliers
+
+Notice, there appears to be an outlier in this dataset: one country with a 1957 per capita GDP greater than \$100,000. Let's find out what country this is using **filter()**:
+
+```{r}
+gap1957 |>
+    filter(gdpPercap > 100000)
+```
+
+Now that we know what country that is, we can filter the full dataset (for 1952 - 2007) to see if its 1957 per capita GDP is in line with other years.
+
+```{r}
+gapdf |>
+    filter(country == "Kuwait")
+```
+
+If you do some research on Kuwait's history, it does appear there is a rational explanation for this: the explosion of oil revenues the country experienced after World War II.
+
+However, let's suppose we suspected Kuwait's status as an outlier was due to a possible data error. In that case, we may choose to remove Kuwait from our dataset, which we can do:
+
+```{r}
+gap1957 <- gap1957 |>
+    filter(country != "Kuwait")  
+
+ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+    geom_point() +
+    scale_x_continuous(trans="log10")
+```
+
+### A1.2 Add a trend line
+
+Let's add one more feature: a smoothed trend line.
+
+The `geom_smooth()` function in ggplot allows us to overlay a trend line on a scatterplot. By defaults, the line added is a LOESS smooth line. Other options are include linear models ("lm"), generalized linear models ("glm"), or generalized additive models ("gam"). Set these alternative models by using the argument: `method = 'lm'.`
+
+```{r}
+ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+    geom_point() +
+    geom_smooth() + #se=FALSE, conf interval 0.95 by default, can change using level=   
+    scale_x_continuous(trans="log10")
+```
+
+Quick experiment: what happens when you re-run the code above, but place `geom_smooth()+` above `geom_point()`?
+
+```{r}
+p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+    geom_point() +
+    geom_smooth() +
+    scale_x_continuous(trans="log10")   
+
+p + geom_text(data = filter(gap1957, country == "United States"),
+              aes(label = country),
+              vjust = -1,
+              color = "purple",
+              size = 5
+              )
 ```
 
 ```{r}
-p <- ggplot(gapdf, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop, frame = year, text = paste("country:", country))) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  scale_size_continuous(range = c(1, 15))+
-  geom_point(alpha=0.6) +
-  ggtitle(sprintf("Life expectancy v. per capita GDP in %d", yr)) +
-  labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
-       caption = "(Based on data from Hans Rosling - gapminder.com)", 
-       color = 'Continent',size = "Population") +
-  scale_color_viridis(discrete=TRUE, option="cividis") + 
-  theme_gray()
+p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+    geom_point(aes(color = country == "United States")) +
+    geom_smooth() +
+    scale_x_continuous(trans="log10")   
 
-ggplotly(p) |>
-  animation_opts()
+p +
+    scale_color_manual(values = c("FALSE" = "gray", "TRUE" = "purple")) +  
+    geom_text(data = filter(gap1957, country == "United States"),
+              aes(label = country),
+              vjust = -1,
+              color = "purple",
+              size = 5)
 ```
 
-## Appendix 1: Custom Themes
+## Appendix 2: Custom Themes
 
 ### 4.5 Create custom themes
 

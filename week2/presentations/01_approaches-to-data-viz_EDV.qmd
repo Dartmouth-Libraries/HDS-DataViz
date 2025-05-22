@@ -31,6 +31,8 @@ logo: "../hds_images/logo_white.png"
 
 # Exploring Data: Exploratory Viz 1
 
+## Inductive Visualization
+
 # Sharing Data: Exploratory Viz 2
 
 # Persuading with Data
