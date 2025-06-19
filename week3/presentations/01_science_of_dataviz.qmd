@@ -1,0 +1,20 @@
+---
+title: "From Eye to Brain to Heart"
+subtitle: "The Science of Data Visualization Perception & Interpretation"
+
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+format: 
+  revealjs:
+    theme: night
+    navigation-mode: vertical
+    chalkboard: true
+editor: visual
+logo: "../hds_images/logo_white.png"
+---
+
+# Visual Saliency
+
+# Process Tracing 
+
+<!-- see Outlier notes-->
