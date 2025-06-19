@@ -378,7 +378,7 @@ We need to copy and paste the full code once again, however, as we need to add s
 aes(..., frame=year)
 ```
 
-Note: *Creating plotly graphs using plotly syntax is much faster.*
+Note: For those seeking to create interactive, animated plotly visualizations at scale or hosted online, *creating plotly graphs using native plotly syntax is much faster.*
 
 ```{r}
 library(plotly)
@@ -426,14 +426,14 @@ We can then identify this outlier....
 Notice, there appears to be an outlier in this dataset: one country with a 1957 per capita GDP greater than \$100,000. Let's find out what country this is using **filter()**:
 
 ```{r}
-gap1957 |>
+tempdf |>
     filter(gdpPercap > 100000)
 ```
 
 Now that we know what country that is, we can filter the full dataset (for 1952 - 2007) to see if its 1957 per capita GDP is in line with other years.
 
 ```{r}
-gapdf |>
+tempdf |>
     filter(country == "Kuwait")
 ```
 
@@ -442,10 +442,10 @@ If you do some research on Kuwait's history, it does appear there is a rational 
 However, let's suppose we suspected Kuwait's status as an outlier was due to a possible data error. In that case, we may choose to remove Kuwait from our dataset, which we can do:
 
 ```{r}
-gap1957 <- gap1957 |>
+tempdf <- tempdf |>
     filter(country != "Kuwait")  
 
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
     geom_point() +
     scale_x_continuous(trans="log10")
 ```
@@ -457,7 +457,7 @@ Let's add one more feature: a smoothed trend line.
 The `geom_smooth()` function in ggplot allows us to overlay a trend line on a scatterplot. By defaults, the line added is a LOESS smooth line. Other options are include linear models ("lm"), generalized linear models ("glm"), or generalized additive models ("gam"). Set these alternative models by using the argument: `method = 'lm'.`
 
 ```{r}
-ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
     geom_point() +
     geom_smooth() + #se=FALSE, conf interval 0.95 by default, can change using level=   
     scale_x_continuous(trans="log10")
@@ -466,12 +466,12 @@ ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
 Quick experiment: what happens when you re-run the code above, but place `geom_smooth()+` above `geom_point()`?
 
 ```{r}
-p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+p <- ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
     geom_point() +
     geom_smooth() +
     scale_x_continuous(trans="log10")   
 
-p + geom_text(data = filter(gap1957, country == "United States"),
+p + geom_text(data = filter(tempdf, country == "United States"),
               aes(label = country),
               vjust = -1,
               color = "purple",
@@ -480,14 +480,14 @@ p + geom_text(data = filter(gap1957, country == "United States"),
 ```
 
 ```{r}
-p <- ggplot(gap1957, aes(x=gdpPercap, y=lifeExp)) +
+p <- ggplot(tempdf, aes(x=gdpPercap, y=lifeExp)) +
     geom_point(aes(color = country == "United States")) +
     geom_smooth() +
     scale_x_continuous(trans="log10")   
 
 p +
     scale_color_manual(values = c("FALSE" = "gray", "TRUE" = "purple")) +  
-    geom_text(data = filter(gap1957, country == "United States"),
+    geom_text(data = filter(tempdf, country == "United States"),
               aes(label = country),
               vjust = -1,
               color = "purple",
