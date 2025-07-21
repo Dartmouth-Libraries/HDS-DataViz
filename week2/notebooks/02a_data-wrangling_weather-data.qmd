@@ -17,7 +17,7 @@ When searching for local weather data, I found [*Climate Data Online*](https://w
 
 ```{r}
 library(tidyverse)
-
+library(zoo)
 
 ```
 
@@ -165,13 +165,13 @@ ggplot(data=yearly_temps) +
     geom_line(aes(x=YEAR, y=avg_TMIN), color="blue")
 ```
 
-We can add a 10-day rolling average using the **rollmean()** function from
+We can add a 10-day rolling average using the **rollmean()** function from the **zoo** library.
 
 ```{r}
 ggplot(data=yearly_temps, aes(x=YEAR)) +
-    geom_line(aes(y=avg_TMAX), color="red", size=1, alpha=0.5) + 
+    geom_line(aes(y=avg_TMAX), color="red", linewidth=1, alpha=0.5) + 
     geom_line(aes(y=rollmean(avg_TMAX, 10, na.pad=TRUE)), linetype="dashed") +
-    geom_line(aes(y=avg_TMIN), color="blue", size=1, alpha=0.5)+
+    geom_line(aes(y=avg_TMIN), color="blue", linewidth=1, alpha=0.5)+
     geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), linetype="dashed")
 ```
 

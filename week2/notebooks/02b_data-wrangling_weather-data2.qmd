@@ -19,8 +19,7 @@ In this notebook, we will visualize temperature fluctuations at the daily rather
 
 ```{r}
 library(tidyverse)
-
-
+options(repr.plot.width = 20, repr.plot.height = 12)
 ```
 
 ## 1.2 Import Data
@@ -28,14 +27,188 @@ library(tidyverse)
 ```{r}
 df <- read.csv("../data/Hanover_weather-data_1884-2025.csv")
 
+
 ```
 
 # 2. Planning
 
+Examine the columns and data contained in this dataset using the functions below. Think about which data fields (columns) we want to keep and how we may want to modify them to accomplish the following task:
+
+-   visualize daily temperature changes for each year in the 21st century in comparison to the average temperature for each given day during the 20th century.
+
+    ```{r}
+    tail(df)
+
+    ```
+
+    ```{r}
+    colnames(df)
+    ```
+
+    ```{r}
+    print(summary(df))
+    ```
+
+    Brainstorm the steps we will need to take to achieve the goals stated above.
+
+    ```         
+    # Write the steps you think are needed below:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ```
+
+# 3. Steps
+
 ```         
+1. standardize dates and save
+2. drop unneeded columns
+3. calculate average daily temperatures for 20th century
+    a. assign each day a day number
+    b. group by day number and calculate average max and min temperatures
+4. calculate difference between each day's max and min temperatures and the 20th century average for that day
+5. wide to long?
+    
 ```
 
-## 5. Visualizing
+# 4. Standardize Dates
+
+```{r}
+library(lubridate)
+df <- df |>
+    mutate(DATE2 = parse_date_time(DATE, orders = c("ymd", "mdy"))) |>
+    mutate(DATE2 = as.Date(DATE2))
+```
+
+# 5. Keep only needed columns and complete years
+
+```{r}
+cols_to_keep = c("NAME", "DATE2", "TMAX", "TMIN")
+print(dim(df))
+df2 <- df |>
+    select(all_of(cols_to_keep)) |>
+    mutate(YEAR = year(ymd(DATE2)),
+           MON = month(ymd(DATE2)),
+           DAY = day(ymd(DATE2))
+           ) |>
+    filter(YEAR >= 1894 & YEAR <= 2024)
+colnames(df2)
+print(dim(df2))
+```
+
+# 6. Calculate average daily temperature for 20th century
+
+## 6a. Assign day numbers (1 –\> 365 or 366) for the day of the year
+
+First, let's make sure the data is arranged in chronological order.
+
+```{r}
+df2 <- df2 |>
+    arrange(DATE2)
+
+print(head(df2$DATE2))
+print(tail(df2$DATE2))
+```
+
+```{r}
+"""
+df_merged <- df2 |>
+    group_by(YEAR) |>
+    mutate(daynum = row_number())
+
+test_df <- tail(df_merged)
+"""
+```
+
+## 6b. Group by day number and calculate average temperatures
+
+```{r}
+df20c <- df2 |>
+  filter(YEAR >= 1900 & YEAR <= 1999)
+```
+
+```{r}
+df20c_avgs <- df20c |>
+    group_by(MON, DAY) |>
+    summarize(Avg_TMAX_20c = mean(TMAX, na.rm = TRUE),
+              Avg_TMIN_20c = mean(TMIN, na.rm = TRUE),
+              .groups = 'drop')
+    
+
+```
+
+```{r}
+df2 <- df2 |>
+    left_join(df20c_avgs, by=c("MON", "DAY"))
+```
+
+```{r}
+df2 <- df2 |>
+    mutate(tmax_diff_20c_avg = TMAX - Avg_TMAX_20c,
+           tmin_diff_20c_avg = TMIN - Avg_TMIN_20c
+           )
+```
+
+```{r}
+write.csv(df2, "../data/Hanover_temps_1894-2024.csv")
+```
+
+```{r}
+df_2024 <- df2 |>
+    filter(YEAR == 2024)
+```
+
+```{r}
+month.abb
+```
+
+```{r}
+months <- rep(1:12, times = c(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))  # Days per month, leap year
+```
+
+## 7. Visualizing
+
+```{r}
+ggplot(df_2024, aes(
+    x = factor(DATE2),
+    y = tmax_diff_20c_avg,
+    fill = tmax_diff_20c_avg)
+    ) +
+  geom_bar(stat = "identity") +
+  scale_fill_gradient2(low = "blue", mid = "white", high = "red", 
+                       midpoint = 0, name = "Temperature Difference") +
+  theme_minimal() +
+  coord_polar() +
+  labs(title = "Daily Max Temperature Difference from 20th Century Average",
+       x = "Day of Year",
+       y = "Temperature Difference (°C)") +
+  scale_x_discrete(labels = month.abb[months]) +  # Use month abbreviations
+  theme(axis.text.x = element_text(angle = 90, hjust = 1), 
+        plot.background = element_rect(fill = "white")) 
+
+#ggsave("test.png", height=12, width=20)
+```
 
 # EXERCISE:
 

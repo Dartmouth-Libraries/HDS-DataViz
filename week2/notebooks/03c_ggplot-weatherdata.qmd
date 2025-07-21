@@ -23,7 +23,7 @@ library(zoo)
 ## 1.2 import data
 
 ```{r}
-year_avgs <- read.csv("../../data/Hanover_temp-yearaverages.csv", row.names=1)
+year_avgs <- read.csv("../data/Hanover_yearly-temp-averages_1894-2024.csv", row.names=1)
 
 tail(year_avgs)
 ```
