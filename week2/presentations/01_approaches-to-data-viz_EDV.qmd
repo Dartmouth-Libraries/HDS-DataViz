@@ -13,15 +13,104 @@ editor: visual
 logo: "../hds_images/logo_white.png"
 ---
 
-# Key Considerations for designing data visualizations?
+# Key Considerations for designing data visualizations
 
+::: incremental
 1.  **Who**: Intended Audience
 2.  **When**: Stage in the Research Process
 3.  **How**: Visual Variables
 4.  **What**: Plot Type
 5.  **Why**: Goal, Intended Outcome
+:::
 
-## WHEN: Visualization & the Research Lifecycle
+# WHEN: Visualization & the Research Lifecycle
+
+Do you intend to:
+
+1.  communicate what you already know? **(confirmatory data analysis –\> explanatory visualization)**
+2.  explore what you do not yet know? **(exploratory data anaysis –\> exploratory visualization)**
+
+## WHEN: Visualization & the Research Lifecycle, 2
+
+1.  explanatory visualization
+    1.  *is often* close-ended; proposes one answer
+    2.  come at the end of the research process
+2.  exploratory visualization
+    1.  *should always be* open-ended
+    2.  *is sometimes* interactive
+    3.  comes early in the research process
+
+## WHEN: Visualization & the Research Lifecycle, 3
+
+The logic of exploratory data analysis and visualization:
+
+-   deduction
+
+-   induction
+
+-   **abduction**
+
+# Logic and Data Visualization
+
+## **Deduction**
+
+-   evaluate hypotheses
+
+-   "prove that something must be" (Charles Sanders Peirce)
+
+-   draw logical conclusions from premises
+
+-   limitations: often can't prove all premises are true
+
+::: notes
+sources: <https://nzdr.ru/data/media/biblio/kolxoz/B/Weiner%20I.B.,%20et%20al.%20(eds.)%20Handbook%20of%20psychology.%20V.02.%20Research%20methods%20in%20psychology%20(Wiley,%202003)(738s).pdf#page=60>
+:::
+
+## Deduction, Example
+
+Premise 1: All As are Bs (True)
+
+Premise 2: C is A (True)
+
+Premise 3: C is B (True)
+
+## **Induction**
+
+-   justifies the hypothesis
+
+-   "shows that something actually is operative" (Peirce)
+
+-   concludes a general law or premise based on numerous cases
+
+-   limitations: unseen cases could disprove hypothesis
+
+## Induction, Example
+
+A1, A2, A3 ... A100 = B
+
+A1, A2, A3 ... A100 = C
+
+Therefore, B is C
+
+## **Abduction**
+
+-   generates new ideas or hypotheses
+
+-   "suggests that something may be"
+
+-   look for a pattern in a surprising phenomenon and suggest a plausible hypothesis
+
+-   value: Peirce: abduction is the only logical operation that can generate new ideas (and new questions?)
+
+## Abduction, Example
+
+The surprising phenomenon, X, is observed
+
+Among hypotheses A, B, and C, A is capable of explaining X
+
+Hence, there is a reason to pursue A.
+
+## De-, In-, and Ab-duction in Data Science
 
 [![Exploranation as proposed by Höst et al. in "Nano for the Public: An Exploranation Perspective".](images/exploranation.png)](https://www.researchgate.net/publication/339194585_Nano_for_the_Public_An_Exploranation_Perspective)
 
@@ -34,6 +123,12 @@ logo: "../hds_images/logo_white.png"
 ## Inductive Visualization
 
 # Sharing Data: Exploratory Viz 2
+
+# Graph Galleries: Choosing a Plot Type
+
+::: notes
+graph galleries
+:::
 
 # Persuading with Data
 
