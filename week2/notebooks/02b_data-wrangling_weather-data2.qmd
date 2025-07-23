@@ -76,13 +76,12 @@ Examine the columns and data contained in this dataset using the functions below
 
 
 
-
     ```
 
 # 3. Steps
 
 ```         
-1. standardize dates and save
+1. standardize dates
 2. drop unneeded columns
 3. calculate average daily temperatures for 20th century
     a. assign each day a day number
@@ -110,7 +109,8 @@ df2 <- df |>
     select(all_of(cols_to_keep)) |>
     mutate(YEAR = year(ymd(DATE2)),
            MON = month(ymd(DATE2)),
-           DAY = day(ymd(DATE2))
+           DAY = day(ymd(DATE2)),
+           month = month(ymd(DATE2), label=TRUE, abbr=TRUE)
            ) |>
     filter(YEAR >= 1894 & YEAR <= 2024)
 colnames(df2)
@@ -132,13 +132,10 @@ print(tail(df2$DATE2))
 ```
 
 ```{r}
-"""
-df_merged <- df2 |>
-    group_by(YEAR) |>
-    mutate(daynum = row_number())
+df2 <- df2 |>
+    mutate(daynum = yday(DATE2))
 
-test_df <- tail(df_merged)
-"""
+head(df2)
 ```
 
 ## 6b. Group by day number and calculate average temperatures
@@ -187,27 +184,91 @@ month.abb
 months <- rep(1:12, times = c(31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31))  # Days per month, leap year
 ```
 
+```{r}
+months
+```
+
+## 6c. Set up Labels
+
+We want to place monthly labels at the midway point of each month.
+
+```{r}
+month_positions <- df_2024 |>
+  group_by(month) |>
+  summarize(mid_day = mean(daynum)) |>
+  ungroup()
+month_positions
+```
+
+```{r}
+# Prepare day breaks for every 10 days (skip > 366 for leap year safely)
+day_breaks <- seq(1, 366, by = 10)
+day_break_labels <- as.character(day_breaks)
+day_break_labels
+```
+
+```{r}
+
+```
+
 ## 7. Visualizing
 
 ```{r}
+
+```
+
+```{r}
 ggplot(df_2024, aes(
-    x = factor(DATE2),
+    #x = factor(DATE2),
+    x = daynum,
     y = tmax_diff_20c_avg,
     fill = tmax_diff_20c_avg)
     ) +
-  geom_bar(stat = "identity") +
-  scale_fill_gradient2(low = "blue", mid = "white", high = "red", 
+    geom_bar(stat = "identity") +
+    scale_fill_gradient2(low = "blue", mid = "white", high = "red", 
                        midpoint = 0, name = "Temperature Difference") +
-  theme_minimal() +
-  coord_polar() +
-  labs(title = "Daily Max Temperature Difference from 20th Century Average",
+    theme_minimal() +
+    coord_polar(start = -pi/2) +        # rotate to put Jan 1 on top
+    # main axis: day number every 10 days on x
+    scale_x_continuous(
+        breaks = day_breaks,
+        labels = day_break_labels,
+        limits = c(1, 366),
+        expand = c(0, 0)
+    ) +
+    # Add month labels manually with annotate()
+    annotate(
+        "text",
+        x = month_positions$mid_day,
+        y = max(df_2024$tmax_diff_20c_avg, na.rm = TRUE) * 1.1,  # just outside bars
+        label = month_positions$month,
+        size = 4,
+        fontface = "bold",
+        angle = (month_positions$mid_day / 366) * 360 - 90,    # align angle to position on circle
+        hjust = 0.5,
+        vjust = 0.5
+      ) +
+
+    labs(title = "Daily Max Temperature Difference from 20th Century Average",
        x = "Day of Year",
        y = "Temperature Difference (°C)") +
-  scale_x_discrete(labels = month.abb[months]) +  # Use month abbreviations
-  theme(axis.text.x = element_text(angle = 90, hjust = 1), 
-        plot.background = element_rect(fill = "white")) 
+    theme(
+        axis.title.x = element_text(margin = margin(t = 15)),
+        axis.text.x = element_text(size = 8)
+  )
+    #theme(axis.text.x = element_text(angle = 90, hjust = 1), 
+    #    plot.background = element_rect(fill = "white")) 
 
-#ggsave("test.png", height=12, width=20)
+ggsave("test.png", height=12, width=20)
+```
+
+```{r fig.width=14, fig.height = 60}
+
+#options(repr.plot.width=30, repr.plot.height=50)
+ggplot(df2 |> filter(YEAR>2015), aes(x=daynum, y=Avg_TMAX_20c, fill=Avg_TMAX_20c)) +
+    geom_bar(stat="identity") +
+    facet_wrap(~YEAR, ncol=1) #+
+    #scale_fill_viridis(option = "plasma")
 ```
 
 # EXERCISE:

@@ -83,7 +83,7 @@ In *A Truthful Art* Chapter 1, Alberto Cairo defines what a visualization is as 
 -   Who is the intended audience? (often, early in the process, the principal intended audience is yourself. You are seeking insights or lessons from large or unfamiliar datasets; later in the process, the intended audience may be your instructor or thesis advisor, experts in your field, or a broader, more general audience for a popular publication)
 :::
 
-# Origins of Modern Data Visualization
+# Data Visualization Origins & Precursors
 
 # Pre-Modern Maps
 
@@ -111,7 +111,7 @@ So maps have been around for thousands of history and long pre-date the developm
 What about the use of abstract graphical forms to represent non-geographical data?
 :::
 
-# The Origins of Data Visualizations
+# The Origins of Modern Data Visualizations
 
 ## A Scottish Scoundrel & Spy (and Data Viz Innovator)
 
@@ -219,16 +219,18 @@ Some modern experts agree, \[quote\]
 
 ## Innovative Data Visualization
 
+::: incremental
 -   scoundrels need not apply
 
 -   but creatives, nonconformists, iconoclasts, heretodoxical people welcome
+:::
 
 ::: notes
 it doesn't really matter who was first...
 
 what does matter is that information revolutions often require technological developments combined with curious and creative people seeking better and more interesting ways to study, interpret, analyze, and communicate information.
 
-So, fortunately, being a scoundrel is not a prerequisite to becoming a data visualization innovator. But being creative person willing to challenge the norms of your discipline and profession is.
+So, fortunately, **being a scoundrel is not a prerequisite** to becoming a data visualization innovator. But being creative person willing to challenge the norms of your discipline and profession is.
 
-interestingly, many of Playfair's innovations have become the most conventional - and even boring - graphics: especially bar and line plots, and the much-derided pie charts. Fortunately, a recent digital boom in data visualizations have opened the door for new innovations. Can we continue to innovate our forms of visual analysis and communication in an age where technology has made the creation of basic plots easy? We shall see....
+interestingly, many of Playfair's innovations have become the most conventional - and even boring - graphics: especially bar and line plots, and the much-derided pie charts. Fortunately, a recent digital boom in data visualizations have opened the door for new innovations. **Can we continue to innovate our forms of visual analysis and communication in an age where technology has made the creation of basic plots easy? Can we move beyond strict rules and norms to allow for new and creative forms of visualizations and visual storytelling?** We shall see....
 :::

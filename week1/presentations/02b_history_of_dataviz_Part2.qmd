@@ -44,6 +44,12 @@ Essay with accompanying interactive graphic: RJ Andrews, ["Interacting with Hist
 
 ![John Snow's map of cholera cases (1854).](images/Snow-cholera.jpg)
 
+::: notes
+We opened this class with the famous "flatten the curve" graphic. That marked what Alberto Cairo has called "The first visualized global crisis in history".
+
+However, data visualization has long been used as a public health. Indeed, some of the most iconic visualizations in history were made to educate government officials and/or the public about health crises.
+:::
+
 ## Florence Nightingale
 
 ![Florence Nightingale's "Diagram of the Causes of Mortality" for the Crimean War (1858).](images/Nightingale.jpg)
