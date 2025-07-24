@@ -63,7 +63,33 @@ Brainstorm how you would need to modify this dataset to do this analysis. Write 
 ```         
 ```
 
-# 4. Subsetting the dataset
+# 4. Tidyverse / dplyr verbs for Data Wrangling
+
+To modify and "wrangle" datasets, the tidyverse commonly uses the following verbs / functions:
+
+-   **select()**: to select specific columns by their names or data types
+
+-   **arrange()**: to order rows by one or more columns
+
+-   **rename()**: to rename columns
+
+-   **mutate()**: to create columns
+
+-   **filter()**: to filter out rows by a given condition
+
+-   **distinct()**: to keep only distinct / unique rows
+
+-   **gather()**: to make "wide" data longer
+
+-   **spread()**: to make "long" data wider
+
+-   **separate()**: to split a single column into multiple columns
+
+-   **unite()**: to combine multiple columns into one
+
+[More tidyverse verbs and functions here](https://dplyr.tidyverse.org/reference/index.html). Review the *Intro to Tidyverse* notebook for practice using some of these functions.
+
+# 5. Subsetting the dataset
 
 For our first analysis of temperature change, we will focus on the variables `TMAX` (daily maximum temperature) and `TMIN` (daily minimum temperature). We will also average these two variables by year, which will allow us to greatly reduce the size of the dataset.
 
@@ -115,7 +141,19 @@ subdf <- subdf |>
     mutate(YEAR = year(ymd(DATE2)))
 ```
 
-To group the dataset by year and calculate average minimum and maximum temperatures across an entire year we should use the **group_by** function to group by `YEAR` and the **summarise()** function to create a new column that calculates the average of `TMAX` and `TMIN` by year.
+# 6. Grouping Data: Split-Apply-Combine
+
+A common technique in data science is to **split** a dataset into groups, perform or **apply** an action on each group (i.e. calculating the sum, mean, min, or max for all observations in a group), and then re-**combining** that data into a new aggregated dataset.
+
+One example:
+
+```         
+You have a dataset of individual statistics for a women's basketball league. You may want to analyze differences in performance by position, so you split the dataset by position (guard, forward, center), calculate the mean of common basketball metrics (points, rebounds, assists) for each group, and then re-combine the results. Or, you may want to compare teams by calculating the sum of each team's metrics and then averaging those totals by the number of games played to allow comparison between teams that have played different numbers of games
+```
+
+![Split-apply-combine technique for splitting data into groups, applying an action to each group, and then re-combining the resulting data.](https://miro.medium.com/v2/resize:fit:720/format:webp/0*m-puRNwcnUl5zZ4O){fig-alt="Graphic shows data from the famous iris flower dataset. On the left, is a table of multiple measurements (sepal length & width, petal length & width) for multiple observations of three species of iris flower: setosa, versicolor, and virginia. Data for each group (in this case, species) is added or summed up for each species and these sums are then re-combined in a new dataset on the right."}
+
+To group the dataset by year and calculate average minimum and maximum temperatures across an entire year we should use the **group_by** function to group by `YEAR` and the **summarise()** function to create a new column that calculates the average of `TMAX` and `TMIN` by year. The aggregated results are then re-combined in the new `yearly_temps` dataframe.
 
 ```{r}
 yearly_temps <- subdf |>
@@ -133,7 +171,7 @@ yearly_temps <- yearly_temps |>
     filter(YEAR >= 1894 & YEAR <= 2024)
 ```
 
-We could have done this all, of course, in one code cell. Below, I am creating a dataframe with the slightly different name `yearly_temps2` so we can verify that, indeed, they produce the same results.
+We could have done all these modifications from the previous section and this section, of course, in one code cell. Below, I am creating a dataframe with the slightly different name `yearly_temps2` so we can verify that, indeed, they produce the same results.
 
 *Note: now that I know the code works, I did not create any intermediary dataframes (i.e. `subdf`*) or intermediary data columns (`DATE2`).
 
@@ -149,6 +187,9 @@ yearly_temps2 <- df |>
         avg_TMIN = mean(TMIN, na.rm = TRUE)
     ) |>
     filter(YEAR >= 1894 & YEAR <= 2024)
+
+# check if two dataframes are identical
+identical(yearly_temps, yearly_temps2)
 ```
 
 We should save this dataset before doing anything else:
@@ -157,7 +198,7 @@ We should save this dataset before doing anything else:
 write.csv(yearly_temps, "../data/Hanover_yearly-temp-averages_1894-2024.csv")
 ```
 
-## 5. Visualizing
+# 6. Visualizing
 
 ```{r}
 ggplot(data=yearly_temps) +

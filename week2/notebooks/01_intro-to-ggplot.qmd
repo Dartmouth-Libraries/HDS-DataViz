@@ -254,32 +254,6 @@ Try applying these same summary functions to a different preloaded dataset to be
 
 ```
 
-## 3. Tidyverse / dplyr verbs for Data Wrangling
-
-To modify and "wrangle" datasets, the tidyverse commonly uses the following verbs / functions:
-
--   **select()**: to select specific columns by their names or data types
-
--   **arrange()**: to order rows by one or more columns
-
--   **rename()**: to rename columns
-
--   **mutate()**: to create columns
-
--   **filter()**: to filter out rows by a given condition
-
--   **distinct()**: to keep only distinct / unique rows
-
--   **gather()**: to make "wide" data longer
-
--   **spread()**: to make "long" data wider
-
--   **separate()**: to split a single column into multiple columns
-
--   **unite()**: to combine multiple columns into one
-
-[More tidyverse verbs and functions here](https://dplyr.tidyverse.org/reference/index.html). Review the *Intro to Tidyverse* notebook for practice using some of these functions.
-
 ## 4. Visualizing Data Distributions
 
 The package we will be using to visualize data in R is the popular `ggplot2` package, which has already been installed here as part of the **tidyverse** packages.
@@ -295,7 +269,7 @@ Plot = Data + Mapping (how data variables are to be visualized)
 Five mapping components:
 
 | Component | Description |
-|----|----|
+|------------------------------------|------------------------------------|
 | layer | includes **geoms** (geometric elements visible in the plot like points, lines, polygons, etc.) and **stats** (statistical transformations that summarize the data, simplifying it for visualization; i.e. binning or counting observations to make a histogram, or fitting a linear model) |
 | scale | maps data values to visual variables like color, shape, and size |
 | coord | describes how data will be placed spatially and what coordinate system will be used |
