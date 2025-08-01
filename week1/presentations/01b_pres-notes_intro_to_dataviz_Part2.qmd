@@ -1,0 +1,227 @@
+---
+title: "Introduction to Data Visualization, Part 2"
+subtitle: "From Data Exploration to Communication & Storytelling"
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+date: "2026"
+format:
+  html:
+    theme: default
+    css: speaker_notes.css
+    toc: true
+  pdf:
+    toc: true
+editor: visual
+logo: "../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png"
+---
+
+# Introduction to Data Visualization, Part 2
+
+## Goals
+
+1.  review other impactful data visualizations of the 21st Century
+2.  debunk data visualization myths
+
+::: notes
+After discussing the "Flatten the Curve" and other graphics from the COVID-19 pandemic in Part 1 of our introductory presentation,
+
+in Part 2 we will review some other hugely impactful data visualizations in the digital age. Then, we will seek a more expansive view of data visualizations by debunking some myths and conventional wisdom about data viz.
+:::
+
+# Climate Change and the "Hockey Stick" Graph {style="font-size: 0.6em"}
+
+<!--CLIMATE CHANGE - hockey stick graphic-->
+
+![The iconic "hockey stick" graph that became the focus of intense climate debate. First published by Michael Mann, Raymond S. Bradley, and Malcolm Hughes in "Northern hemisphere temperatures during the past millennium: Inferences, uncertainties, and limitations," Geophysical Research Letters (1999). It achieved a wider audience with its publication in a 2001 report by the Intergovernmental Panel on Climate Change of the United Nations.](https://psu-gatsby-files-prod.s3.amazonaws.com/s3fs-public/hockeystick.gif)
+
+::: notes
+The coronavirus pandemic may have been "The first visualized global crisis in history". However, visualizations played a role in helping us understand other crises of the past and present. Climate scientists produced the now-classic "Hockey Stick" line graph in 1998 at a time when few in the public were paying attention to the imminent threat of climate change at a global scale. It derives its name from its hockey stick shape: a relative straight trend line for 900 years, followed by a steep upwards increase in the past century.
+
+Notice the difference between the blue and red lines. Lacking temperature readings for most of human history before the 19th century, the scientists had to estimate pre-modern historical climate variation using different types of "proxy" data (tree rings, corals, ice cores, and historical records like shipping logs). This proxy data is symbolized with the blue line. The red line represents temperature data from thermometers, which thus have a much smaller margin of error (representing by the gray).
+
+The Hockey Stick achieved greater prominence after a 2001 UN report on climate change included this graph. It quickly became a central symbol of the "climate wars.
+:::
+
+------------------------------------------------------------------------
+
+## "Off the Charts"
+
+Al Gore, *An Inconvenient Truth* (2006) and ["off-the-charts" climate change](https://www.youtube.com/watch?v=9tkDK2mZlOo)".
+
+::: notes
+This graph took on a new life in 2006 with the release of Al Gore's climate change documentary *An Inconvenient Truth*.
+
+\[play video\]
+:::
+
+------------------------------------------------------------------------
+
+![](http://www.meteo.psu.edu/holocene/public_html/Mann/images/Mann_HockeyStickClimateWars.jpg)
+
+<!--ELECTION MAPS, GRAPHS, NYT NEEDLE-->
+
+::: notes
+The release of this graph, Gore's documentary, and new climate science research provoked a backlash from the fossil fuels industry and other corporations that felt threatened by the implications of this research. One of the creators of the Hockey Stick graph wrote a book about the subsequent turmoil.
+:::
+
+# Visualized Elections
+
+![CNN Electoral results from 2024 presidential election](images/CNN_pres-elec-2024_map.png){fig-alt="Map showing which states were awarded to Trump and Harris"}
+
+::: notes
+If Covid-19 and climate change graphics don't scare you enough, perhaps election maps do, especially in years your candidate or party loses.
+
+Throughout the buildup to elections, the media employs maps and graphs to convey polling trends, election predictions, and advise us on which candidate or party is winning the "horse race". From these maps, we often now talk about the differences between Red, Blue, and Purple states.
+
+On election day, we then begin anticipating the results by examining maps from right to left (or from East to West as polling locations close and results are released).
+:::
+
+------------------------------------------------------------------------
+
+![CNN tables and bar plots showing results from state ballot initiatives](images/CNN_2024election_ballot-measures_min-wage.png)
+
+::: notes
+We also interpret individual election and ballot initiative results through a combination of numbers and graphs.
+:::
+
+------------------------------------------------------------------------
+
+![New York Times election needle (election night Nov. 2020)](images/NYT_election-needle_2020.png)
+
+::: notes
+Then there are the more advanced graphics built on complex statistical models. Here, you can see the New York Times' dreaded "election needle". This election needle is built on a model that predicts the likelihood of a final outcome based on partial results already returned. As you can imagine, while it provides valuable real-time updates, such constantly fluctuating graphics can be a source of stress for interested onlookers.
+
+\[pause\]
+
+You may ask why are some of the most groundbreaking visualizations employed to explain or solve some of the most difficult and stressful problems of our time?
+
+I invite you to reflect on why that may be.
+
+But, certainly, one principle explanation is that data visualizations can quickly and succinctly convey a lot of information. Imagine trying to communicate who should evacuate a city when a wild fire is approaching without a map. Imagine, trying to convey changes in election polls by location, demographic group, and time without a suite of data visualization plots to assist you.
+
+However, a key point of this class is that data visualization a LANGUAGE of its own. Thus data viz skills provide you with a new language for exploring and communicating a wide range of information and ideas.
+:::
+
+# Data Viz: not always scary
+
+![](images/restaurant_how-busy.png)
+
+::: notes
+To debunk one myth, data viz need not be scary.
+
+While visualizations can help you make a good decision during times of crisis, they can also help you avoid the lunch rush at your local restaurant.
+:::
+
+------------------------------------------------------------------------
+
+![The Pudding's study of music genres (according to Spotify)](images/music-genres_spotify.png)
+
+::: notes
+Visualizations can also be fun, allowing you to explore recent trends in your favorite music genres.
+:::
+
+------------------------------------------------------------------------
+
+["Music genres"](https://pudding.cool/2023/10/genre/) *The Pudding* (October 2023).
+
+![The separation of "Latin" music into sub-genres (The Pudding).](images/music-latin-genres_spotify.png)
+
+::: notes
+And examine how some new sub-genres overlap.
+:::
+
+# Data Viz: Not always impersonal
+
+![](images/emotion-wheel.png)
+
+["Emotion Wheel"](https://pudding.cool/2022/12/emotion-wheel/) *The Pudding* (Dec. 2022).
+
+::: notes
+Second - while reducing populations to points, lines, or polygons on a map can, at times, obscure the human experience, data viz can also be adapted to reflect on our daily experiences.
+:::
+
+------------------------------------------------------------------------
+
+![](images/emotion-wheel2.png)
+
+::: notes
+And be employed to to help us reflect on our emotions.\
+\
+Now, you make look at this and say - this looks like a visualization, but is it a data visualization?\
+\
+In this course, we take an expansive view of data - data is any information that can be read into a computer. With current technologies, this can include text, images, video, maps, and yes, even emotions. Data Science, therefore need not be restricted to the analysis of quantitative data. Likewise, we can use data visualizations to analyze and communicate qualitative thoughts, emotions, and concepts as well as the quantitative, binary, and categorical data more commonly associated with data viz.
+:::
+
+# Data Viz: Not always big (or even digital)
+
+## Dear Data {.scrollable}
+
+![](images/dear-data_week-of-laughter1.jpeg){.nostretch .scrollable}
+
+Giorgia Lupi and Stefanie Posavec, [\*Dear Data\*](https://www.dear-data.com/theproject) (Princeton: Princeton Architectural Press, 2016).
+
+<!--UBIQUITOUS USE - DAILY EXAMPLES - RESTAURANT - HOW BUSY; OTHERS??-->
+
+::: notes
+Finally, data viz need not be big or even digital! As the authors of "Dear Data" have shown, we can use data visualizations to learn more about ourselves and our friends. We can also go back to the basics: using pencils, pens, or markers on paper to explore this personal data.
+
+\[slowly scroll down this scrollable slide while I am talking\]
+:::
+
+# Data Viz: The Course
+
+Coursework designed around completing a data visualization-rich research poster:
+
+::: incremental
+1.  Week 1: Project Topic and Data Selection (what)
+
+2.  Week 2: Project Proposal + Visual Encoding Style Guide (how)
+
+3.  Week 3: Design Plan + Sketched Prototype (what it will look like)
+
+4.  Week 4: Visualizations Peer Feedback Workshop (how can it be improved)
+
+5.  Week 5: Submit Final Project
+:::
+
+::: notes
+Now that I have forced you to consider a more expansive view of data visualization, let's discuss what's ahead.
+
+The course is centered around one capstone project: you will create a visualization-rich research poster where you answer a data science or public health question using a combination of data visualizations and text to communicate your findings. To make such a project feasible in a five-week course, your main assignment each week will guide you toward successful completion of the project.
+
+This week, your goal is simple: decide on a project topic and select your datasets. You will find more information about this in the Final Project document and we will discuss further during the week.
+
+Week 2 - move to creating a more detailed project proposal and creating a visual style guide which will outline your visual style that will be utilized in all your project's visualizations.
+
+Week 3 - you will shift from explaining what the project to begin designing what it will look like through a design plan, which includes sketched, hand-drawn prototypes of your visualizations.
+
+by Week 4 - you will have completed draft visualizations and share them with your peers to solicit their constructive feedback
+
+thus, by the time Week 5 rolls around, you should have completed drafts of all components of the project and just need to revise them and put it altogether.
+:::
+
+# Data Viz: The Practice {.scrollable}
+
+<!--the practice of data visualization-->
+
+::: {.incremental style="font-size:0.7em"}
+1.  Begin with data and a question
+2.  Many of the best visualizations **start with pencil, paper, and an idea**
+3.  Conduct **exploratory data analysis & visualization** to explore hidden patterns in your data
+4.  Perform quantitative analysis, yes! But also **conduct other types of analysis** (statistical, textual, qualitative, etc.)
+5.  Prepare visualizations to help you convey your findings (and to allow others to explore the data)
+    1.  **think about visual variables** (location, color, size, shape, transparency, etc.). What symbols best represent your data variables?
+    2.  **consider your purpose** (are you trying to persuade? or let the viewer come to their own conclusions?)
+    3.  **consider your audience**
+:::
+
+::: notes
+1.  Begin with data and a question
+2.  Many of the best visualizations **start with pencil, paper, and an idea**
+3.  Conduct **exploratory data analysis & visualization** to explore hidden patterns in your data
+4.  Perform quantitative analysis, yes! But also **conduct other types of analysis** (statistical, textual, qualitative, etc.)
+5.  Prepare visualizations to help you convey your findings (and to allow others to explore the data)
+    1.  **think about visual variables** (location, color, size, shape, transparency, etc.). What symbols best represent your data variables?
+    2.  **consider your purpose** (are you trying to persuade? or let the viewer come to their own conclusions?)
+    3.  **consider your audience**
+:::

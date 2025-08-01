@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jeremy Mikecz">
+<meta name="dcterms.date" content="2025-12-31">
+
+<title>Introduction to Data Visualization, Part 2</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/quarto.js"></script>
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/popper.min.js"></script>
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01b_pres-notes_intro_to_dataviz_Part2_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="01b_pres-notes_intro_to_dataviz_Part2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="01b_pres-notes_intro_to_dataviz_Part2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="01b_pres-notes_intro_to_dataviz_Part2_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+<link rel="stylesheet" href="speaker_notes.css">
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-to-data-visualization-part-2" id="toc-introduction-to-data-visualization-part-2" class="nav-link active" data-scroll-target="#introduction-to-data-visualization-part-2">Introduction to Data Visualization, Part 2</a>
+  <ul class="collapse">
+  <li><a href="#goals" id="toc-goals" class="nav-link" data-scroll-target="#goals">Goals</a></li>
+  </ul></li>
+  <li><a href="#climate-change-and-the-hockey-stick-graph" id="toc-climate-change-and-the-hockey-stick-graph" class="nav-link" data-scroll-target="#climate-change-and-the-hockey-stick-graph">Climate Change and the “Hockey Stick” Graph</a>
+  <ul class="collapse">
+  <li><a href="#off-the-charts" id="toc-off-the-charts" class="nav-link" data-scroll-target="#off-the-charts">“Off the Charts”</a></li>
+  </ul></li>
+  <li><a href="#visualized-elections" id="toc-visualized-elections" class="nav-link" data-scroll-target="#visualized-elections">Visualized Elections</a></li>
+  <li><a href="#data-viz-not-always-scary" id="toc-data-viz-not-always-scary" class="nav-link" data-scroll-target="#data-viz-not-always-scary">Data Viz: not always scary</a></li>
+  <li><a href="#data-viz-not-always-impersonal" id="toc-data-viz-not-always-impersonal" class="nav-link" data-scroll-target="#data-viz-not-always-impersonal">Data Viz: Not always impersonal</a></li>
+  <li><a href="#data-viz-not-always-big-or-even-digital" id="toc-data-viz-not-always-big-or-even-digital" class="nav-link" data-scroll-target="#data-viz-not-always-big-or-even-digital">Data Viz: Not always big (or even digital)</a>
+  <ul class="collapse">
+  <li><a href="#dear-data" id="toc-dear-data" class="nav-link" data-scroll-target="#dear-data">Dear Data</a></li>
+  </ul></li>
+  <li><a href="#data-viz-the-course" id="toc-data-viz-the-course" class="nav-link" data-scroll-target="#data-viz-the-course">Data Viz: The Course</a></li>
+  <li><a href="#data-viz-the-practice" id="toc-data-viz-the-practice" class="nav-link" data-scroll-target="#data-viz-the-practice">Data Viz: The Practice</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="01b_pres-notes_intro_to_dataviz_Part2.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Introduction to Data Visualization, Part 2</h1>
+<p class="subtitle lead">From Data Exploration to Communication &amp; Storytelling</p>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Jeremy Mikecz </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            Research Data Services, Dartmouth Libraries
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 31, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction-to-data-visualization-part-2" class="level1">
+<h1>Introduction to Data Visualization, Part 2</h1>
+<section id="goals" class="level2">
+<h2 class="anchored" data-anchor-id="goals">Goals</h2>
+<ol type="1">
+<li>review other impactful data visualizations of the 21st Century</li>
+<li>debunk data visualization myths</li>
+</ol>
+<div class="notes">
+<p>After discussing the “Flatten the Curve” and other graphics from the COVID-19 pandemic in Part 1 of our introductory presentation,</p>
+<p>in Part 2 we will review some other hugely impactful data visualizations in the digital age. Then, we will seek a more expansive view of data visualizations by debunking some myths and conventional wisdom about data viz.</p>
+</div>
+</section>
+</section>
+<section id="climate-change-and-the-hockey-stick-graph" class="level1" style="font-size: 0.6em">
+<h1 style="font-size: 0.6em">Climate Change and the “Hockey Stick” Graph</h1>
+<!--CLIMATE CHANGE - hockey stick graphic-->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://psu-gatsby-files-prod.s3.amazonaws.com/s3fs-public/hockeystick.gif" class="img-fluid figure-img"></p>
+<figcaption>The iconic “hockey stick” graph that became the focus of intense climate debate. First published by Michael Mann, Raymond S. Bradley, and Malcolm Hughes in “Northern hemisphere temperatures during the past millennium: Inferences, uncertainties, and limitations,” Geophysical Research Letters (1999). It achieved a wider audience with its publication in a 2001 report by the Intergovernmental Panel on Climate Change of the United Nations.</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>The coronavirus pandemic may have been “The first visualized global crisis in history”. However, visualizations played a role in helping us understand other crises of the past and present. Climate scientists produced the now-classic “Hockey Stick” line graph in 1998 at a time when few in the public were paying attention to the imminent threat of climate change at a global scale. It derives its name from its hockey stick shape: a relative straight trend line for 900 years, followed by a steep upwards increase in the past century.</p>
+<p>Notice the difference between the blue and red lines. Lacking temperature readings for most of human history before the 19th century, the scientists had to estimate pre-modern historical climate variation using different types of “proxy” data (tree rings, corals, ice cores, and historical records like shipping logs). This proxy data is symbolized with the blue line. The red line represents temperature data from thermometers, which thus have a much smaller margin of error (representing by the gray).</p>
+<p>The Hockey Stick achieved greater prominence after a 2001 UN report on climate change included this graph. It quickly became a central symbol of the “climate wars.</p>
+</div>
+<hr>
+<section id="off-the-charts" class="level2">
+<h2 class="anchored" data-anchor-id="off-the-charts">“Off the Charts”</h2>
+<p>Al Gore, <em>An Inconvenient Truth</em> (2006) and <a href="https://www.youtube.com/watch?v=9tkDK2mZlOo">“off-the-charts” climate change</a>“.</p>
+<div class="notes">
+<p>This graph took on a new life in 2006 with the release of Al Gore’s climate change documentary <em>An Inconvenient Truth</em>.</p>
+<p>[play video]</p>
+</div>
+<hr>
+<p><img src="http://www.meteo.psu.edu/holocene/public_html/Mann/images/Mann_HockeyStickClimateWars.jpg" class="img-fluid"></p>
+<!--ELECTION MAPS, GRAPHS, NYT NEEDLE-->
+<div class="notes">
+<p>The release of this graph, Gore’s documentary, and new climate science research provoked a backlash from the fossil fuels industry and other corporations that felt threatened by the implications of this research. One of the creators of the Hockey Stick graph wrote a book about the subsequent turmoil.</p>
+</div>
+</section>
+</section>
+<section id="visualized-elections" class="level1">
+<h1>Visualized Elections</h1>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/CNN_pres-elec-2024_map.png" class="img-fluid figure-img" alt="Map showing which states were awarded to Trump and Harris"></p>
+<figcaption>CNN Electoral results from 2024 presidential election</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>If Covid-19 and climate change graphics don’t scare you enough, perhaps election maps do, especially in years your candidate or party loses.</p>
+<p>Throughout the buildup to elections, the media employs maps and graphs to convey polling trends, election predictions, and advise us on which candidate or party is winning the “horse race”. From these maps, we often now talk about the differences between Red, Blue, and Purple states.</p>
+<p>On election day, we then begin anticipating the results by examining maps from right to left (or from East to West as polling locations close and results are released).</p>
+</div>
+<hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/CNN_2024election_ballot-measures_min-wage.png" class="img-fluid figure-img"></p>
+<figcaption>CNN tables and bar plots showing results from state ballot initiatives</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>We also interpret individual election and ballot initiative results through a combination of numbers and graphs.</p>
+</div>
+<hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/NYT_election-needle_2020.png" class="img-fluid figure-img"></p>
+<figcaption>New York Times election needle (election night Nov.&nbsp;2020)</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>Then there are the more advanced graphics built on complex statistical models. Here, you can see the New York Times’ dreaded “election needle”. This election needle is built on a model that predicts the likelihood of a final outcome based on partial results already returned. As you can imagine, while it provides valuable real-time updates, such constantly fluctuating graphics can be a source of stress for interested onlookers.</p>
+<p>[pause]</p>
+<p>You may ask why are some of the most groundbreaking visualizations employed to explain or solve some of the most difficult and stressful problems of our time?</p>
+<p>I invite you to reflect on why that may be.</p>
+<p>But, certainly, one principle explanation is that data visualizations can quickly and succinctly convey a lot of information. Imagine trying to communicate who should evacuate a city when a wild fire is approaching without a map. Imagine, trying to convey changes in election polls by location, demographic group, and time without a suite of data visualization plots to assist you.</p>
+<p>However, a key point of this class is that data visualization a LANGUAGE of its own. Thus data viz skills provide you with a new language for exploring and communicating a wide range of information and ideas.</p>
+</div>
+</section>
+<section id="data-viz-not-always-scary" class="level1">
+<h1>Data Viz: not always scary</h1>
+<p><img src="images/restaurant_how-busy.png" class="img-fluid"></p>
+<div class="notes">
+<p>To debunk one myth, data viz need not be scary.</p>
+<p>While visualizations can help you make a good decision during times of crisis, they can also help you avoid the lunch rush at your local restaurant.</p>
+</div>
+<hr>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/music-genres_spotify.png" class="img-fluid figure-img"></p>
+<figcaption>The Pudding’s study of music genres (according to Spotify)</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>Visualizations can also be fun, allowing you to explore recent trends in your favorite music genres.</p>
+</div>
+<hr>
+<p><a href="https://pudding.cool/2023/10/genre/">“Music genres”</a> <em>The Pudding</em> (October 2023).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/music-latin-genres_spotify.png" class="img-fluid figure-img"></p>
+<figcaption>The separation of “Latin” music into sub-genres (The Pudding).</figcaption>
+</figure>
+</div>
+<div class="notes">
+<p>And examine how some new sub-genres overlap.</p>
+</div>
+</section>
+<section id="data-viz-not-always-impersonal" class="level1">
+<h1>Data Viz: Not always impersonal</h1>
+<p><img src="images/emotion-wheel.png" class="img-fluid"></p>
+<p><a href="https://pudding.cool/2022/12/emotion-wheel/">“Emotion Wheel”</a> <em>The Pudding</em> (Dec.&nbsp;2022).</p>
+<div class="notes">
+<p>Second - while reducing populations to points, lines, or polygons on a map can, at times, obscure the human experience, data viz can also be adapted to reflect on our daily experiences.</p>
+</div>
+<hr>
+<p><img src="images/emotion-wheel2.png" class="img-fluid"></p>
+<div class="notes">
+<p>And be employed to to help us reflect on our emotions.<br>
+<br>
+Now, you make look at this and say - this looks like a visualization, but is it a data visualization?<br>
+<br>
+In this course, we take an expansive view of data - data is any information that can be read into a computer. With current technologies, this can include text, images, video, maps, and yes, even emotions. Data Science, therefore need not be restricted to the analysis of quantitative data. Likewise, we can use data visualizations to analyze and communicate qualitative thoughts, emotions, and concepts as well as the quantitative, binary, and categorical data more commonly associated with data viz.</p>
+</div>
+</section>
+<section id="data-viz-not-always-big-or-even-digital" class="level1">
+<h1>Data Viz: Not always big (or even digital)</h1>
+<section id="dear-data" class="level2 scrollable">
+<h2 class="scrollable anchored" data-anchor-id="dear-data">Dear Data</h2>
+<p><img src="images/dear-data_week-of-laughter1.jpeg" class="nostretch scrollable img-fluid"></p>
+<p>Giorgia Lupi and Stefanie Posavec, <a href="https://www.dear-data.com/theproject">*Dear Data*</a> (Princeton: Princeton Architectural Press, 2016).</p>
+<!--UBIQUITOUS USE - DAILY EXAMPLES - RESTAURANT - HOW BUSY; OTHERS??-->
+<div class="notes">
+<p>Finally, data viz need not be big or even digital! As the authors of “Dear Data” have shown, we can use data visualizations to learn more about ourselves and our friends. We can also go back to the basics: using pencils, pens, or markers on paper to explore this personal data.</p>
+<p>[slowly scroll down this scrollable slide while I am talking]</p>
+</div>
+</section>
+</section>
+<section id="data-viz-the-course" class="level1">
+<h1>Data Viz: The Course</h1>
+<p>Coursework designed around completing a data visualization-rich research poster:</p>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><p>Week 1: Project Topic and Data Selection (what)</p></li>
+<li><p>Week 2: Project Proposal + Visual Encoding Style Guide (how)</p></li>
+<li><p>Week 3: Design Plan + Sketched Prototype (what it will look like)</p></li>
+<li><p>Week 4: Visualizations Peer Feedback Workshop (how can it be improved)</p></li>
+<li><p>Week 5: Submit Final Project</p></li>
+</ol>
+</div>
+<div class="notes">
+<p>Now that I have forced you to consider a more expansive view of data visualization, let’s discuss what’s ahead.</p>
+<p>The course is centered around one capstone project: you will create a visualization-rich research poster where you answer a data science or public health question using a combination of data visualizations and text to communicate your findings. To make such a project feasible in a five-week course, your main assignment each week will guide you toward successful completion of the project.</p>
+<p>This week, your goal is simple: decide on a project topic and select your datasets. You will find more information about this in the Final Project document and we will discuss further during the week.</p>
+<p>Week 2 - move to creating a more detailed project proposal and creating a visual style guide which will outline your visual style that will be utilized in all your project’s visualizations.</p>
+<p>Week 3 - you will shift from explaining what the project to begin designing what it will look like through a design plan, which includes sketched, hand-drawn prototypes of your visualizations.</p>
+<p>by Week 4 - you will have completed draft visualizations and share them with your peers to solicit their constructive feedback</p>
+<p>thus, by the time Week 5 rolls around, you should have completed drafts of all components of the project and just need to revise them and put it altogether.</p>
+</div>
+</section>
+<section id="data-viz-the-practice" class="level1 scrollable">
+<h1 class="scrollable">Data Viz: The Practice</h1>
+<!--the practice of data visualization-->
+<div class="incremental" style="font-size:0.7em">
+<ol class="incremental" type="1">
+<li>Begin with data and a question</li>
+<li>Many of the best visualizations <strong>start with pencil, paper, and an idea</strong></li>
+<li>Conduct <strong>exploratory data analysis &amp; visualization</strong> to explore hidden patterns in your data</li>
+<li>Perform quantitative analysis, yes! But also <strong>conduct other types of analysis</strong> (statistical, textual, qualitative, etc.)</li>
+<li>Prepare visualizations to help you convey your findings (and to allow others to explore the data)
+<ol class="incremental" type="1">
+<li><strong>think about visual variables</strong> (location, color, size, shape, transparency, etc.). What symbols best represent your data variables?</li>
+<li><strong>consider your purpose</strong> (are you trying to persuade? or let the viewer come to their own conclusions?)</li>
+<li><strong>consider your audience</strong></li>
+</ol></li>
+</ol>
+</div>
+<div class="notes">
+<ol type="1">
+<li>Begin with data and a question</li>
+<li>Many of the best visualizations <strong>start with pencil, paper, and an idea</strong></li>
+<li>Conduct <strong>exploratory data analysis &amp; visualization</strong> to explore hidden patterns in your data</li>
+<li>Perform quantitative analysis, yes! But also <strong>conduct other types of analysis</strong> (statistical, textual, qualitative, etc.)</li>
+<li>Prepare visualizations to help you convey your findings (and to allow others to explore the data)
+<ol type="1">
+<li><strong>think about visual variables</strong> (location, color, size, shape, transparency, etc.). What symbols best represent your data variables?</li>
+<li><strong>consider your purpose</strong> (are you trying to persuade? or let the viewer come to their own conclusions?)</li>
+<li><strong>consider your audience</strong></li>
+</ol></li>
+</ol>
+</div>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

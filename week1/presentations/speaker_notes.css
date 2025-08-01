@@ -1,0 +1,37 @@
+/* custom.css */
+
+/* Show all notes by default */
+.notes {
+  display: block !important;
+  background-color: #f0f0f0;
+  padding: 1em;
+  margin: 1em 0;
+  font-size: 14px;
+  border-left: 4px solid #007acc;
+}
+
+.notes::before {
+  content: "Speaker Notes: ";
+  font-weight: bold;
+  color: #007acc;
+}
+
+/* More specific selectors for Quarto + RevealJS */
+.reveal .slides section img + p.caption,
+.reveal .slides section .quarto-figure > p,
+.reveal .slides section .quarto-figure figcaption,
+.reveal .slides section figcaption,
+.reveal .slides section .caption,
+.reveal figcaption,
+.reveal .figure-caption,
+.reveal p.caption {
+  font-size: 0.4em !important;
+  line-height: 1.2 !important;
+}
+
+/* For tables */
+.reveal .slides section table caption,
+.reveal table caption {
+  font-size: 0.6em !important;
+}
+

@@ -1,0 +1,117 @@
+/* custom.css */
+
+/* Different logo styles */
+/*
+.slide-logo::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 100px;
+  height: 50px;
+  background-image: url('../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.8;
+}
+*/
+
+/* Logo styling */
+
+.slide-logo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 300px !important; 
+  height: 100px !important;
+  max-width: unset !important;
+  max-height: unset !important;
+  z-index: 1000;
+  opacity: 0.8;
+}
+
+/*
+.slide-logo img {
+  width: 100% !important;
+  height: auto;
+}
+*/
+
+/* Alternative positions */
+.logo-bottom-right {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 80px;
+  z-index: 1000;
+}
+
+.logo-bottom-left {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 80px;
+  z-index: 1000;
+}
+
+.logo-top-left {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  z-index: 1000;
+}
+
+/* More specific selectors for Quarto + RevealJS */
+.reveal .slides section img + p.caption,
+.reveal .slides section .quarto-figure > p,
+.reveal .slides section .quarto-figure figcaption,
+.reveal .slides section figcaption,
+.reveal .slides section .caption,
+.reveal figcaption,
+.reveal .figure-caption,
+.reveal p.caption {
+  font-size: 0.4em !important;
+  line-height: 1.2 !important;
+}
+
+/* For tables */
+.reveal .slides section table caption,
+.reveal table caption {
+  font-size: 0.6em !important;
+}
+
+/* Catch-all for any caption-related elements */
+.reveal [class*="caption"] {
+  font-size: 0.6em !important;
+}
+
+/* Custom CSS for smaller captions */
+/*
+.reveal .slides section .quarto-figure > figcaption,
+.reveal .slides section .quarto-table > caption,
+.reveal figcaption,
+.reveal caption {
+  font-size: 0.6em !important;
+}
+*/
+/* You can also target specific caption types if needed */
+/*
+.reveal .quarto-figure-center > figcaption {
+  font-size: 0.6em !important;
+}
+*/
+
+
+/*
+figcaption {
+      font-size: 0.5em; /* Adjust this value as needed */
+    }
+*/
+    
+/* alternative: Smaller for presentation slides 
+.reveal .slides figcaption {
+      font-size: 0.5em;
+    }
+*/

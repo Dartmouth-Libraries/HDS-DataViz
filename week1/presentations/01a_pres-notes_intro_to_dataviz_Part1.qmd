@@ -1,0 +1,224 @@
+---
+title: "Introduction to Data Visualization"
+subtitle: "From Data Exploration to Communication & Storytelling"
+author: "Jeremy Mikecz"
+institute: "Research Data Services, Dartmouth Libraries"
+date: "2026"
+format: 
+  html:
+    theme: default
+    css: speaker_notes.css
+    toc: true
+  pdf:
+    toc: true
+editor: visual
+logo: ../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png
+---
+
+# Introduction to Data Visualization, Part 1 ("Flatten the Curve")
+
+::: notes
+Welcome to the first video lecture of our Data Visualization course....
+:::
+
+## Goals
+
+::: incremental
+1.  The impact of data visualizations during the COVID-19 pandemic
+2.  Why data visualization is so important (to various fields: scientific research, journalism, education, etc.)
+:::
+
+::: notes
+To introduce some of the promise and possibility of data visualization as both a tool of analysis and communication, today we will examine
+
+1.  the central role played by data visualizations during the COVID-19 pandemic
+2.  and what this event reveals about the growing importance of data visualization to many different fields.
+:::
+
+# The COVID-19 Pandemic
+
+"The first visualized global crisis in history"
+
+-   Alberto Cairo, *How Charts Lie* (2020 afterword in paperback edition)
+
+::: notes
+The data visualization expert, Alberto Cairo, has called the COVID-19 pandemic "the first visualized global crisis in history."
+:::
+
+## Alberto Cairo
+
+![Alberto Cairo](https://i0.wp.com/idsc.miami.edu/wp-content/uploads/2020/10/Alberto-Cairo-featured-image-730x350-1.jpg?w=730&ssl=1){fig-alt="Photograph of Alberto Cairo"}
+
+::: notes
+I should point out Cairo may be the world's leading educator and proponent of, and advocate for data visualization. His book, *The Truthful Art*, as you probably have already noticed, is the core textbook for this class.
+
+Anyways, it is inarguable that the COVID-19 pandemic was a global crisis. But, what made Cairo call it "the first visualized global crisis in history"? And what does the role of data visualizations during the pandemic tell us about their broader importance as tools of analysis, storytelling, education, and communication?
+:::
+
+# The Outbreak of COVID-19
+
+**QUESTION**:
+
+How did epidemiologists, health professionals, journalists, and educators try to educate the public about how to confront COVID-19 in March 2020?
+
+::: notes
+Think back to February and March 2020. Think for a moment: How did epidemiologists, health professionals, journalists, and educators try to educate the public about how to confront COVID-19 in March 2020?
+
+\[pause\]
+
+You may recall discussions of social distancing, marks on the ground outside stores and restaurants advising people to stay six feet apart.
+
+You may remember the CDC and other public officials initially discouraging people from wearing masks, telling them to save them for medical professionals. Then, in April, the CDC reversed course and began recommending everyone wear masks.
+
+But, you also may remember this....
+:::
+
+## COVID-19: Education
+
+![COVID-19 Flatten the curve graphic](images/COVID_flatten-the-curve.jpg){fig-alt="COVID-19 Flatten the curve graphic"}
+
+::: notes
+This is now one of the most famous data visualizations in history.
+
+Certainly the most famous and impactful in recent years.
+
+The interesting thing: the data in this "data visualization" are not real. Rather, its based on hypothetical data.\
+\
+Question: do you remember when you first saw this graphic. Did you understand what it meant?
+
+I didn't. I needed it explained - either in a news article or by a television commentator, as in this case....
+:::
+
+## "Flatten the Curve" on Live TV, March 12, 2020
+
+[Video from March 12, 2020](https://abcnews.go.com/Health/video/flattening-curve-coronavirus-matters-69555459)
+
+::: notes
+play video here
+:::
+
+## "Flatten the Curve" (2007)
+
+2007 CDC paper, "Interim pre-pandemic planning guidance"
+
+![The original "flatten the curve" graphic (CDC 2007)](https://images.fastcompany.com/image/upload/f_webp,q_auto,c_fit,w_768/wp-cms/uploads/2020/03/i-5-cdc-orig-90474434-the-best-sources-for-tracking-covid-19-according-to-mapping-experts.jpg)
+
+::: notes
+The "flatten the curve" plot, however, was first designed years earlier. In 2007, the CDC created the first version of the plot in a paper outlining how to prepare for a hypothetical pandemic.
+:::
+
+------------------------------------------------------------------------
+
+![Slavea Chankova's adaptation of the 2007 visualization, re-purposed for COVID-19. ["Covid-19 is now in 50 countries and things will get worse"](https://www.economist.com/briefing/2020/02/29/covid-19-is-now-in-50-countries-and-things-will-get-worse?irclickid=yhkzq9STuxyKRusXQ72pWXmeUkswTkzBRRg4z80&irgwc=1&utm_medium=affiliates.offer.pd&utm_source=impact-apac&utm_campaign=a.new_july_2024_apac_lp&utm_content=conversion.direct-response.non-subscriber.apac_all_enfactum&utm_term=10078&channel=Impact) The Economist (Feb 29, 2020).](https://images.fastcompany.com/image/upload/f_webp,q_auto,c_fit,w_768/wp-cms/uploads/2020/03/i-6-90474434-the-best-sources-for-tracking-covid-19-according-to-mapping-experts.jpg)
+
+::: notes
+On Feb 29, 2020, Slavea Chankova of *The Economist* adapted this 2007 graphic for the Covid pandemic. She intended to educate readers how to prepare for the virus as it became clear that it had spread beyond China.
+:::
+
+------------------------------------------------------------------------
+
+![Alternative "flatten the curve" graphic](images/flatten-the-curve_alt.png)
+
+::: notes
+This is another version of "flatten the curve". However, note the curve in the orange line. It demonstrates that healthcare system capacity is not stable itself. The designer rightly anticipated a decline in capacity as medical professionals became sick, followed by an increase in capacity as the system recovered and adapted.
+:::
+
+## Data Viz Lessons:
+
+Andy Krackov (data analyst), ["Flattening the Curve and Expanding my Understanding"](https://nightingaledvs.com/flattening-the-curve-and-expanding-my-understanding/):
+
+::: incremental
+1.  Headlines matter
+2.  Annotations are good.
+3.  Know your users.
+4.  Animations / drawing great.
+:::
+
+::: notes
+In reflecting on the flatten the curve graphic, the data analyst Andy Krackov drew a few key conclusions:
+
+1.  Headlines matter. Don’t go generic when we need to tell people that they need to pay attention. Use a chart headline that helps orient the reader.
+2.  Annotations are good. I mean, with flattening the curve, you don’t even need numbers. Just make sure your explanations have clear messages in easy-to-read type.
+3.  Know your users. For example, many of us encounter visualizations on COVID-19 while we’re on our phones — which can make it difficult to digest what we see. Keep in mind that mobile experience.
+4.  Animations are great, but if you’re in a face-to-face setting, so is drawing out the concept live on a white board or a sheet of paper.
+:::
+
+------------------------------------------------------------------------
+
+"The first visualized global crisis in history"
+
+-   Alberto Cairo, *How Charts Lie* (2020 afterword in paperback edition)
+
+::: notes
+Anyways, while the "flatten the curve" graphic may have inspired Cairo to call COVID-19 "the first visualized global crisis in history", it was not the only way that visualizations informed the way we talked about and understood the pandemic....
+:::
+
+## COVID-19: Coverage
+
+![Table of contents from New York Times COVID-19 visualization dashboard](images/COVIDgraphics_NYT.png)
+
+::: notes
+For example, in 2020 and 2021, I remember regularly visiting the NYT COVID-19 dashboard to see whether cases were rising or falling here. You could examine maps showing hotspots and then zoom in on your state or region to examine recent trends in COVID diagnoses, hospitalizations, and death.
+:::
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+![New York Times COVID Tracker](images/COVIDhistory_NYT.png)
+
+::: notes
+The problem with some of these dashboards? All this data was a week or more behind. By the time enough cases were reported and people hospitalized for authorities to warn the public of a surge, the illness had infected many people.
+
+As the pandemic progressed, health scientists and data scientists collaborated to acquire and study other data that could give us more real-time updates about the spread of the pandemic, this included:
+
+-   testing sewers (which often revealed a surge in local cases a week or two before tests did)
+
+-   Google Trends data (an examination of Google searches for the symptoms of COVID-19 by location)
+:::
+
+## Coronavirus Simulation
+
+[Covid Simulator](https://www.washingtonpost.com/graphics/2020/world/corona-simulator/) (*Washington Post,* March 14, 2020)
+
+::: notes
+Yet, others came up with animated and interactive visualizations to teach how COVID spread (and, thus, the best way to slow this spread).
+
+In this online visualization-rich story from the Washington Post, various graphics are employed to demonstrate how and why diseases like COVID-19 spreads so quickly. These include
+
+\[pan through story\]
+
+-   an interactive area graph showing the exponential rise in cases in the U.S.
+
+-   an animated graphic showing the spread of the disease from one person to the next if no preventative measures are taken
+
+-   and another showing how a forced quarantine would work (or wouldn't work in this case)
+
+-   and a third showing the predicted effects of social distancing
+
+Observe, however, the final two paragraphs of this article, where the author reminds the reader that there are real human costs behind this visually attractive display of information.
+
+The author reminds us that unlike the hypothetical disease they are modeling, covid-19 can kill, and pose the greatest risk to the elderly. The article concludes by quoting a public health researcher who reviewed these graphics and observed "If you want this to be more realistic... some of these dots should disappear."
+:::
+
+## Lessons
+
+from a "visualized crisis":
+
+::: incremental
+1.  data visualizations are now an essential means for communicating complex problems to the public
+2.  but are not understood on their own
+3.  no one dataset or visualization is sufficient
+:::
+
+::: notes
+So, what lessons can we draw from the use of data visualizations as public information tools during the pandemic?
+
+1.  data visualizations are now an essential means for communicating complex problems to the public — they can assist us in detecting patterns in large datasets, simplifying those patterns so we can communicate them with others, and allow the reader to quickly see the potential consequences of different decisions.
+2.  even the best visualizations cannot be understood on their own – We should never assume our readers interpret the visual symbols of our graphics the same way we do without some guidance. The best visualizations therefore are accompanied by rich scaffolding. By rich scaffolding, yes, I am referring to the title, legend, axis labels, and annotations that assist the viewer in interpreting a graphic. But, this also includes the accompanying explanation and storytelling that provide the necessary context for the viewer to fully grasp the implications of the graphic while also allowing them to draw some additional conclusions on their own.
+3.  no one dataset or visualization is sufficient – to solve a complex problem or tell a story. Instead, we need to draw on multiple sources of information and utilize multiple data visualizations to fully understand any one problem.
+
+In the second part of this video, we will examine some other enormously impactful recent visualizations while also seeking to expand our notion of the diverse forms data visualizations can take and what they can accomplish.
+:::
+
+## End Part 1
