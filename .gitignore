@@ -3,3 +3,6 @@
 .RData
 .Ruserdata
 packrat/lib*/
+old/
+*.css
+*pres-notes*
