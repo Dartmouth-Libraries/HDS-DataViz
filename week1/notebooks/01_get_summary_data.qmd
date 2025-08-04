@@ -8,6 +8,17 @@ jupyter: ir
 
 # Get Summary Data (Practice with preloaded datasets)
 
+## 0. Setup
+
+```{r}
+#install.packages("renv")
+#renv::migrate(path/to/root/dir)
+```
+
+```{r}
+
+```
+
 ## 1. Retrieve Pre-loaded Datasets
 
 Base R and some of its core data science packages (like tidyverse and its dependencies) come with preloaded datasets. We can use these preloaded to practice our data science skills.
