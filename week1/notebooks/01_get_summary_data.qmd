@@ -11,8 +11,9 @@ jupyter: ir
 ## 0. Setup
 
 ```{r}
-#install.packages("renv")
+#renv::init()
 #renv::migrate(path/to/root/dir)
+# for more info: https://rstudio.github.io/renv/articles/renv.html
 ```
 
 ```{r}

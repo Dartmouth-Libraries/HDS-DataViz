@@ -195,7 +195,13 @@ In this online visualization-rich story from the Washington Post, various graphi
 -   and another showing how a forced quarantine would work (or wouldn't work in this case)
 
 -   and a third showing the predicted effects of social distancing
+:::
 
+---
+
+![](images/WaPost_COVID19_simulations_final2phs.png){fig-alt="Final two paragraphs of Washington Post article featuring COVID-19 simulator."}
+
+::: notes
 Observe, however, the final two paragraphs of this article, where the author reminds the reader that there are real human costs behind this visually attractive display of information.
 
 The author reminds us that unlike the hypothetical disease they are modeling, covid-19 can kill, and pose the greatest risk to the elderly. The article concludes by quoting a public health researcher who reviewed these graphics and observed "If you want this to be more realistic... some of these dots should disappear."
