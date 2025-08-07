@@ -15,7 +15,7 @@ format:
     #  data-background-size: "cover"
     #  data-background-opacity: "0.3"
 editor: visual
-logo: ../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png
+logo: images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png
 ---
 
 # Introduction to Data Visualization, Part 2

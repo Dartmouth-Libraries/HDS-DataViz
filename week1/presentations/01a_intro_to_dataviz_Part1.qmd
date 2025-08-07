@@ -12,7 +12,7 @@ format:
     chalkboard: true
     #html
 editor: visual
-logo: ../../general-images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png
+logo: images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png
 ---
 
 # Introduction to Data Visualization, Part 1 ("Flatten the Curve")
@@ -197,7 +197,7 @@ In this online visualization-rich story from the Washington Post, various graphi
 -   and a third showing the predicted effects of social distancing
 :::
 
----
+------------------------------------------------------------------------
 
 ![](images/WaPost_COVID19_simulations_final2phs.png){fig-alt="Final two paragraphs of Washington Post article featuring COVID-19 simulator."}
 

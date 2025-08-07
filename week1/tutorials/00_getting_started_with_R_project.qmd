@@ -1,0 +1,140 @@
+---
+title: "Getting Started with your Research Project in RStudio"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Contents
+
+::: incremental
+1.  Value of Reproducible Research
+
+2.  Best practices for reproducible research (file, data, code, and project management) \[READ\]
+
+3.  Project Set Up \[HANDS-ON TUTORIAL\]
+
+    a\. Folder set up
+
+    b\. Downloading / Cloning course materials from Github repository
+
+4.  Intro to Projects with R Studio \[HANDS-ON TUTORIAL\]
+
+    a\. Navigation
+
+    b\. Creating a new project
+:::
+
+## 1. Value of Reproducible Research
+
+::: incremental
+1.  Improve collaboration
+2.  Increase trust and confidence
+3.  Allow replication and error detection
+4.  accelerate new research
+5.  protect confidential data
+:::
+
+## 2. Best Practices for Reproducible Research
+
+### 2a. Some foundational principles for reproducible research
+
+-   [FAIR principles](https://www.go-fair.org/fair-principles/) for data re-use:
+
+    -   Findability
+
+    -   Accessibility
+
+    -   Interoperability
+
+    -   Reuse
+
+-   For additional considerations, taking into consideration ethics, community relations, and trust, other researchers have proposed expanding the FAIR principles to "FAIREST" (Ethics, Source, and Trust) and adding the "CARE" principles (Collective Benefit, Authority to Control, Responsibility, and Ethics). Dartmouth Libraries provides a [brief overview](https://researchguides.dartmouth.edu/OSCARRS/FAIREST) of these principles.
+
+## 2b. Additional Key Practices
+
+1.  Developing a **project-oriented workflow**: each project is stored in its own folder or directory on your computer, with different types of materials stored in different sub-directories (i.e. "data", "code", "notes", "results", and "lit").
+
+For example, the directory for a research project on spiny anteaters may look something like this:
+
+```         
+spiny_anteaters/
+    code/
+    data/
+        original/
+    documentation/
+    field_notes/
+    lit/
+    photos/
+    results/
+```
+
+The directory for a larger project, with various sub-projects within it, may look something like this:
+
+```         
+great_films_project/
+    citizenkane/
+        clips/
+        code/
+        data/
+            original/
+        notes/
+        readings/
+        results/
+    godfather/
+        clips/
+        code/
+        data/
+            original/
+        notes/
+        readings/
+        results/
+    
+```
+
+1.  Follow **file naming best practices** to improve the organization and legibility of your files. See [this guide](https://datamanagement.hms.harvard.edu/plan-design/file-naming-conventions) from Harvard and [this one](https://r4ds.hadley.nz/workflow-scripts.html#saving-and-naming) from *R for Data Science*. Some commonly recommended conventions include: avoid white-space and all special characters (except for underscores) in file names, use simple but descriptive lower-cases names for folders when possible, consider how sorting your files in alphabetical order can be leveraged to quickly find a specific file, and include important metadata in the filename (i.e. date). See the guides above for more suggestions.
+2.  **Portability / containerization**: For coding projects, virtual environments are recommended, so that all necessary packages are found locally and other users can recreate the exact same environment for the project on their computers. This ensures consistent execution across different computers.creating separate directories for each project, each with their own virtual environment, allows users to share their code with others who can then recreate the same environment and therefore reuse all code.
+3.  **Preserve original data**: Create a copy of your data and then save the originals in a folder and only operate any code on copies of your data. You can even make your original data "read only" to prevent you from modifying them in mistake.
+4.  **Transparency**: Document everything. Create codebooks to describe how data is encoded in your datasets. Add detailed documentation directly into your coding notebooks or scripts so another user understands what each chunk of code does. Record overviews of your project workflows and methods in a README or other documents found in your project's root folder.
+5.  **Data Versioning**: Backup your work and use version control to preserve previous versions of your code, data, and other files so you can rewind to a previous step when you make errors. Programmers most commonly use git to store older versions of their code, which is then linked with Github to push your code onto a remote (online) repository (useful for both backup and sharing).
+6.  **Code Modularity**: Write functions for any tasks that you may want to repeat. If you are creating multiple code scripts or notebooks for your project, then it is recommended to store your functions in a separate script file (`.R` for R) where you can call these functions from any notebook or script in your project folder.
+
+## 3. Project Set-Up
+
+1.  If you haven't already, download R and Rstudio from Posit: <https://posit.co/download/rstudio-desktop/>
+2.  If you haven't already, create an organized file structure for your materials for this Master's program. Something like:
+
+```         
+Documents/
+    hds/
+        01_F25_foundations/
+        02_F25_biostats/
+        03_F26_ethics/
+        04_W26_datawrangling/
+        05_W26_dataviz/
+        ...
+```
+
+Within each course folder, you may want to add sub-directories to separate your content by type or purpose, i.e. "code", "data", "lit", "notes", and "results".
+
+However, for this course, you will download course materials from a Github repository, which already has this structure setup.
+
+3.  Visit our course repository at <https://github.com/Dartmouth-Libraries/HDS-DataViz>. Use your Dartmouth email to access the repository. Please let me know if you still cannot access it.
+
+4.  There are two main ways to download the course materials onto your own computer (or onto your cloud drive):
+
+    a\. **download the repository as a zip file** and paste into your course folder. This is the easier option, but only provides a static copy of the course materials. Thus, if I make any changes to the repository during the term, you will have to download the modified files individually or re-download the entire repo.
+
+    b\. **clone the directory** into your course folder. This requires using git, but has the added advantage of allowing you to use the `git pull` command to pull any changes made on the online repository into your local repo.
+
+5.  **Instructions for downloading the repository**
+
+6.  **Instructions for cloning the repository**
+
+## 4. Intro to Projects with R Studio 
+
+1.  **Create a New Project in R Studio**
+2.  **Creating a Virtual Environment** for course materials using `renv` .
+3.  **Installing all needed packages** for course code using the renv lockfile.
+4.  **Running repository code**
+5.  **Modifying your local version of the repository**
