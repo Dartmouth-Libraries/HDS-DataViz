@@ -107,6 +107,7 @@ great_films_project/
 ```         
 Documents/
     hds/
+        program_documents/
         01_F25_foundations/
         02_F25_biostats/
         03_F26_ethics/
@@ -131,7 +132,7 @@ However, for this course, you will download course materials from a Github repos
 
 6.  **Instructions for cloning the repository**
 
-## 4. Intro to Projects with R Studio 
+## 4. Intro to Projects with R Studio
 
 1.  **Create a New Project in R Studio**
 2.  **Creating a Virtual Environment** for course materials using `renv` .
