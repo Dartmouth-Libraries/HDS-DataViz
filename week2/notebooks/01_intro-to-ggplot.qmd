@@ -78,7 +78,7 @@ We do not need to install or import ggplot because it is include with tidyverse.
 
 ### 0.3. Grammar of Graphics
 
-The "gg" in ggplot stands for Grammar of Graphics. GGplot was developed by Hadley Wickham following the Grammar of Graphics model, which.... **\[explain more\]**
+The "gg" in ggplot stands for **Grammar of Graphics**. GGplot was developed by Hadley Wickham following the Grammar of Graphics model. The Grammar of Graphics approach seeks to reduce visualizations to their simplest components. Applying this approach to computational visualizations allows for maximum customization and flexibility.
 
 -   CU-Boulder Coursera course video on [Grammar of Graphics](https://www.youtube.com/watch?v=RCaFBJWXfZc)
 
@@ -269,7 +269,7 @@ Plot = Data + Mapping (how data variables are to be visualized)
 Five mapping components:
 
 | Component | Description |
-|----|----|
+|------------------------------------|------------------------------------|
 | layer | includes **geoms** (geometric elements visible in the plot like points, lines, polygons, etc.) and **stats** (statistical transformations that summarize the data, simplifying it for visualization; i.e. binning or counting observations to make a histogram, or fitting a linear model) |
 | scale | maps data values to visual variables like color, shape, and size |
 | coord | describes how data will be placed spatially and what coordinate system will be used |

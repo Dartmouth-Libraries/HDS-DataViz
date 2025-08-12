@@ -2,7 +2,7 @@
 title: "History of Data Visualization"
 subtitle: "From Data Exploration to Communication & Storytelling"
 title-slide-attributes: 
-  data-background-image: ../hds_images/history-of-dataviz/DuBois.png
+  data-background-image: images/Playfair_TimeSeries-2.png
   data-background-size: contain
   data-background-opacity: "0.3"
   
@@ -14,7 +14,7 @@ format:
     navigation-mode: vertical
     chalkboard: true
 editor: visual
-logo: "../hds_images/logo_white.png"
+logo: "images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png"
 ---
 
 # History of Data Visualization, Part 1
@@ -23,18 +23,20 @@ logo: "../hds_images/logo_white.png"
 
 -   Trace the historical development and evolution of data visualization as a practice
 
+::: notes
+In this lesson, we will examine the historical development of data visualizations from the first maps drawn 1000s of years ago to complex data visualizations composed in the early 20th century. In doing so, we will trace the evolution of data visualization as a practice.
+:::
+
 ## "Flatten the Curve": First Visualized Global Crisis
 
 ![COVID-19 Flatten the Curve graphic](images/COVID_flatten-the-curve-01.jpg){fig-alt="two area graphs: one steep showing the impacts of COVID-19 if not precautionary measures are taken and the other, with a flatter slope, showing how following pre-cautionary measures will prevent hospitals from being overwhelmed."}
 
 ::: notes
-In an earlier lesson we discussed the importance of this graphic in educating people across the world about the need to slow the spread of Covid to allow healthcare systems the chance to catch up.
-
-*Interesting: this "data visualization" is not based on any real data. Rather, it exploited the fact that many people worldwide had learned the symbolic language of data visualization.*\
+In an earlier lesson we discussed the importance of the Flatten the Curve graphic as an educational tool.\
 \
-For seasoned readers of such visualizations, it is easy to take for granted all the implicit messages they con vey. For example, many of us just intuit that the x axis represents the passage of time, and the higher the location on the y axis - the higher the value, and that a steep upward slopes indicates a sharp increase. But, that's the case only because we have become accustomed to reading such information graphics.
+For seasoned readers of such visualizations, it is easy to take for granted all the implicit messages they convey. For example, we may intuit that the x axis represents the passage of time, and the higher you go on the y axis - the higher the value, and that a steep upward slope indicates a sharp increase. But, that's the case only because we have become accustomed to reading such information graphics.
 
-However, even in 2020, few people initially understood this graphic. Even folks with data visualization expertise needed some context and explanation to understand the message of this graphic.
+However, even in 2020, few people initially understood this graphic. Even folks with data visualization expertise needed some context and explanation to understand this graphic.
 
 For most of human history, no amount of explanation would have helped. Such charts would have been illegible.
 :::
@@ -62,33 +64,43 @@ Alberto Cairo:
 -   **data visualization**: "display of data designed for analysis, exploration, and discovery."
 
 ::: notes
-In *A Truthful Art* Chapter 1, Alberto Cairo defines what a visualization is as well as some common sub-types of visualizations, including maps, charts & plots, infographics, and data visualizations. This can get a little confusing, but please review that chapter which is part of your assigned reading. But, essentially, in designing a visualization you should keep in mind the following questions:
+In *A Truthful Art* Chapter 1, Alberto Cairo defines what a visualization is as well as some common sub-types of visualizations, including maps, charts & plots, infographics, and data visualizations.
+
+You may notice the difference in purposes Cairo assigns to these different graphic forms. Visualizations are for exploration, discovery, analysis, AND communication. Yet, he distinguishes between infographics "intended for communication" and data visualizations "designed for analysis, exploration, and discovery."
+
+This can get a little confusing and I'm not going to nitpick here. I use many of these terms interchangeably. For more on this, you will want to review Chapter 1 in *A Truthful Art,* which is part of your assigned reading. Essentially, the important lesson here is that in designing a visualization you should keep in mind the following questions:
 :::
 
 ## Visualization Design Questions
 
+::: incremental
 -   What is the purpose of the visualization?
 
     -   How much of the interpretation is left to the reader?
 
 -   Who is the intended audience?
+:::
 
 ::: notes
--   What is the purpose of the visualization? (to explore unfamiliar data, uncover hidden patterns, analyze relationships, communicate results, tell a story, etc.?)
+-   What is the purpose of the visualization? (is it to explore unfamiliar data, uncover hidden patterns, analyze relationships, communicate results, tell a story, etc.?)
 
-    -   How much of the interpretation is left to the reader? (To what extent are you trying to convey a specific message? Or, on the other end of the spectrum, leaving the interpretation open to the reader?)
+    -   How much of the interpretation is left to the reader? (For example, are you trying to convey a specific message? Or, on the other end of the spectrum, do you want to leave the interpretation open to the reader?)
 
-<!-- -->
-
--   Who is the intended audience? (often, early in the process, the principal intended audience is yourself. You are seeking insights or lessons from large or unfamiliar datasets; later in the process, the intended audience may be your instructor or thesis advisor, experts in your field, or a broader, more general audience for a popular publication)
+-   Who is the intended audience? (Early in the process, often the intended audience is yourself. You are seeking insights or lessons from large or unfamiliar datasets; later in the process, the intended audience may be your instructor or thesis advisor, experts in your field, or a broader, more general audience for a popular publication)
 :::
 
 # Data Visualization Origins & Precursors
 
+::: notes
+To better understand the diversity of forms and uses of data visualizations, it helps to know why they first were created and how their use and format evolved over time.
+:::
+
 # Pre-Modern Maps
 
 ::: notes
-the first visualization was likely a map created thousands of years ago....
+the first visualization was likely a map created thousands of years ago.
+
+The first human mapmaker likely etched the world's first map into the bark of a tree, onto the walls of a cave, or, perhaps, into the tusk of mammoth.
 :::
 
 ## The Oldest Map in the World?
@@ -96,51 +108,57 @@ the first visualization was likely a map created thousands of years ago....
 !["Map" of a river-side settlement, engraved in a mammoth tusk ca. 10,000 BCE. Tusk found in Mezhirich, Ukraine.](images/Screen_Shot_2019-08-27_at_10.36.08_AM.png)
 
 ::: notes
-The first human mapmaker likely etched the world's first map into the bark of a tree, onto the walls of a cave, or, perhaps, into the tusk of mammoth. Some scholars identify engravings etched into a 12,000 year old mammoth tusk in Ukraine as the oldest known map in the world. Early people likely created these maps to situate themselves in their landscape and show the relative location of water or food sources, nearby towns, or sacred sites.
+Some scholars identify engravings etched into a 12,000 year old mammoth tusk in Ukraine as the oldest known map in the world. There were certainly earlier maps, long since lost.
+
+Early people created these maps to situate themselves in their landscape and show the relative location of water or food sources, nearby towns, or sacred sites.
 :::
 
 ------------------------------------------------------------------------
 
-![Bedolina Map](images/bedolina.jpg)
+![Bedolina Map](images/bedolina-02.jpg)
 
 ::: notes
-map from Italy, 1st millenium BCE
+Here is the Bedolina "map" from Italy, created in the 1st millenium BCE. Carved into rock, it appears to show the location of local villages, farm fields, and paths.
 
-So maps have been around for thousands of history and long pre-date the development of other forms of recordkeeping like writing.
+Therefore, as we have seen, maps have been around for thousands of history and long pre-date the development of other forms of recordkeeping like writing.
 
 What about the use of abstract graphical forms to represent non-geographical data?
 :::
 
 # The Origins of Modern Data Visualizations
 
-## A Scottish Scoundrel & Spy (and Data Viz Innovator)
+::: notes
+The story of modern data visualization forms begins in eighteenth-century Europe.
+
+To be clear, Europeans of the 1700s were likely not the first to create data visualizations.
+
+If we were able to cast a wider net in search for foundational figures in the history of visualizations, perhaps this story would begin in 13th-century Japan, the Yucatán peninsula during the 8th century, or the Middle East or Africa five thousand years ago. Yet, whatever contributions such long forgotten graphics innovator may have made, it does not appear to have redounded to the present.
+:::
+
+## William Playfair: A Scottish Scoundrel & Spy (and Data Viz Innovator)
+
+![](images/Playfair_scoundrel-01.png)
 
 ::: notes
-This story begins in eighteenth-century Europe. If we were able to cast a wider net in search for foundational figures in the history of visualizations, perhaps this story would begin in 13th-century Japan, the Yucatán peninsula during the 8th century, or the Middle East or Africa five thousand years ago. Yet, whatever contributions such long forgotten graphics innovator may have made, it does not appear to have redounded to the present.
-
-Instead, the best information available to us identifies one of the key founders of modern visualizations to be William Playfair, a Scottish failed businessman, and blackmailer. He has been labeled by his contemporaries as well as those who have studied him - a rascal, rogue, scoundrel, and even a spy in short, but also data viz innovator.
-
-Cara Giaimo, ["The Scottish Scoundrel who Changed how we see Data,"](https://www.atlasobscura.com/articles/the-scottish-scoundrel-who-changed-how-we-see-data) *Atlas Obscure* (2016).
-
-also [William Playfair](https://www.scotsmagazine.com/articles/series/william-playfair/) in *A-Z of Great Scots.*
-
-Cairo, *How Charts Lie,* p. 23 and Tufte, Ch. 1 also discuss Playfair
+Instead, the best information available to us identifies a failed Scottish businessman and blackmailer as a foundational figure. William Playfair has been labeled a rascal, rogue, scoundrel, and even a spy by his contemporaries as well as those who study him today. But, he was also one of history's foundational data viz innovators.
 :::
 
 ## William Playfair
 
 (1759 - 1823)
 
+::: incremental
 "As the knowledge of mankind increases, and transactions multiply, it becomes more and more desirable to abbreviate and facilitate the modes of conveying information."
 
 -   William Playfair, *Lineal Arithmetic* (1798)
+:::
 
 ::: notes
 In Playfair's time, respected writers persuaded through rhetorical means alone. Illustrations, on the other hand, were not for the serious.
 
-Growing up fatherless, William was largely raised by his older brother John, who had William record the temperature every day from their home. This ingrained in him the habit of recording and interpreting data.
+Growing up fatherless, William was largely raised by his older brother John, who had William record the temperature every day from their home. This ingrained in young William the habit of recording and interpreting data.
 
-In 1786, he published the *Commercial and Political Atlas* where he used new means of visualizing data to help readers understand complex issues at a glance.
+As an adult, in 1786, Playfair published the *Commercial and Political Atlas* where he used new means of visualizing data to help readers understand complex issues at a glance.
 
 In writing about his development of these new methods, he wrote:
 
@@ -152,35 +170,57 @@ In writing about his development of these new methods, he wrote:
 ![William Playfair published perhaps the world's first "statistical graphic" in his \*Commercial and Political Atlas\*, which was printed in 1786.](images/Playfair_TimeSeries-2.png){fig-alt="Line chart and time-series graphic where the x axis represents years between 1700 and 1780 and the y axis represents number of exports / imports in thousands. Shows two lines, the number imports from and the number of exports to Denmark and Norway."}
 
 ::: notes
+Playfair published perhaps the world's oldest known "statistical graphic" in his Commercial and Political Atlas.
+
+Here you can see what was likely the world's first line plot.
+
 As innovative and groundbreaking this chart was for its time, now, 2.5 centuries later it looks relatively familiar. What can you learn from this chart? What is missing?
 
-\[helpful additional of shaded regions between lines - showing a trade deficit turning into a trade surplus\]
+\[pause\]
+
+In many ways, this is a familiar line plot that we see nearly everyday. However, notice the helpful additional of the shaded regions between the lines - which show a trade deficit turning into a surplus.
 :::
 
 ## First Bar Chart? (1786)
 
 ![William Playfair's bar chart showing exports and imports to ad from Scotland, 1781. Experts have argued this is the world's first bar plot.](images/Playfair_1781_first-bar-chart.jpg){fig-alt="Bar plot comparing imports/exports to/from Scotland by various countries and territories (including Ireland, Greenland, the United States, the West Indies, and Russia)."}
 
+::: notes
+In that same atlas, you can also find the world's first-known bar plot. Note: this wasn't a simple bar plot, where each bar represents the same type of data. This is a grouped bar plot, where each group represents a country, and within each group you can see two bars, one representing their exports to Scotland, and the other representing their imports from Scotland.
+:::
+
 ## First Pie Chart? (1801)
 
 ![Playfair also apparently created the world's first pie chart in 1801, published with his "Statistical Breviary".](images/Playfair-piechart.jpg)
 
+::: notes
+In a later book, his 1801 "Statistical Breviary", you can find the world's oldest known pie charts. Often criticized by experts, they have nonetheless remained a common fixture of modern data visualizations.
+:::
+
 ------------------------------------------------------------------------
 
-![This pie chart was part of a larger graphic examining the land area, populations, and revenues of European countries.](images/Playfair_piecharts_1280px.jpg)
+![](images/Playfair_piecharts_1280px.jpg)
+
+::: notes
+This pie chart was part of a larger graphic examining the land area, populations, and revenues of European countries.
+:::
 
 ## First Ridgeline Plot?
 
 ![Playfair's "Chart of Universal Commercial History" tracking the rise and fall of "powerful and wealthy nations" (1805).](images/Playfair_Chart_of_Universal_Commercial_History_1805.jpg)
 
 ::: notes
-x axis = time
+But, not all of PLayfair's innovative graphics found immediate imitators.
 
-y axis - different prominent nations and empires, arranged by the chronological peak of their powers;
+Here, you can see a more complex visualization where
 
-this graphic was the predecessor to modern ridgeline plots.
+the x axis represents time
 
-but how was the rise and fall of each ridge determined? It appears to be based on the subjective reading of historical narratives rather than on any quantitative basis. If anyone has the time to explore this further, this graphic appeared in Playfair's 1805 book, "An Inquiry into the permanent causes of the decline and fall of powerful and wealthy nations."
+y axis represents prominent historical nations and empires, arranged by the chronological peak of their powers;
+
+This graphic was the predecessor to modern ridgeline plots.
+
+but how was the rise and fall of each ridge determined? It appears to be based on a subjective reading of historical narratives rather than on any quantitative basis. If anyone has the time, I invite you to explore this further. This graphic appeared in Playfair's 1805 book, "An Inquiry into the permanent causes of the decline and fall of powerful and wealthy nations."
 :::
 
 ------------------------------------------------------------------------
@@ -188,7 +228,7 @@ but how was the rise and fall of each ridge determined? It appears to be based o
 [![Ridgeline plot from the d3.js Graph Gallery](images/block_ridgeline.png){fig-alt="Ridgeline plot from the d3.js graph gallery webpage showing the time of day different sports are most commmonly practiced."}](https://d3-graph-gallery.com/ridgeline.html)
 
 ::: notes
-unlike more basic line, bar, and pie charts, the ridgeline plot was largely forgotten for centuries until a sudden rise in popularity among computational data visualizers starting a decade ago (ca. 2017).
+unlike more basic line, bar, and pie charts, the ridgeline plot was largely forgotten for centuries until a sudden rise in popularity among computational data visualizers starting a decade ago (ca. 2017). Now anyone using common visualization packages in R or Python can create their own ridgeline plots.
 :::
 
 ## Mixed Plots
@@ -196,12 +236,16 @@ unlike more basic line, bar, and pie charts, the ridgeline plot was largely forg
 ![Mixed bar and line plots (1821).](images/Playfair_bar-and-line-plots_1821.png)
 
 ::: notes
-He also incorporated multiple plot types into one graphic. In the above visualization, he compares the dramatic increase in the price of wheat (using the dark bar plot) with the far slower rise in wages. One can easily imagine a similar graphic striking a nerve today as we consider whether our purchasing power (in the form of wages) has kept up with prices in a period of inflation and supply-chain problems.
+Playfair also incorporated multiple plot types into one graphic. In the above visualization, he compares the dramatic increase in the price of wheat (using the dark bar plot) with the far slower rise in wages. One can easily imagine a similar graphic striking a nerve today as we consider whether our purchasing power (in the form of wages) has kept up with prices in a period of inflation.
 :::
 
 ------------------------------------------------------------------------
 
 ![Complex, overlapping line plots showing revenues, expenses, debt, price of commodities, etc. all on the same line plot and timeline (1824). Note the different y values and scales used for each line.](images/Playfair_1824_lineplots_1920px-.jpg)
+
+::: notes
+Here, we can see some complex, overlapping line plots showing revenues, expenses, debt, the price of commodities, and more, all on the same line plot and timeline. To what extent does such a graphic overlay reveal - by allowing easier comparison of diverse forms of data? And to what extent does it confuse or obscure?
+:::
 
 # Was he the first?
 
@@ -212,9 +256,9 @@ He also incorporated multiple plot types into one graphic. In the above visualiz
 :::
 
 ::: notes
-So, was William Playfair the first to use abstract symbols to visualize data? Absolutely not. We will learn about some of the people who preceded him in the next lesson. However, he appears to have been the inventor of some of the most common form of data graphics, including bar and line plots, and pie charts. Indeed, Playfair himself was very concerned about his status as a information graphics innovator. Regarding one of his innovations, he wrote:
+So, was William Playfair the first to use abstract symbols to visualize data? Absolutely not. We will learn about some of the people who preceded him in the next lesson. However, he appears to have been the inventor of some of the most common form of data graphics, including bar and line plots, and pie charts. Indeed, Playfair himself was very concerned about his status as a information graphics innovator. Regarding one of his innovations, he wrote that, after some investigation, "I am now satisfied... that I was the first."
 
-Some modern experts agree, \[quote\]
+Some modern experts agree, calling him the "father of modern graphical methods."
 :::
 
 ## Innovative Data Visualization
@@ -230,7 +274,7 @@ it doesn't really matter who was first...
 
 what does matter is that information revolutions often require technological developments combined with curious and creative people seeking better and more interesting ways to study, interpret, analyze, and communicate information.
 
-So, fortunately, **being a scoundrel is not a prerequisite** to becoming a data visualization innovator. But being creative person willing to challenge the norms of your discipline and profession is.
+So, fortunately, **being a scoundrel is not a prerequisite** to becoming a data visualization innovator. But being a creative person willing to challenge the norms of your discipline and profession is.
 
 interestingly, many of Playfair's innovations have become the most conventional - and even boring - graphics: especially bar and line plots, and the much-derided pie charts. Fortunately, a recent digital boom in data visualizations have opened the door for new innovations. **Can we continue to innovate our forms of visual analysis and communication in an age where technology has made the creation of basic plots easy? Can we move beyond strict rules and norms to allow for new and creative forms of visualizations and visual storytelling?** We shall see....
 :::

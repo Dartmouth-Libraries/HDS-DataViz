@@ -2,7 +2,7 @@
 title: "History of Data Visualization"
 subtitle: "From Data Exploration to Communication & Storytelling"
 title-slide-attributes: 
-  data-background-image: ../hds_images/history-of-dataviz/DuBois.png
+  data-background-image: images/images/Snow-cholera.jpg
   data-background-size: contain
   data-background-opacity: "0.3"
   
@@ -14,22 +14,45 @@ format:
     navigation-mode: vertical
     chalkboard: true
 editor: visual
-logo: "../hds_images/logo_white.png"
+logo: "images/2408_GEISEL_SubBrandLogos-M_KO-HDS.png"
 ---
 
 # History of Data Visualization, Part 2
+
+::: notes
+In Part 1, we examined the impact a Scottish scoundrel had on modern data visualization.
+
+In Part 2, we will cast a wider net looking for data visualization innovators. In particular, we will examine how public health concerns drove many of these innovators and innovations
+:::
 
 # Maps
 
 ## Early Maps
 
-![The Yü Chi Thu Map (China, 11th century A.D.): an example of a sophisticated geographic map centuries before the creation of the first "data" or "statistical maps".](images/Tufte_21_Chinese-map_cropped.png)
+![The Yü Chi Thu Map (China, 12th century C.E.): an example of a sophisticated geographic map centuries before the creation of the first "data" or "statistical maps".](images/Tufte_21_Chinese-map_cropped.png)
+
+::: notes
+In that first part, you saw how the earliest maps were created at least 12,000 years ago.
+
+Most, early maps, as we can guess, were not drawn very precisely, if they were drawn to scale at all.
+
+In this example from the 12th century, however, we can see how an unnamed Chinese cartographer drew a highly accurate map of Chinese rivers using a grid system of nearly 5000 tiles. Each tile represents an area of about 10,000 li squared or about 2500 sq km.
+
+Modern scholars have observed that it would take Europe another 5 or 6 centuries to so accurately map coastlines and rivers.
+:::
 
 ## An Early Road Atlas
 
 ![A road map from John Ogilby's 1675 road atlas of Great Britain.](https://infowetrust.com/wp-content/uploads/2017/01/1675-Ogilby_-_The_Road_From_LONDON_to_the_LANDS_END.jpg)
 
 ::: notes
+If you're like me, you may be old enough to remember finding your way on a road trip before Google Maps and GPS, and even before printing out Mapquest directions. If so, you may remember unfolding large maps or fumbling through road atlases and constantly having to rotate maps in your hands or in your head to determine whether you needed to turn to the right or left at an upcoming intersection.
+
+Now, Google Maps and similar tools does the re-orienting for you.
+
+However, some historical mapmakers tried to craft maps designed to help people better find their way along the road. In 1675, John Ogilby created this road atlas, ostensibly to aid British travelers find their way to and from London. Notice, this atlas only highlighted towns and locations found along the road. Everything else was irrelevant. The only goal was to arrive at your destination.
+
+However, historians now believe he had a second, secret goal. To create a map to aid French Catholics invade his own country and remove the Protestant royalty. Thus, Ogilby hid a map with a treasonous purpose in plain sight.
 :::
 
 # A Data Visualization of Data Visualization History
@@ -37,6 +60,34 @@ logo: "../hds_images/logo_white.png"
 ![Snapshot from RJ Andrews' "Map of Firsts"](https://infowetrust.com/wp-content/uploads/2019/12/history-essay-banner.jpg)
 
 Essay with accompanying interactive graphic: RJ Andrews, ["Interacting with History: 300 years of information graphic milestones"](https://infowetrust.com/project/history-essay) (2017).
+
+::: notes
+Ogilby's map has inspired some interesting imitations.
+
+Recently, the data storyteller RJ Andrews decided the best way to tell the story of the history of data viz was to create a data visualization.
+
+He mimicked Ogilby's road atlas to create this interactive graphic of data viz history.
+
+\[here, show the interactive map found on this website and show the mouse scrolling through this map and selecting different graphic examples from this website\]
+
+I highly recommend exploring this website, and clicking on some of these plot types to learn more about their history. You will find maps and visualizations intended to chart locations and movement; aid navigation on roads, rivers, and oceans; compare the histories great empires and nations; and analyze economic and social patterns.
+
+However, we can see from the very beginning that public health was a central problem that provoked some of history's great data visualizations.
+
+\[click on 1669 plotted function graph\]
+
+from a 1669 graph showing a distribution of people by age, thus hinting at life expectancies....
+
+\[1717 malaria map\]
+
+An annotated map showing how mosquito-infested swamps served as breeding grounds for malaria...
+
+\[click on yellow fever map from 1797\]
+
+and a map tracing incidents of yellow fever.
+
+But, the interest in using visualizations to address and resolve public health crises really took off in the mid-1800s....
+:::
 
 # Data Visualization & Public Health
 
@@ -47,7 +98,33 @@ Essay with accompanying interactive graphic: RJ Andrews, ["Interacting with Hist
 ::: notes
 We opened this class with the famous "flatten the curve" graphic. That marked what Alberto Cairo has called "The first visualized global crisis in history".
 
-However, data visualization has long been used as a public health. Indeed, some of the most iconic visualizations in history were made to educate government officials and/or the public about health crises.
+However, data visualization has long been used as a tool of public health policy and education. Indeed, some of the most iconic visualizations in history were made to educate government officials and the public about health crises.
+
+John Snow famously created this map of cholera cases in London in 1854
+:::
+
+------------------------------------------------------------------------
+
+![](images/Snow_web.png)
+
+::: notes
+Let's take a closer look at this map.
+
+Here, each bar represents the home location of a Londoner who contracted cholera. What do you notice about the distribution of these locations?
+
+\[pause\]
+
+You may notice many of the cases are concentrated near and around the Broad Street water pump. In contrast, this map clearly shows a relative lack of cases near the Warwick and Bridle Street pumps. This was a deliberate choice by Snow. Earlier versions of this map showed too much information, making them hard to read by public policy makers at a time when graphical literarcy was far rarer than it is today.
+
+Snow learned that to convincingly convey patterns to his readers, he had to simplify his maps in a way that highlighted only the relevant data - in this case cholera cases and the location of water pumps.
+:::
+
+------------------------------------------------------------------------
+
+![A heat map of cholera locations overlaid over John Snow's cholera map.](images/Snow_heatmap.jpeg){fig-alt="A heat map of cholera locations overlaid over John Snow's cholera map."}
+
+::: notes
+Modern scholars can use heat maps to more clearly highlight such patterns.
 :::
 
 ## Florence Nightingale
@@ -55,25 +132,71 @@ However, data visualization has long been used as a public health. Indeed, some 
 ![Florence Nightingale's "Diagram of the Causes of Mortality" for the Crimean War (1858).](images/Nightingale.jpg)
 
 ::: notes
-\[see Cairo, How Charts Lie, Concl.\]
+Four years later, Florence Nightingale produced an equally impactful and innovative visualization. She is most known for being the founder of modern nursing and an advocate for healthcare reform. However, she also was a statistician and data viz innovator.
+
+In this "wedge plot" Nightingale used wedges to show mortality rates among British soldiers serving in the Crimean War. The red and black portions of these wedges represent deaths from war wounds and other causes. The far larger blue wedges, however, symbolize deaths from "preventable" diseases.
+
+Nightingale sought to convince British officials and the army that disease was a far more prolific killer of British troops than opposing armies. The solution, in turn, was better sanitation, hygiene, medical care, and access to cleaner food and water.
 :::
 
-## 1918 Influenza Epidemic
+## 1918 Influenza Pandemic
 
 ![1918 Influenza - line plot of cases in major northern cities.](images/1918_flu_lineplot_1919.jpg)
 
-------------------------------------------------------------------------
+::: notes
+100 years before COVID-19, an influenza pandemic rattled the world in 1918 and 1919. These graphs are not particularly innovative. Nonetheless, they served as important tools in educating the public and informing public policy.
+:::
+
+## 1918 Influenza Pandemic {.scrollable}
 
 ![Map of geographic distribution of influenza cases (1918).](images/1918_flu_map_1921.jpg)
 
+::: notes
+Long before interactive and animated digital graphics, journalists used multiple small maps to show the spread of the 1918 flu over time. Notice, at the very bottom, the visualizer called this type of graphic, a "cinematogram".
+:::
+
 # The Megascope: Visualizations & Social Progress
 
-## DuBois
+::: notes
+Besides public health, other early data viz innovators used the graphic form to educate the public about social issues.
+:::
+
+## W.E.B. DuBois
+
+![W.E.B. DuBois](images/DuBois.jpg){fig-alt="Photo of W.E.B. DuBois"}
 
 ::: notes
-## The Opportunity Atlas
+Like Florence Nightingale, W.E.B. DuBois' role as a data viz innovator is often forgotten. He is instead remembered for being a foundational figure in American sociology, for his passionate writing about the African American experience in the early twentieth century, for being one of the founders of NAACP, and for being a civil rights leader long before the Civil Rights movement.
 
-\[or save this for later?\]
+However, he was also a data visualizer. Most notably, in the year 1900, he and his team of student assistants created a wide variety of stunning colorful data visualizations for the World's Fair in Paris, France.
+
+They had been invited to present on the African-American experience after the abolition of slavery.
+:::
+
+------------------------------------------------------------------------
+
+![](images/DuBoisPropFreemen.jpg)
+
+::: notes
+In their visualizations, you can see how DuBois and his team found standard data visualization practices insufficient to tell as misunderstood a story as African-American history.
+
+To demonstrate the degree to which the African-American experience in North America had been dominated by slavery, DuBois could have created a simple line graph showing the number of enslaved African-Americans at different points in history. Or he could have created this plot here, showing the percent of African-Americans enslaved, but with a simple line. Instead, however, he filled in the space below the line with dark black, showing just how many African American lives had come and gone under the totalizing social darkness that was slavery.
+:::
+
+------------------------------------------------------------------------
+
+![](images/DuBois.png)
+
+::: notes
+Finally, this visualization seems to break every data visualization rule. The green, blue, and yellow lines - representing African Americans living in cities and towns, turn from one direction to the next with no rhyme or reason. Then the red line - representing African-Americans living in rural areas - spirals inward making any sort of visual comparison of the lengths of these lines very difficult.
+
+Yet, DuBois felt no need to obey any restrictive rules that had yet to be made.
+
+Rather, his principal goals were to dazzle the viewers' eyes and, then, to win their hearts and minds. This graphic draws the viewers' attention in the way few traditional bar graphs ever could. He intuitively recognized that data visualization was an art as much as a science.
+
+Nonetheless, he understood the science of visualization well. DuBois' plot, for example, still allowed comparison. It was, after all, drawn to scale. If this data had been plotted with a traditional bar graph, the blue, green, and yellow lines would have been so thoroughly dwarfed by the red line that they would have been barely visible. Instead, by having the red line circle in on itself, it becomes easier to read the labels for the other lines.
+
+Like other great visualizers, DuBois realized rules and conventions are meant to be broken. What mattered was having accurate data, a story to tell about that data, and presenting it in an honest and engaging way.
 :::
 
 ## 
