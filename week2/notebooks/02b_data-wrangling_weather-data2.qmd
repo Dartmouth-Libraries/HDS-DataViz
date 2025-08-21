@@ -59,9 +59,6 @@ Examine the columns and data contained in this dataset using the functions below
 
 
 
-
-
-
     ```
 
 # 3. Steps

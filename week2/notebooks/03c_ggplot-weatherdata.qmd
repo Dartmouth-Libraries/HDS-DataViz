@@ -8,9 +8,11 @@ editor: visual
 
 # 1. Set up
 
-In this notebook, will work with some time-series weather data.
+In this notebook, we will work with some time-series weather data.
 
-When searching for local weather data, I found [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) found on NOAA's National Centers for Environmental Information website. I chose "Hanover", the type of data I wanted, and the date range (earliest to present). Next, I requested this data, and downloaded it from a link they sent me. Finally, I ran the following code to create a series of visualizations.
+When searching for local weather data, I found [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) found on NOAA's National Centers for Environmental Information website. I chose "Hanover", the type of data I wanted, and the date range (earliest to present). Next, I requested this data, and downloaded it from a link they sent me.
+
+With this data, we can run the following code, to create a series of visualizations.
 
 ## 1.1 Import necessary packages
 

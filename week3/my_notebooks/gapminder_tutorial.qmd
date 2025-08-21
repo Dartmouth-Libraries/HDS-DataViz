@@ -1,0 +1,100 @@
+---
+title: "Gapminder"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Gapminder Tutorial
+
+```{r}
+library(tidyverse)
+library(scales)
+#install.packages("plotly")
+library(plotly)
+```
+
+```{r}
+
+```
+
+```{r}
+df <- read.csv("../data/gapminder.csv")
+```
+
+```{r}
+head(df)
+```
+
+```{r}
+colnames(df)
+```
+
+## 1. Create Scatterplot for One Year
+
+```{r}
+yr = 1972
+temp_df <- df |>
+    filter(year == yr)
+
+ggplot(temp_df, aes(x=gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(labels=comma, trans="log10") +
+    scale_size_continuous(range=c(1, 15)) +
+    theme_minimal() +
+    ggtitle(sprintf("GDP per capita vs. Life Expectancy in %s", yr)) +
+    labs(
+        x = "GDP per capita",
+        y = "life expectancy",
+        size = "population"
+    )
+
+ggsave(file=sprintf("../images/gapminder_%d.svg", yr), width=8, height=6)
+```
+
+## 2. Plotting Time
+
+### 2a. plotting time using small multiples
+
+```{r}
+
+p <- ggplot(df, aes(x=gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(labels=comma, trans="log10") +
+    scale_size_continuous(range=c(1, 15)) +
+    theme_bw() +
+    ggtitle(sprintf("GDP per capita vs. Life Expectancy in %s", yr)) +
+    labs(
+        x = "GDP per capita",
+        y = "life expectancy",
+        size = "population"
+    ) 
+```
+
+```{r}
+p +
+    facet_wrap(~year, ncol=3)
+
+ggsave("../images/gapminder_facets.png", height=8, width=12)
+```
+
+### 2b. plotting time with an interactive plot (via plotly)
+
+```{r}
+p2 <- ggplot(df, aes(x=gdpPercap, y=lifeExp, color=continent, size=pop,
+                     frame=year)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(labels=comma, trans="log10") +
+    scale_size_continuous(range=c(1, 15)) +
+    theme_bw() +
+    ggtitle(sprintf("GDP per capita vs. Life Expectancy in %s", yr)) +
+    labs(
+        x = "GDP per capita",
+        y = "life expectancy",
+        size = "population"
+    ) 
+```
+
+```{r}
+ggplotly(p2)
+```

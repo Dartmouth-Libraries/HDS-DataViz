@@ -2,6 +2,11 @@
 title: "4b Gapminder Static Viz"
 author: "Jeremy Mikecz"
 format: html
+#format:
+#  pdf:
+#    toc: true
+#    number-sections: true
+#    colorlinks: true
 editor: visual
 #jupyter: ir
 ---
@@ -597,20 +602,9 @@ theme_mine <- function() {
 ```
 
 ```{r}
-wrapper <- function(x, ...) 
-{
-  paste(strwrap(x, ...), collapse = "\n")
-}
 
-p <- ggplot(gaptemp, aes(x= gdpPercap, y=lifeExp, color=factor(continent), size=pop)) +
-  scale_x_continuous(breaks = c(100, 1000, 10000, 100000), trans="log10") +
-  geom_point(alpha=0.6) +
-  ggtitle(wrapper(sprintf("Life expectancy v. per capita GDP in %d", yr), width=35)) +
-  xlab("per capita GDP (U.S. dollars)") +
-  ylab("life expectancy (years)") +
-  scale_color_viridis(discrete=TRUE)
 
-p + theme_mine()    
+
 ```
 
 # 
