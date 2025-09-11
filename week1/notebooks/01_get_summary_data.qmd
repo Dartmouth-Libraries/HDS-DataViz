@@ -10,9 +10,24 @@ jupyter: ir
 
 ## 0. Setup
 
+For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project. The recommended tool for doing this is the [renv](https://rstudio.github.io/renv/) package. Review the documentation at this link for more advanced uses like sharing an R project with a **renv** virtual environment on Github.
+
+Some possibly useful commands:
+
+-   `install.packages("renv")` install renv (only need to do this once)
+
+-   `renv::init()`: initiate a R project for use with **renv** (do once upon creating a new project)
+
+<!-- -->
+
+-   `renv::migrate(path/to/root/dir)`: to migrate an existing project's dependencies stored in **packrat** to **renv**.
+
+-   \`
+
 ```{r}
-#renv::init()
-#renv::migrate(path/to/root/dir)
+#install.packages("renv")    # only un-comment out and run once
+#renv::init()                # un-comment out and run once for each new project
+
 # for more info: https://rstudio.github.io/renv/articles/renv.html
 ```
 

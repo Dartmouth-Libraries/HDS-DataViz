@@ -19,7 +19,7 @@ However, visualization should begin early in this process. As soon as you have a
 
 ### *For Advanced Users (everyone else skip)*
 
-For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project. One way to do that in R is using the [**packrat**](https://rstudio.github.io/packrat/) package.
+For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project. The recommended tool for doing this is the [renv](https://rstudio.github.io/renv/) package.
 
 ```{r}
 ## to install packrat:
@@ -37,10 +37,9 @@ For experienced users of R who regularly share their code with other researchers
 Tidyverse is a system of packages for data wrangling and analysis. It provides a different method and syntax for working with data tables (often called "data frames" in data science; but, tidyverse dataframes are known as "tibbles".) from base R. For more on tidyverse and tibbles see the **Intro to Tidyverse** notebook and the many resources listed in this notebook.
 
 ```{r}
-## to install all packages included in tidyverse.
+## to install all packages included in tidyverse, you have two choices (only needed once per project):
 #install.packages("tidyverse")
-
-
+#renv::install("tidyverse")
 
 ## but we want to open ggplot2 with tidyverse:
 library(tidyverse)
@@ -269,7 +268,7 @@ Plot = Data + Mapping (how data variables are to be visualized)
 Five mapping components:
 
 | Component | Description |
-|----|----|
+|------------------------------------|------------------------------------|
 | layer | includes **geoms** (geometric elements visible in the plot like points, lines, polygons, etc.) and **stats** (statistical transformations that summarize the data, simplifying it for visualization; i.e. binning or counting observations to make a histogram, or fitting a linear model) |
 | scale | maps data values to visual variables like color, shape, and size |
 | coord | describes how data will be placed spatially and what coordinate system will be used |
