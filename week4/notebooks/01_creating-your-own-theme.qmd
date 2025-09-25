@@ -1,0 +1,236 @@
+---
+title: "01_creating-your-own-theme"
+author: "Jeremy Mikecz"
+editor: visual
+format: html
+---
+
+# Applying your own style guide to your visualizations
+
+## Part 1:  Reloading Gapminder data
+
+Before beginning with customization, let's first reload our gapminder visualization.
+
+```{r}
+
+library(tidyverse)
+library(viridis)
+```
+
+```{r}
+# note: to open the gapminder dataset, we have to use a different relative path
+# than last week since this notebook is in a different location
+
+df <- read.csv("../../week3/data/gapminder.csv")
+head(df)
+```
+
+```{r}
+yr = 1997
+tempdf <- df |>
+    filter(year == yr)
+
+p <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(trans="log10") +
+    scale_size_continuous(range = c(1, 15)) +
+    labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+         title = sprintf("Scatterplot: per capita GDP vs. life expectancy, %s", yr),
+       caption = "(Based on data from Hans Rosling - gapminder.com)", 
+       color = 'Continent',
+       size = "Population")
+    #scale_color_viridis(discrete=TRUE, option="turbo")
+
+p
+
+```
+
+[list of ggplot themes](https://ggplot2.tidyverse.org/reference/ggtheme.html)
+
+```{r}
+p + 
+ theme_bw()
+```
+
+```{r}
+windowsFonts()
+```
+
+```{r}
+#install.packages("showtext")
+library(showtext)
+```
+
+```{r}
+font_add_google(name = "pacifico", #fonts on the Google Fonts site 
+                family = "pacifico") # Load the fonts for all graphic devices
+showtext_auto()
+```
+
+```{r}
+p
+```
+
+Add title, labels with custom font
+
+```{r}
+boxplot(trees$Volume, main = "", xlab = "", ylab = "", ylim = c(0, 90), col = 3)
+title("Volume of Trees", family = "pacifico", cex.main = 2, col.main = "blue")
+title(ylab = "Volume (cu.ft)", family = "pacifico", cex.lab = 1.2, col.lab = "pink")
+text(x = 3, y = 85, "Outlier", family = "pacifico", cex = 1.2, col = "red")
+```
+
+Go to Google Fonts and find one font family you like.
+
+Copy and paste the code from the above two code cells below, this time replacing it with the name of the font of your choice.
+
+```{r}
+fontname = "Montserrat"
+fontfamily = "montserrat"
+
+font_add_google(name = fontname,   #fonts on the Google Fonts site
+                family = fontfamily)
+# Load the fonts for all graphic devices
+showtext_auto()
+
+boxplot(trees$Volume,
+        main = "", xlab = "", ylab = "",
+        ylim = c(0, 90),
+        col = 3)
+
+# Add the title, Y-axis label, and text with the custom font
+title("Volume of Trees", family = fontfamily, cex.main = 2, col.main = "blue") 
+title(ylab = "Volume (cu.ft)", family = fontfamily, cex.lab = 1.2, col.lab = "pink") 
+text(x = 3, y = 85, "Outlier", family = fontfamily, cex = 1.2, col = "red")
+```
+
+## 2. Import additional themes with ggthemes
+
+Besides the default ggplot themes, you can supplement with additional themes using the [ggthemes](https://r-graph-gallery.com/package/ggthemes.html) package.
+
+For more information see the ggthemes [github page](https://jrnold.github.io/ggthemes/), the R Graph Gallery [tutorial](https://r-graph-gallery.com/package/ggthemes.html), and
+
+```{r}
+# install.packages("ggthemes")
+```
+
+```{r}
+library(ggthemes)
+```
+
+To get a list of available themes from ggthemes, run this:
+
+```{r}
+themes <- lsf.str("package:ggthemes", pattern = "theme_")
+themes
+```
+
+```{r}
+p + theme_economist()
+```
+
+```{r}
+p + theme_economist() +
+    scale_color_economi
+```
+
+```{r}
+p + theme_economist_white()+
+    scale_color_economist()
+```
+
+```{r}
+p + theme_fivethirtyeight()
+```
+
+```{r}
+p + theme_fivethirtyeight() +
+    scale_color_fivethirtyeight()
+```
+
+```{r}
+p + theme_wsj()
+```
+
+## Reconstruct theme from *The Urban Institute*
+
+The Urban Institute's [style guide](https://urbaninstitute.github.io/graphics-styleguide/).
+
+[List](https://docs.google.com/spreadsheets/d/1F1gm5QLXh3USC8ZFx_M9TXYxmD-X5JLDD0oJATRTuIE/edit?usp=sharing) of other style guides available online
+
+Often, however, we may prefer to create our own theme based on our own style guide.
+
+Before trying to create our theme from scratch, however, let's try to create a theme using an existing style guide, that of the *Urban Institute*. Note: the Urban Institute has already done this using [urbnthemes](https://urbaninstitute.github.io/urbnthemes/) package.
+
+```{r}
+theme_mine <- function() {
+  font <- fontfamily
+  theme_minimal() +
+      theme(
+      panel.background = element_rect(fill="seashell"),
+      plot.background = element_rect(fill = "whitesmoke"),
+      plot.title = element_text(
+                  family = font,
+                  size = 16,
+                  face = "bold",
+                  hjust = 0.5,        #center align
+                  vjust = 0.5),       #raise slightly
+      plot.subtitle = element_text(
+                  family = font,
+                  size = 13),
+      axis.title = element_text(
+                  family = font,
+                  size = 13
+                  ),
+      axis.text = element_text(
+                  family=font,
+                  size=10
+                  ),
+      plot.caption = element_text(
+                  family=font,
+                  size = 10
+      ),
+      legend.text = element_text(
+                  family=font,
+                  size=10
+      ),
+      legend.title = element_text(
+                  family=font,
+                  size=12
+      ),
+      
+  )
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+For further instructions how to create custom themes visit Maddie Pickens, "Learning to create custom themes in ggplot."
+
+# 
+
+# Add the title, Y-axis label, and text with the custom font
+
+{r}
+
+```         
+  )
+  
+```
+
+}
+
+{r}
