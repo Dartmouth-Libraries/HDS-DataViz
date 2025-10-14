@@ -7,7 +7,7 @@ format: html
 
 # Applying your own style guide to your visualizations
 
-## Part 1:  Reloading Gapminder data
+## Part 1: Reloading Gapminder data
 
 Before beginning with customization, let's first reload our gapminder visualization.
 
@@ -15,6 +15,8 @@ Before beginning with customization, let's first reload our gapminder visualizat
 
 library(tidyverse)
 library(viridis)
+library(systemfonts)
+library(showtext)
 ```
 
 ```{r}
@@ -131,7 +133,7 @@ p + theme_economist()
 
 ```{r}
 p + theme_economist() +
-    scale_color_economi
+    scale_color_economist()
 ```
 
 ```{r}
@@ -160,54 +162,243 @@ The Urban Institute's [style guide](https://urbaninstitute.github.io/graphics-st
 
 Often, however, we may prefer to create our own theme based on our own style guide.
 
-Before trying to create our theme from scratch, however, let's try to create a theme using an existing style guide, that of the *Urban Institute*. Note: the Urban Institute has already done this using [urbnthemes](https://urbaninstitute.github.io/urbnthemes/) package.
+Before trying to create our own personalized theme, however, let's try to create a theme using an existing style guide, that of the *Urban Institute*. Note: the Urban Institute has already done this using [urbnthemes](https://urbaninstitute.github.io/urbnthemes/) package, but we will recreate this theme from scratch.
+
+First, the Urban Institute uses Google's [Lato](https://fonts.google.com/specimen/Lato) font. Let's import it:
 
 ```{r}
-theme_mine <- function() {
-  font <- fontfamily
-  theme_minimal() +
-      theme(
-      panel.background = element_rect(fill="seashell"),
-      plot.background = element_rect(fill = "whitesmoke"),
+font_add_google("Lato", "Lato")
+font_add_google("Lato", "Lato Light", regular.wt = 300)
+font_add_google("Lato", "Lato Bold", regular.wt = 700)
+
+# Automatically use showtext for graphics
+showtext_auto()
+```
+
+Next, we should set the Urban Institute color palette:
+
+```{r}
+# Urban Institute Color Palette
+urban_colors <- list(
+  # Primary colors
+  cyan = "#1696d2",
+  gray = "#d2d2d2",
+  black = "#000000",
+  
+  # Secondary colors
+  yellow = "#fdbf11",
+  magenta = "#ec008b",
+  green = "#55b748",
+  space_gray = "#5c5859",
+  red = "#db2b27",
+  
+  # Shades of cyan
+  cyan_shade = c("#CFE8F3", "#A2D4EC", "#73BFE2", "#46ABDB", "#1696D2", "#12719E"),
+  
+  # Shades of gray
+  gray_shade = c("#F5F5F5", "#ECECEC", "#E3E3E3", "#DCDBDB", "#D2D2D2", "#9D9D9D"),
+  
+  # Categorical palette
+  categorical = c("#1696d2", "#ec008b", "#fdbf11", "#55b748", "#5c5859", "#db2b27")
+)
+```
+
+```{r}
+
+# Function to access Urban Institute colors
+urban_palette <- function(palette = "categorical", n = NULL, reverse = FALSE) {
+  pal <- urban_colors[[palette]]
+  
+  if (reverse) pal <- rev(pal)
+  
+  if (!is.null(n)) {
+    if (n <= length(pal)) {
+      pal <- pal[1:n]
+    } else {
+      pal <- colorRampPalette(pal)(n)
+    }
+  }
+  
+  return(pal)
+}
+```
+
+Create custom "theme_urban".
+
+```{r}
+# Main Urban Institute theme function
+theme_urban <- function(base_size = 12,
+                        base_family = "Lato",
+                        base_line_size = 0.5,
+                        base_rect_size = 0.5) {
+  
+  theme_minimal(base_size = base_size,
+                base_family = base_family,
+                base_line_size = base_line_size,
+                base_rect_size = base_rect_size) +
+    theme(
+      # Plot elements
       plot.title = element_text(
-                  family = font,
-                  size = 16,
-                  face = "bold",
-                  hjust = 0.5,        #center align
-                  vjust = 0.5),       #raise slightly
+        family = "Lato Bold",
+        size = rel(2),
+        face = "bold",
+        hjust = 0,
+        margin = margin(b = 10),
+        color = urban_colors$black
+      ),
       plot.subtitle = element_text(
-                  family = font,
-                  size = 13),
-      axis.title = element_text(
-                  family = font,
-                  size = 13
-                  ),
-      axis.text = element_text(
-                  family=font,
-                  size=10
-                  ),
+        size = rel(1.5),
+        hjust = 0,
+        margin = margin(b = 15),
+        color = urban_colors$space_gray
+      ),
       plot.caption = element_text(
-                  family=font,
-                  size = 10
+        size = rel(1),
+        hjust = 0,
+        margin = margin(t = 15),
+        color = urban_colors$space_gray
+      ),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+      plot.background = element_rect(fill = "white", color = NA),
+      
+      # Panel elements
+      panel.grid.major = element_line(color = urban_colors$gray, size = 0.3),
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.background = element_rect(fill = "white", color = NA),
+      
+      # Axis elements
+      axis.title = element_text(
+        family = "Lato Bold",
+        size = rel(1.2),
+        color = urban_colors$black,
+        face = "bold"
+      ),
+      axis.title.x = element_text(margin = margin(t = 10)),
+      axis.title.y = element_text(margin = margin(r = 10)),
+      axis.text = element_text(
+        size = rel(1),
+        color = urban_colors$space_gray
+      ),
+      axis.ticks = element_blank(),
+      axis.line = element_blank(),
+      
+      # Legend elements
+      legend.position = "right",
+      legend.justification = "left",
+      legend.title = element_text(
+        size = rel(1.1),
+        face = "bold",
+        color = urban_colors$black
       ),
       legend.text = element_text(
-                  family=font,
-                  size=10
+        size = rel(0.8),
+        color = urban_colors$space_gray
       ),
-      legend.title = element_text(
-                  family=font,
-                  size=12
-      ),
+      legend.key = element_blank(),
+      legend.background = element_blank(),
       
+      # Strip (facet) elements
+      strip.text = element_text(
+        family = "Lato Bold",
+        size = rel(1),
+        face = "bold",
+        hjust = 0,
+        color = urban_colors$black
+      ),
+      strip.background = element_blank(),
+      
+      # Margins
+      plot.margin = margin(15, 15, 15, 15)
+    )
+}
+```
+
+Create color scales for discrete data.
+
+```{r}
+# Color scale functions
+scale_color_urban <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- urban_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "colour", 
+    paste0("urban_", palette),
+    palette = function(n) pal[1:n],
+    ...
   )
+}
+
+scale_fill_urban <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- urban_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "fill", 
+    paste0("urban_", palette),
+    palette = function(n) pal[1:n],
+    ...
+  )
+}
+```
+
+Create color scales for continuous data.
+
+```{r}
+# Continuous color scales
+scale_color_urban_c <- function(palette = "cyan_shade", reverse = FALSE, ...) {
+  pal <- urban_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::scale_color_gradientn(colors = pal, ...)
+}
+
+scale_fill_urban_c <- function(palette = "cyan_shade", reverse = FALSE, ...) {
+  pal <- urban_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::scale_fill_gradientn(colors = pal, ...)
+}
+```
+
+Create a sample bar graph.
+
+```{r}
+# Example usage
+df <- data.frame(
+  category = c("Category A", "Category B", "Category C", "Category D"),
+  value = c(23, 45, 12, 34)
+)
+
+sample_p <- ggplot(df, aes(x = reorder(category, value), y = value)) +
+  geom_col(fill = urban_colors$cyan, width = 0.7) +
+  coord_flip() +
+  labs(
+    title = "Example with Lato Font",
+    subtitle = "Urban Institute styling with proper typography",
+    caption = "Source: Example data",
+    x = NULL,
+    y = "Values"
+  ) +
+  theme_urban()
+
+print(sample_p)
+
+# Save with proper font rendering
+ggsave("urban_plot.png", sample_p, width = 8, height = 6, dpi = 150)
 ```
 
 ```{r}
+# Example plot
+p_urban <- p +
+  theme_urban()
 
+print(p_urban)
+
+
+# For saving plots with showtext
+ggsave("gapminder_UrbanInst-theme.png", p_urban, width = 5, height = 4, dpi = 150)
 ```
 
 ```{r}
-
 ```
 
 ```{r}
@@ -222,15 +413,4 @@ For further instructions how to create custom themes visit Maddie Pickens, "Lear
 
 # 
 
-# Add the title, Y-axis label, and text with the custom font
-
-{r}
-
-```         
-  )
-  
-```
-
-}
-
-{r}
+# 

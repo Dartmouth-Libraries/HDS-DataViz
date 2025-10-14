@@ -1,0 +1,911 @@
+---
+title: "Custom Theme: W.E.B. DuBois style"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+# ============================================================================
+# W.E.B. DU BOIS THEME FOR GGPLOT2
+# Inspired by the 1900 Paris Exposition "The Exhibit of American Negroes"
+# ============================================================================
+
+library(ggplot2)
+library(showtext)
+library(sysfonts)
+library(dplyr)
+library(scales)
+
+# Add period-appropriate fonts
+font_add_google("Public Sans", "Public Sans")       # Clean, geometric
+font_add_google("Libre Franklin", "Franklin")       # Hand-lettered feel
+font_add_google("Crimson Pro", "Crimson Text")          # Serif for titles
+font_add_google("Courier Prime", "Courier")         # Typewriter style
+
+showtext_auto()
+
+```
+
+```{r}
+# ============================================================================
+# DU BOIS COLOR PALETTE
+# Based on his distinctive use of bold, symbolic colors
+# ============================================================================
+
+dubois_colors <- list(
+  # Signature colors from Paris Exposition charts
+  black = "#000000",           # Strong black for emphasis
+  red = "#dc143c",             # Crimson red (struggle, blood)
+  gold = "#ffc04d",            # Gold/yellow (hope, prosperity)
+  blue = "#4e79a7",            # Steel blue (stability)
+  green = "#7fc97f",           # Soft green (growth)
+  brown = "#d4a574",           # Tan/beige (earth, labor)
+  pink = "#fbb4ae",            # Soft pink
+  purple = "#bc80bd",          # Muted purple
+  navy = "#2f4858",            # Deep navy
+  cream = "#f5e6d3",           # Cream/parchment background
+  
+  # Extended palette for complex charts
+  categorical = c(
+    "#dc143c",  # Red
+    "#000000",  # Black
+    "#ffc04d",  # Gold
+    "#4e79a7",  # Blue
+    "#7fc97f",  # Green
+    "#d4a574",  # Brown
+    "#bc80bd",  # Purple
+    "#fbb4ae"   # Pink
+  ),
+  
+  # Specific palettes for common themes
+  # Population/demographic
+  population = c("#dc143c", "#4e79a7", "#ffc04d", "#7fc97f"),
+  
+  # Economic status
+  economic = c("#000000", "#d4a574", "#ffc04d", "#7fc97f"),
+  
+  # Education levels
+  education = c("#4e79a7", "#7fc97f", "#ffc04d", "#dc143c"),
+  
+  # Background colors
+  background = "#f5e6d3",      # Aged paper/parchment
+  background_alt = "#faf4ea",  # Lighter alternative
+  
+  # Sequential scales
+  red_scale = c("#fbb4ae", "#fc8d62", "#e34a33", "#b30000", "#67000d"),
+  blue_scale = c("#c6dbef", "#9ecae1", "#6baed6", "#3182bd", "#08519c"),
+  gold_scale = c("#fff7bc", "#fee391", "#fec44f", "#fe9929", "#cc4c02")
+)
+
+# Function to access Du Bois colors
+dubois_palette <- function(palette = "categorical", n = NULL, reverse = FALSE) {
+  pal <- dubois_colors[[palette]]
+  
+  if (reverse) pal <- rev(pal)
+  
+  if (!is.null(n)) {
+    if (n <= length(pal)) {
+      pal <- pal[1:n]
+    } else {
+      pal <- colorRampPalette(pal)(n)
+    }
+  }
+  
+  return(pal)
+}
+```
+
+```{r}
+# ============================================================================
+# MAIN DU BOIS THEME
+# ============================================================================
+
+theme_dubois <- function(base_size = 11,
+                         title_family = "Crimson",
+                         body_family = "Public Sans",
+                         base_line_size = 0.75,
+                         grid = "y") {
+  
+  ret <- theme_minimal(base_size = base_size,
+                       base_family = body_family,
+                       base_line_size = base_line_size)
+  
+  ret <- ret + theme(
+    # Plot background - characteristic parchment color
+    plot.background = element_rect(
+      fill = dubois_colors$background,
+      color = dubois_colors$black,
+      size = 2  # Bold border like Du Bois
+    ),
+    
+    panel.background = element_rect(
+      fill = dubois_colors$background,
+      color = NA
+    ),
+    
+    # Panel border - strong black lines
+    panel.border = element_rect(
+      fill = NA,
+      color = dubois_colors$black,
+      size = 1.5
+    ),
+    
+    # Title - hand-lettered style, centered
+    plot.title = element_text(
+      family = title_family,
+      size = rel(1.4),
+      face = "bold",
+      hjust = 0.5,  # Centered like Du Bois
+      vjust = 1,
+      margin = margin(b = 10, t = 10),
+      color = dubois_colors$black,
+      lineheight = 1.1
+    ),
+    
+    # Subtitle - often used for data source
+    plot.subtitle = element_text(
+      family = body_family,
+      size = rel(0.9),
+      hjust = 0.5,
+      margin = margin(b = 15, t = 5),
+      color = dubois_colors$black,
+      face = "plain"
+    ),
+    
+    # Caption - attribution
+    plot.caption = element_text(
+      family = body_family,
+      size = rel(0.75),
+      hjust = 0.5,
+      margin = margin(t = 15),
+      color = dubois_colors$black,
+      face = "italic"
+    ),
+    
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    
+    # Grid - minimal, strong when present
+    panel.grid.major = element_line(
+      color = dubois_colors$black,
+      size = 0.5
+    ),
+    panel.grid.minor = element_blank(),
+    
+    # Axes - bold, clear
+    axis.title = element_text(
+      family = body_family,
+      size = rel(0.9),
+      color = dubois_colors$black,
+      face = "bold"
+    ),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    axis.title.y = element_text(margin = margin(r = 10), angle = 90),
+    
+    axis.text = element_text(
+      family = body_family,
+      size = rel(0.85),
+      color = dubois_colors$black,
+      face = "bold"  # Du Bois used bold text
+    ),
+    
+    # Strong axis lines
+    axis.line = element_line(
+      color = dubois_colors$black,
+      size = 1
+    ),
+    
+    axis.ticks = element_line(
+      color = dubois_colors$black,
+      size = 0.75
+    ),
+    axis.ticks.length = unit(4, "pt"),
+    
+    # Legend - clean and bold
+    legend.position = "bottom",
+    legend.justification = "center",
+    legend.direction = "horizontal",
+    legend.background = element_rect(
+      fill = dubois_colors$background,
+      color = dubois_colors$black,
+      size = 1
+    ),
+    legend.title = element_text(
+      family = title_family,
+      size = rel(0.9),
+      face = "bold",
+      color = dubois_colors$black
+    ),
+    legend.text = element_text(
+      family = body_family,
+      size = rel(0.85),
+      color = dubois_colors$black,
+      face = "bold"
+    ),
+    legend.key = element_rect(
+      fill = dubois_colors$background,
+      color = dubois_colors$black,
+      size = 0.5
+    ),
+    legend.key.size = unit(1.2, "lines"),
+    legend.margin = margin(10, 10, 10, 10),
+    legend.box.margin = margin(5, 5, 5, 5),
+    
+    # Strip text for facets
+    strip.text = element_text(
+      family = title_family,
+      size = rel(1),
+      face = "bold",
+      color = dubois_colors$black,
+      margin = margin(5, 5, 5, 5)
+    ),
+    strip.background = element_rect(
+      fill = alpha(dubois_colors$gold, 0.3),
+      color = dubois_colors$black,
+      size = 1
+    ),
+    
+    # Margins - generous like his charts
+    plot.margin = margin(20, 20, 20, 20),
+    
+    complete = TRUE
+  )
+  
+  # Grid options
+  if (grid == "none") {
+    ret <- ret + theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+  } else if (grid == "y") {
+    ret <- ret + theme(
+      panel.grid.major.x = element_blank()
+    )
+  } else if (grid == "x") {
+    ret <- ret + theme(
+      panel.grid.major.y = element_blank()
+    )
+  }
+  
+  return(ret)
+}
+```
+
+```{r}
+# ============================================================================
+# VARIANT: MINIMALIST DU BOIS (for spiral/circular charts)
+# ============================================================================
+
+theme_dubois_minimal <- function(base_size = 11) {
+  theme_dubois(base_size = base_size, grid = "none") +
+    theme(
+      panel.border = element_blank(),
+      axis.line = element_blank(),
+      axis.ticks = element_blank(),
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      panel.grid = element_blank()
+    )
+}
+```
+
+```{r}
+# ============================================================================
+# COLOR SCALES
+# ============================================================================
+
+scale_color_dubois <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- dubois_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "colour",
+    paste0("dubois_", palette),
+    palette = function(n) {
+      if (n > length(pal)) {
+        colorRampPalette(pal)(n)
+      } else {
+        pal[1:n]
+      }
+    },
+    ...
+  )
+}
+
+scale_fill_dubois <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- dubois_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "fill",
+    paste0("dubois_", palette),
+    palette = function(n) {
+      if (n > length(pal)) {
+        colorRampPalette(pal)(n)
+      } else {
+        pal[1:n]
+      }
+    },
+    ...
+  )
+}
+
+# Continuous scales
+scale_color_dubois_c <- function(palette = "red_scale", reverse = FALSE, ...) {
+  pal <- dubois_palette(palette = palette, reverse = reverse)
+  ggplot2::scale_color_gradientn(colors = pal, ...)
+}
+
+scale_fill_dubois_c <- function(palette = "red_scale", reverse = FALSE, ...) {
+  pal <- dubois_palette(palette = palette, reverse = reverse)
+  ggplot2::scale_fill_gradientn(colors = pal, ...)
+}
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 1: SIMPLE BAR CHART (Du Bois style)
+# ============================================================================
+
+# Occupations data (inspired by Du Bois)
+df_occupations <- data.frame(
+  occupation = c("Agriculture", "Domestic Service", "Manufacturing", 
+                 "Trade", "Professional", "Other"),
+  percentage = c(44.2, 21.5, 12.8, 8.3, 3.7, 9.5),
+  year = "1890"
+)
+
+p1 <- ggplot(df_occupations, aes(x = reorder(occupation, percentage), y = percentage)) +
+  geom_col(
+    fill = dubois_colors$red,
+    color = dubois_colors$black,
+    width = 0.7,
+    size = 1.5  # Bold outlines
+  ) +
+  geom_text(
+    aes(label = paste0(percentage, "%")),
+    hjust = -0.2,
+    family = "Public Sans",
+    fontface = "bold",
+    size = 4,
+    color = dubois_colors$black
+  ) +
+  coord_flip() +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.15)),
+    breaks = seq(0, 50, 10),
+    labels = function(x) paste0(x, "%")
+  ) +
+  labs(
+    title = "OCCUPATIONS OF NEGROES IN GEORGIA.",
+    subtitle = "1890",
+    caption = "Data from U.S. Census",
+    x = NULL,
+    y = "PERCENT"
+  ) +
+  theme_dubois(grid = "x")
+
+print(p1)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 2: STACKED BAR CHART (Wealth accumulation)
+# ============================================================================
+
+df_wealth <- data.frame(
+  year = rep(c("1875", "1880", "1885", "1890", "1895", "1899"), 3),
+  category = rep(c("Land", "Buildings", "Personal Property"), each = 6),
+  value = c(
+    # Land
+    2, 4, 8, 15, 20, 25,
+    # Buildings
+    1, 2, 5, 10, 15, 22,
+    # Personal Property
+    1, 3, 6, 12, 18, 28
+  )
+)
+
+p2 <- ggplot(df_wealth, aes(x = year, y = value, fill = category)) +
+  geom_col(
+    position = "stack",
+    color = dubois_colors$black,
+    width = 0.7,
+    size = 1
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Land" = dubois_colors$gold,
+      "Buildings" = dubois_colors$blue,
+      "Personal Property" = dubois_colors$red
+    ),
+    name = NULL
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.05)),
+    breaks = seq(0, 80, 20)
+  ) +
+  labs(
+    title = "ASSESSED VALUE OF PROPERTY OWNED BY\nNEGROES IN GEORGIA.",
+    subtitle = "1875 - 1899",
+    caption = "IN MILLIONS OF DOLLARS.",
+    x = NULL,
+    y = "MILLIONS"
+  ) +
+  theme_dubois(grid = "y")
+
+print(p2)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 3: SLOPE CHART (Population change)
+# ============================================================================
+
+df_population <- data.frame(
+  year = rep(c("1860", "1890"), 3),
+  region = rep(c("Rural Districts", "Small Towns", "Cities"), each = 2),
+  percentage = c(
+    95, 72,  # Rural
+    3, 15,   # Small Towns
+    2, 13    # Cities
+  )
+)
+
+p3 <- ggplot(df_population, aes(x = year, y = percentage, group = region, color = region)) +
+  geom_line(size = 3) +
+  geom_point(size = 5, shape = 21, fill = dubois_colors$background, stroke = 2) +
+  geom_text(
+    data = df_population %>% filter(year == "1860"),
+    aes(label = region),
+    hjust = 1.1,
+    fontface = "bold",
+    family = "Public Sans",
+    size = 3.5
+  ) +
+  geom_text(
+    aes(label = paste0(percentage, "%")),
+    vjust = -1.5,
+    fontface = "bold",
+    family = "Public Sans",
+    size = 3.5,
+    color = dubois_colors$black
+  ) +
+  scale_color_manual(
+    values = c(
+      "Rural Districts" = dubois_colors$green,
+      "Small Towns" = dubois_colors$gold,
+      "Cities" = dubois_colors$red
+    )
+  ) +
+  scale_y_continuous(
+    limits = c(0, 100),
+    breaks = seq(0, 100, 25),
+    labels = function(x) paste0(x, "%")
+  ) +
+  labs(
+    title = "COMPARATIVE INCREASE OF WHITE AND\nCOLORED POPULATION OF GEORGIA.",
+    subtitle = "1860 - 1890",
+    x = NULL,
+    y = "PER CENT."
+  ) +
+  theme_dubois(grid = "y") +
+  theme(legend.position = "none")
+
+print(p3)
+
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 4: AREA CHART (Education levels)
+# ============================================================================
+
+df_literacy <- data.frame(
+  year = seq(1860, 1900, by = 10),
+  literate = c(5, 10, 20, 35, 55),
+  illiterate = c(95, 90, 80, 65, 45)
+)
+
+df_literacy_long <- tidyr::pivot_longer(
+  df_literacy,
+  cols = c(literate, illiterate),
+  names_to = "status",
+  values_to = "percentage"
+)
+
+p4 <- ggplot(df_literacy_long, aes(x = year, y = percentage, fill = status)) +
+  geom_area(
+    color = dubois_colors$black,
+    size = 1.5,
+    alpha = 0.9
+  ) +
+  scale_fill_manual(
+    values = c(
+      "literate" = dubois_colors$gold,
+      "illiterate" = dubois_colors$navy
+    ),
+    labels = c("LITERATE", "ILLITERATE"),
+    name = NULL
+  ) +
+  scale_y_continuous(
+    expand = c(0, 0),
+    breaks = seq(0, 100, 25),
+    labels = function(x) paste0(x, "%")
+  ) +
+  scale_x_continuous(breaks = seq(1860, 1900, 10)) +
+  labs(
+    title = "PROPORTION OF FREEMEN AND SLAVES\nAMONG AMERICAN NEGROES.",
+    subtitle = "LITERACY RATES: 1860 - 1900",
+    x = NULL,
+    y = "PER CENT"
+  ) +
+  theme_dubois(grid = "y")
+
+print(p4)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 5: SPIRAL BAR CHART - "CITY AND RURAL POPULATION"
+# This is Du Bois' famous spiral visualization!
+# ============================================================================
+
+# Create data for spiral chart
+df_spiral <- data.frame(
+  decade = c("1790", "1800", "1810", "1820", "1830", "1840", 
+             "1850", "1860", "1870", "1880", "1890"),
+  rural = c(97, 96, 95, 94, 92, 89, 85, 80, 74, 68, 64),
+  city = c(3, 4, 5, 6, 8, 11, 15, 20, 26, 32, 36)
+)
+
+# Calculate spiral coordinates
+n_points <- nrow(df_spiral)
+df_spiral$angle <- seq(0, 4 * pi, length.out = n_points)  # 2 full rotations
+df_spiral$index <- 1:n_points
+
+# Create separate data for rural and city
+df_spiral_long <- tidyr::pivot_longer(
+  df_spiral,
+  cols = c(rural, city),
+  names_to = "type",
+  values_to = "percentage"
+)
+
+# Calculate radial position (percentage determines radius)
+df_spiral_long$radius_start <- ifelse(df_spiral_long$type == "rural", 
+                                      df_spiral_long$index * 0.5, 
+                                      df_spiral_long$index * 0.5 + df_spiral_long$percentage/100 * 3)
+df_spiral_long$radius_end <- ifelse(df_spiral_long$type == "rural",
+                                    df_spiral_long$index * 0.5 + df_spiral_long$percentage/100 * 3,
+                                    df_spiral_long$index * 0.5 + 3)
+
+# Convert to Cartesian coordinates for bars
+create_spiral_bar <- function(angle, r_start, r_end, width = 0.3) {
+  angles <- seq(angle - width/2, angle + width/2, length.out = 50)
+  data.frame(
+    x = c(r_start * cos(angles), rev(r_end * cos(angles))),
+    y = c(r_start * sin(angles), rev(r_end * sin(angles)))
+  )
+}
+
+# Create all spiral segments
+spiral_segments <- lapply(1:nrow(df_spiral_long), function(i) {
+  row <- df_spiral_long[i, ]
+  seg <- create_spiral_bar(row$angle, row$radius_start, row$radius_end)
+  seg$decade <- row$decade
+  seg$type <- row$type
+  seg$percentage <- row$percentage
+  seg$group_id <- i
+  seg
+})
+
+df_spiral_plot <- do.call(rbind, spiral_segments)
+
+# Create label positions
+df_labels <- df_spiral %>%
+  mutate(
+    x_label = (index * 0.5 + 1.5) * cos(angle),
+    y_label = (index * 0.5 + 1.5) * sin(angle)
+  )
+
+# Create the spiral plot
+p5_spiral <- ggplot() +
+  # Draw spiral segments
+  geom_polygon(
+    data = df_spiral_plot,
+    aes(x = x, y = y, group = group_id, fill = type),
+    color = dubois_colors$black,
+    size = 1.2
+  ) +
+  # Add decade labels
+  geom_text(
+    data = df_labels,
+    aes(x = x_label, y = y_label, label = decade),
+    family = "Public Sans",
+    fontface = "bold",
+    size = 3.5,
+    color = dubois_colors$black
+  ) +
+  # Add percentage labels at specific points
+  geom_text(
+    data = df_labels %>% filter(decade %in% c("1790", "1830", "1870", "1890")),
+    aes(
+      x = (index * 0.5 + 3.5) * cos(angle),
+      y = (index * 0.5 + 3.5) * sin(angle),
+      label = paste0(city, "%\nCITY")
+    ),
+    family = "Public Sans",
+    fontface = "bold",
+    size = 2.5,
+    color = dubois_colors$black,
+    lineheight = 0.9
+  ) +
+  scale_fill_manual(
+    values = c(
+      "rural" = dubois_colors$green,
+      "city" = dubois_colors$red
+    ),
+    labels = c("CITY", "RURAL"),
+    name = NULL
+  ) +
+  coord_equal() +
+  labs(
+    title = "CITY AND RURAL POPULATION.\n1790-1890.",
+    caption = "Spiral chart showing the shift from rural to urban living"
+  ) +
+  theme_dubois_minimal() +
+  theme(
+    plot.title = element_text(size = rel(1.5), margin = margin(b = 20, t = 20)),
+    plot.caption = element_text(size = rel(0.8), margin = margin(t = 20)),
+    legend.position = "bottom",
+    legend.background = element_rect(
+      fill = dubois_colors$background,
+      color = dubois_colors$black,
+      size = 1
+    ),
+    legend.text = element_text(size = rel(1), face = "bold"),
+    legend.key.size = unit(1.5, "lines")
+  )
+
+print(p5_spiral)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 6: IMPROVED SPIRAL (More accurate to original)
+# ============================================================================
+
+# Simpler spiral approach
+df_spiral_simple <- df_spiral
+df_spiral_simple$angle_deg <- seq(0, 720, length.out = nrow(df_spiral_simple))
+df_spiral_simple$radius <- seq(2, 6, length.out = nrow(df_spiral_simple))
+
+# Calculate bar endpoints
+df_spiral_simple <- df_spiral_simple %>%
+  mutate(
+    angle_rad = angle_deg * pi / 180,
+    # Rural bar (inner)
+    rural_x_start = radius * cos(angle_rad),
+    rural_y_start = radius * sin(angle_rad),
+    rural_x_end = (radius + rural/25) * cos(angle_rad),
+    rural_y_end = (radius + rural/25) * sin(angle_rad),
+    # City bar (outer)
+    city_x_start = (radius + rural/25) * cos(angle_rad),
+    city_y_start = (radius + rural/25) * sin(angle_rad),
+    city_x_end = (radius + (rural + city)/25) * cos(angle_rad),
+    city_y_end = (radius + (rural + city)/25) * sin(angle_rad)
+  )
+
+p6_spiral <- ggplot(df_spiral_simple) +
+  # Rural segments (green)
+  geom_segment(
+    aes(x = rural_x_start, y = rural_y_start,
+        xend = rural_x_end, yend = rural_y_end),
+    color = dubois_colors$green,
+    size = 12,
+    lineend = "butt"
+  ) +
+  # City segments (red)
+  geom_segment(
+    aes(x = city_x_start, y = city_y_start,
+        xend = city_x_end, yend = city_y_end),
+    color = dubois_colors$red,
+    size = 12,
+    lineend = "butt"
+  ) +
+  # Decade labels
+  geom_text(
+    aes(x = (radius - 0.8) * cos(angle_rad),
+        y = (radius - 0.8) * sin(angle_rad),
+        label = decade),
+    family = "Public Sans",
+    fontface = "bold",
+    size = 3.5
+  ) +
+  # Percentage labels
+  geom_text(
+    data = df_spiral_simple %>% filter(decade %in% c("1790", "1840", "1890")),
+    aes(x = (radius + 5) * cos(angle_rad),
+        y = (radius + 5) * sin(angle_rad),
+        label = paste0(city, "%")),
+    family = "Public Sans",
+    fontface = "bold",
+    size = 3,
+    color = dubois_colors$red
+  ) +
+  coord_equal(xlim = c(-12, 12), ylim = c(-12, 12)) +
+  labs(
+    title = "CITY AND RURAL POPULATION.\n1790-1890."
+  ) +
+  theme_dubois_minimal() +
+  theme(
+    plot.title = element_text(size = rel(1.6), margin = margin(b = 15, t = 15)),
+    plot.background = element_rect(
+      fill = dubois_colors$background,
+      color = dubois_colors$black,
+      size = 2
+    )
+  ) +
+  # Add legend manually
+  annotate("rect", xmin = -4, xmax = -2, ymin = -11, ymax = -10,
+           fill = dubois_colors$green, color = dubois_colors$black, size = 0.5) +
+  annotate("text", x = -1, y = -10.5, label = "RURAL", hjust = 0,
+           family = "Public Sans", fontface = "bold", size = 4) +
+  annotate("rect", xmin = -4, xmax = -2, ymin = -9.5, ymax = -8.5,
+           fill = dubois_colors$red, color = dubois_colors$black, size = 0.5) +
+  annotate("text", x = -1, y = -9, label = "CITY", hjust = 0,
+           family = "Public Sans", fontface = "bold", size = 4)
+
+print(p6_spiral)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 7: RADIAL/CIRCULAR CHART (Alternative to spiral)
+# ============================================================================
+
+p7_radial <- ggplot(df_spiral_simple) +
+  # Create circular segments
+  geom_segment(
+    aes(x = 0, y = 0,
+        xend = city_x_end, yend = city_y_end,
+        color = decade),
+    size = 2,
+    arrow = arrow(length = unit(0.3, "cm"), type = "closed")
+  ) +
+  # Add points at ends
+  geom_point(
+    aes(x = city_x_end, y = city_y_end, size = city),
+    color = dubois_colors$red,
+    fill = dubois_colors$background,
+    shape = 21,
+    stroke = 2
+  ) +
+  # Labels
+  geom_text(
+    aes(x = city_x_end * 1.15, y = city_y_end * 1.15, label = decade),
+    family = "Public Sans",
+    fontface = "bold",
+    size = 3.5
+  ) +
+  scale_color_manual(
+    values = colorRampPalette(c(dubois_colors$navy, dubois_colors$red))(11)
+  ) +
+  scale_size_continuous(range = c(3, 15)) +
+  coord_equal() +
+  labs(
+    title = "GROWTH OF CITY POPULATION.\n1790-1890.",
+    subtitle = "Arrow length and point size represent percentage in cities"
+  ) +
+  theme_dubois_minimal() +
+  theme(
+    plot.title = element_text(size = rel(1.5), margin = margin(b = 10, t = 20)),
+    plot.subtitle = element_text(size = rel(0.9), margin = margin(b = 20)),
+    legend.position = "none"
+  )
+
+print(p7_radial)
+```
+
+```{r}
+# ============================================================================
+# SAVE FUNCTION
+# ============================================================================
+
+save_dubois_plot <- function(plot, filename, width = 8, height = 10, dpi = 300) {
+  ggsave(
+    filename = filename,
+    plot = plot,
+    width = width,
+    height = height,
+    dpi = dpi,
+    bg = dubois_colors$background
+  )
+  message("✓ Du Bois style plot saved: ", filename)
+}
+
+```
+
+```{r}
+# ============================================================================
+# STYLE GUIDE
+# ============================================================================
+
+cat("\n=== W.E.B. DU BOIS VISUALIZATION STYLE GUIDE ===\n\n")
+
+cat("COLOR PRINCIPLES:\n")
+cat("  • Bold, saturated colors (red, gold, black, blue, green)\n")
+cat("  • Symbolic use: red (struggle), gold (hope), green (growth)\n")
+cat("  • Strong black outlines and borders\n")
+cat("  • Parchment/cream background (#f5e6d3)\n\n")
+
+cat("TYPOGRAPHY:\n")
+cat("  • Centered, bold titles in ALL CAPS\n")
+cat("  • Hand-lettered aesthetic\n")
+cat("  • Bold labels and annotations\n")
+cat("  • Clear hierarchy of information\n\n")
+
+cat("DESIGN ELEMENTS:\n")
+cat("  • Strong geometric forms\n")
+cat("  • Bold borders (2pt plot border, 1.5pt bars)\n")
+cat("  • Innovative chart types (spirals, unusual layouts)\n")
+cat("  • Minimal grid lines\n")
+cat("  • Data annotations directly on chart\n\n")
+
+cat("COMPOSITION:\n")
+cat("  • Generous margins (20pt)\n")
+cat("  • Portrait orientation often preferred\n")
+cat("  • Visual balance and symmetry\n")
+cat("  • Centered alignment\n\n")
+
+cat("DISTINCTIVE FEATURES:\n")
+cat("  • Spiral charts for time series\n")
+cat("  • Innovative data representations\n")
+cat("  • Hand-drawn quality\n")
+cat("  • Strong political and social messaging\n\n")
+
+cat("CREATED VISUALIZATIONS:\n")
+cat("  p1 - Occupation bar chart\n")
+cat("  p2 - Wealth accumulation stacked bars\n")
+cat("  p3 - Population slope chart\n")
+cat("  p4 - Literacy area chart\n")
+cat("  p5_spiral - City/Rural spiral (complex)\n")
+cat("  p6_spiral - City/Rural spiral (simplified)\n")
+cat("  p7_radial - Radial growth chart\n\n")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

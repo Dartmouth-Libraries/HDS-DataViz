@@ -1,0 +1,1957 @@
+---
+title: "Custom Theme: Topographic Maps"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+```{r}
+# ============================================================================
+# HISTORICAL TOPOGRAPHIC MAP THEME
+# Inspired by USGS and European survey maps from the 19th-early 20th century
+# ============================================================================
+
+# renv::install("metR")
+# renv::install("directlabels")
+# renv::install("ggrepel")
+library(directlabels)
+library(ggrepel)
+#library(dplyr)
+library(metR)
+library(ggplot2)
+library(ggpattern)
+library(showtext)
+library(sysfonts)
+library(scales)
+library(grid)
+
+# Add traditional cartographic fonts
+font_add_google("Crimson Pro", "Crimson Text")       # For titles
+font_add_google("Source Sans Pro", "Source Sans") # For labels
+font_add_google("Courier Prime", "Courier")      # For coordinates
+font_add_google("EB Garamond", "Garamond")       # Alternative serif
+
+showtext_auto()
+```
+
+```{r}
+# ============================================================================
+# TOPOGRAPHIC COLOR PALETTE
+# Based on historical survey maps and USGS quadrangle sheets
+# ============================================================================
+
+topo_colors <- list(
+  # Base map colors (from historical USGS maps)
+  contour_brown = "#8B4513",
+  elevation_brown = "#A0522D",
+  light_brown = "#D2691E",
+  
+  # Hydrographic blue (water features)
+  water_blue = "#4682B4",
+  deep_water = "#1E3A5F",
+  shallow_water = "#87CEEB",
+  stream_blue = "#5F9EA0",
+  
+  # Vegetation (historical forest green)
+  forest_green = "#228B22",
+  light_green = "#90EE90",
+  dark_green = "#006400",
+  meadow_green = "#98FB98",
+  
+  # Cultural features
+  road_red = "#8B0000",
+  building_black = "#000000",
+  
+  # Background (paper/linen)
+  map_background = "#FFF8DC",    # Cornsilk - aged map paper
+  aged_linen = "#FAF0E6",        # Linen
+  cream_paper = "#FFFACD",       # Lemon chiffon
+  
+  # Border and grid colors
+  neat_line_black = "#000000",   # Map border
+  grid_gray = "#696969",         # Graticule/grid
+  
+  # Shading colors (for hachures and relief)
+  shadow_gray = "#2F4F4F",
+  medium_shadow = "#708090",
+  light_shadow = "#A9A9A9",
+  
+  # Text colors
+  place_name_black = "#000000",
+  elevation_brown_text = "#654321",
+  water_name_blue = "#00008B",
+  
+  # Categorical palette (earth tones)
+  categorical = c("#8B4513", "#4682B4", "#228B22", "#8B0000", "#2F4F4F", "#D2691E"),
+  
+  # Elevation scale (hypsometric tints)
+  elevation_scale = c(
+    "#1E3A5F",  # Deep water
+    "#4682B4",  # Shallow water
+    "#90EE90",  # Lowland
+    "#F5DEB3",  # Plains
+    "#DEB887",  # Hills
+    "#CD853F",  # Mountains
+    "#8B4513",  # High peaks
+    "#FFFFFF"   # Snow
+  ),
+  
+  # Grayscale hachure patterns (for relief shading)
+  hachure_scale = c("#F5F5F5", "#E0E0E0", "#CCCCCC", "#B0B0B0", 
+                    "#909090", "#707070", "#505050", "#303030")
+)
+
+# Function to access topo colors
+topo_palette <- function(palette = "categorical", n = NULL, reverse = FALSE) {
+  pal <- topo_colors[[palette]]
+  
+  if (reverse) pal <- rev(pal)
+  
+  if (!is.null(n)) {
+    if (n <= length(pal)) {
+      pal <- pal[1:n]
+    } else {
+      pal <- colorRampPalette(pal)(n)
+    }
+  }
+  
+  return(pal)
+}
+
+```
+
+```{r}
+# ============================================================================
+# STEP 1: CREATE ELEVATION DATA
+# ============================================================================
+
+set.seed(1234)
+df_elevation <- expand.grid(
+  x = seq(0, 100, by = 2),
+  y = seq(0, 100, by = 2)
+)
+
+# Create elevation with peaks and valleys
+df_elevation$elevation <- with(df_elevation,
+  300 + 
+  50 * sin(x / 10) * cos(y / 10) +
+  30 * sin(x / 15) +
+  20 * cos(y / 12) +
+  rnorm(nrow(df_elevation), 0, 5)
+)
+
+cat("✓ Created elevation data:", nrow(df_elevation), "points\n")
+cat("  Elevation range:", round(min(df_elevation$elevation)), "-", 
+    round(max(df_elevation$elevation)), "meters\n\n")
+```
+
+```{r}
+
+```
+
+```{r}
+# ============================================================================
+# STEP 2: CREATE CONTOUR DATA
+# ============================================================================
+
+df_contour <- df_elevation
+contour_levels <- seq(260, 380, by = 20)
+
+cat("✓ Contour levels:", paste(contour_levels, collapse = ", "), "\n\n")
+```
+
+```{r}
+# df_contour$elevation
+```
+
+```{r}
+# ============================================================================
+# METHOD 1: SIMPLE CONTOUR MAP (NO LABELS - WORKS EVERYWHERE)
+# ============================================================================
+
+p4_simple <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background terrain tint
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.5
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    name = "Elevation\n(meters)"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 10),
+    plot.caption = element_text(hjust = 0.5, size = 8),
+    panel.background = element_rect(fill = topo_colors$map_background),
+    plot.background = element_rect(fill = topo_colors$map_background, 
+                                   color = topo_colors$neat_line_black, 
+                                   size = 1.5),
+    panel.grid = element_line(color = topo_colors$grid_gray, size = 0.3)
+  )
+
+print(p4_simple)
+cat("\n✓ Created simple contour map\n\n")
+
+
+```
+
+```{r}
+# ============================================================================
+# METHOD 2: MANUAL LABELS (WORKS EVERYWHERE)
+# ============================================================================
+
+# Build contour data
+contour_build <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  stat_contour(breaks = contour_levels)
+
+contour_data <- ggplot_build(contour_build)$data[[1]]
+
+cat("✓ Extracted contour data:", nrow(contour_data), "points\n")
+
+# Sample labels - use random sampling (most reliable)
+set.seed(123)
+label_positions <- contour_data %>%
+  group_by(level) %>%
+  slice_sample(n = min(3, n())) %>%
+  ungroup()
+
+cat("✓ Created", nrow(label_positions), "label positions\n\n")
+
+p4_manual <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  # Manual labels
+  geom_label(
+    data = label_positions,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    fill = alpha(topo_colors$map_background, 0.85),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.3,
+    label.padding = unit(0.15, "lines")
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours with labels"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 10),
+    plot.caption = element_text(hjust = 0.5, size = 8),
+    panel.background = element_rect(fill = topo_colors$map_background),
+    plot.background = element_rect(fill = topo_colors$map_background, 
+                                   color = topo_colors$neat_line_black, 
+                                   size = 1.5),
+    panel.grid = element_line(color = topo_colors$grid_gray, size = 0.3)
+  )
+
+print(p4_manual)
+cat("\n✓ Created contour map with manual labels\n\n")
+```
+
+```{r}
+# ============================================================================
+# METHOD 3: FILLED CONTOURS (WORKS EVERYWHERE)
+# ============================================================================
+
+p4_filled <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Filled contour areas
+  geom_contour_filled(
+    breaks = contour_levels,
+    alpha = 0.7
+  ) +
+  # Contour lines on top
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.5
+  ) +
+  scale_fill_brewer(
+    palette = "YlOrBr",
+    name = "Elevation\n(meters)",
+    direction = 1
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Filled contours"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+    plot.subtitle = element_text(hjust = 0.5, size = 10),
+    plot.caption = element_text(hjust = 0.5, size = 8),
+    panel.background = element_rect(fill = topo_colors$map_background),
+    plot.background = element_rect(fill = topo_colors$map_background, 
+                                   color = topo_colors$neat_line_black, 
+                                   size = 1.5),
+    panel.grid = element_line(color = topo_colors$grid_gray, size = 0.3)
+  )
+
+print(p4_filled)
+cat("\n✓ Created filled contour map\n\n")
+```
+
+```{r}
+# ============================================================================
+# METHOD 4: USING metR (IF INSTALLED)
+# ============================================================================
+
+if (requireNamespace("metR", quietly = TRUE)) {
+  cat("✓ metR package found - creating professional contour map\n\n")
+  
+  library(metR)
+  
+  p4_metR <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+    # Background terrain tint
+    geom_tile(aes(fill = elevation), alpha = 0.3) +
+    # Contour lines with labels using metR
+    geom_contour2(
+      breaks = contour_levels,
+      size = 0.4,
+      color = topo_colors$contour_brown
+    ) +
+    geom_text_contour(
+      breaks = contour_levels,
+      size = 2.5,
+      stroke = 0.2,
+      color = topo_colors$elevation_brown_text
+    ) +
+    scale_fill_gradientn(
+      colors = topo_colors$elevation_scale[3:7],
+      guide = "none"
+    ) +
+    coord_equal() +
+    labs(
+      title = "CONTOUR MAP",
+      subtitle = "20-Meter Contour Interval",
+      caption = "Elevation in meters above sea level • Professional contour labels"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      plot.subtitle = element_text(hjust = 0.5, size = 10),
+      plot.caption = element_text(hjust = 0.5, size = 8),
+      panel.background = element_rect(fill = topo_colors$map_background),
+      plot.background = element_rect(fill = topo_colors$map_background, 
+                                     color = topo_colors$neat_line_black, 
+                                     size = 1.5),
+      panel.grid = element_line(color = topo_colors$grid_gray, size = 0.3)
+    )
+  
+  print(p4_metR)
+  cat("\n✓ Created professional contour map with metR\n\n")
+  
+} else {
+  cat("○ metR package not installed\n")
+  cat("  Install with: install.packages('metR')\n")
+  cat("  For best contour labels\n\n")
+}
+```
+
+```{r}
+# ============================================================================
+# METHOD 5: USING ggrepel (IF INSTALLED)
+# ============================================================================
+
+if (requireNamespace("ggrepel", quietly = TRUE)) {
+  cat("✓ ggrepel package found - creating smart-labeled contour map\n\n")
+  
+  library(ggrepel)
+  
+  # Create label data - one per contour level
+  label_data <- contour_data %>%
+    group_by(level) %>%
+    summarize(
+      x = median(x),
+      y = median(y),
+      .groups = "drop"
+    )
+  
+  p4_ggrepel <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+    # Background
+    geom_tile(aes(fill = elevation), alpha = 0.3) +
+    # Contour lines
+    geom_contour(
+      breaks = contour_levels,
+      color = topo_colors$contour_brown,
+      size = 0.4
+    ) +
+    # Smart non-overlapping labels
+    geom_label_repel(
+      data = label_data,
+      aes(x = x, y = y, label = round(level)),
+      size = 2.5,
+      fill = alpha(topo_colors$map_background, 0.9),
+      color = topo_colors$elevation_brown_text,
+      label.size = 0.2,
+      box.padding = 0.5,
+      point.padding = 0.3,
+      segment.color = topo_colors$contour_brown,
+      segment.size = 0.3,
+      min.segment.length = 0
+    ) +
+    scale_fill_gradientn(
+      colors = topo_colors$elevation_scale[3:7],
+      guide = "none"
+    ) +
+    coord_equal() +
+    labs(
+      title = "CONTOUR MAP",
+      subtitle = "20-Meter Contour Interval",
+      caption = "Elevation in meters above sea level • Smart label placement"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(hjust = 0.5, face = "bold", size = 14),
+      plot.subtitle = element_text(hjust = 0.5, size = 10),
+      plot.caption = element_text(hjust = 0.5, size = 8),
+      panel.background = element_rect(fill = topo_colors$map_background),
+      plot.background = element_rect(fill = topo_colors$map_background, 
+                                     color = topo_colors$neat_line_black, 
+                                     size = 1.5),
+      panel.grid = element_line(color = topo_colors$grid_gray, size = 0.3)
+    )
+  
+  print(p4_ggrepel)
+  cat("\n✓ Created smart-labeled contour map with ggrepel\n\n")
+  
+} else {
+  cat("○ ggrepel package not installed\n")
+  cat("  Install with: install.packages('ggrepel')\n")
+  cat("  For smart, non-overlapping labels\n\n")
+}
+```
+
+```{r}
+
+
+# ============================================================================
+# MAIN TOPOGRAPHIC THEME
+# ============================================================================
+
+theme_topo <- function(base_size = 10,
+                       title_family = "Garamond",
+                       body_family = "Source Sans",
+                       coordinate_family = "Courier",
+                       base_line_size = 0.5,
+                       grid = "both",
+                       show_neat_line = TRUE) {
+  
+  ret <- theme_minimal(base_size = base_size,
+                       base_family = body_family,
+                       base_line_size = base_line_size)
+  
+  ret <- ret + theme(
+    # Plot background - aged map paper
+    plot.background = element_rect(
+      fill = topo_colors$map_background,
+      color = if(show_neat_line) topo_colors$neat_line_black else NA,
+      size = if(show_neat_line) 2 else 0
+    ),
+    
+    # Panel (map area)
+    panel.background = element_rect(
+      fill = topo_colors$map_background,
+      color = NA
+    ),
+    panel.border = element_rect(
+      fill = NA,
+      color = topo_colors$neat_line_black,
+      size = 1.5
+    ),
+    
+    # Grid lines (graticule/township lines)
+    panel.grid.major = element_line(
+      color = topo_colors$grid_gray,
+      size = 0.3,
+      linetype = "solid"
+    ),
+    panel.grid.minor = element_line(
+      color = alpha(topo_colors$grid_gray, 0.3),
+      size = 0.2,
+      linetype = "dotted"
+    ),
+    
+    # Title (map title - traditional placement)
+    plot.title = element_text(
+      family = title_family,
+      size = rel(1.4),
+      face = "bold",
+      hjust = 0.5,
+      vjust = 1,
+      margin = margin(b = 2, t = 8),
+      color = topo_colors$place_name_black,
+      lineheight = 1.1
+    ),
+    
+    # Subtitle (map series/quadrangle info)
+    plot.subtitle = element_text(
+      family = body_family,
+      size = rel(0.9),
+      hjust = 0.5,
+      vjust = 1,
+      margin = margin(b = 10, t = 2),
+      color = topo_colors$place_name_black,
+      face = "plain"
+    ),
+    
+    # Caption (scale, date, agency)
+    plot.caption = element_text(
+      family = coordinate_family,
+      size = rel(0.7),
+      hjust = 0.5,
+      vjust = 1,
+      margin = margin(t = 10, b = 5),
+      color = topo_colors$place_name_black,
+      face = "plain"
+    ),
+    
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    
+    # Axis elements (coordinates)
+    axis.title = element_text(
+      family = body_family,
+      size = rel(0.85),
+      color = topo_colors$place_name_black,
+      face = "plain"
+    ),
+    axis.title.x = element_text(margin = margin(t = 5)),
+    axis.title.y = element_text(margin = margin(r = 5), angle = 90),
+    
+    axis.text = element_text(
+      family = coordinate_family,
+      size = rel(0.75),
+      color = topo_colors$place_name_black
+    ),
+    
+    # Tick marks (map coordinates)
+    axis.ticks = element_line(
+      color = topo_colors$neat_line_black,
+      size = 0.5
+    ),
+    axis.ticks.length = unit(3, "pt"),
+    
+    axis.line = element_line(
+      color = topo_colors$neat_line_black,
+      size = 0.5
+    ),
+    
+    # Legend (map key/legend box)
+    legend.position = "right",
+    legend.justification = "top",
+    legend.background = element_rect(
+      fill = alpha(topo_colors$map_background, 0.95),
+      color = topo_colors$neat_line_black,
+      size = 1
+    ),
+    legend.title = element_text(
+      family = title_family,
+      size = rel(0.9),
+      face = "bold",
+      color = topo_colors$place_name_black
+    ),
+    legend.text = element_text(
+      family = body_family,
+      size = rel(0.8),
+      color = topo_colors$place_name_black
+    ),
+    legend.key = element_rect(
+      fill = topo_colors$map_background,
+      color = topo_colors$grid_gray,
+      size = 0.3
+    ),
+    legend.key.size = unit(1, "lines"),
+    legend.margin = margin(8, 8, 8, 8),
+    legend.box.margin = margin(5, 5, 5, 5),
+    
+    # Facet strips (for multiple map sheets)
+    strip.text = element_text(
+      family = title_family,
+      size = rel(0.95),
+      face = "bold",
+      color = topo_colors$place_name_black,
+      margin = margin(5, 5, 5, 5)
+    ),
+    strip.background = element_rect(
+      fill = alpha(topo_colors$light_brown, 0.3),
+      color = topo_colors$neat_line_black,
+      size = 0.5
+    ),
+    
+    # Margins (map collar)
+    plot.margin = margin(15, 15, 15, 15),
+    
+    complete = TRUE
+  )
+  
+  # Grid options
+  if (grid == "none") {
+    ret <- ret + theme(
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+  } else if (grid == "major") {
+    ret <- ret + theme(
+      panel.grid.minor = element_blank()
+    )
+  } else if (grid == "x") {
+    ret <- ret + theme(
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank()
+    )
+  } else if (grid == "y") {
+    ret <- ret + theme(
+      panel.grid.major.x = element_blank(),
+      panel.grid.minor.x = element_blank()
+    )
+  }
+  
+  return(ret)
+}
+```
+
+```{r}
+# ============================================================================
+# VARIANT: USGS STYLE (American topographic maps)
+# ============================================================================
+
+theme_topo_usgs <- function(base_size = 10) {
+  theme_topo(
+    base_size = base_size,
+    title_family = "Garamond",
+    body_family = "Source Sans",
+    coordinate_family = "Courier",
+    grid = "both",
+    show_neat_line = TRUE
+  ) +
+    theme(
+      plot.title = element_text(
+        size = rel(1.5),
+        margin = margin(b = 3, t = 10)
+      ),
+      plot.subtitle = element_text(
+        size = rel(0.85),
+        face = "italic"
+      )
+    )
+}
+```
+
+```{r}
+# ============================================================================
+# VARIANT: ORDNANCE SURVEY STYLE (British maps)
+# ============================================================================
+
+theme_topo_os <- function(base_size = 10) {
+  theme_topo(
+    base_size = base_size,
+    title_family = "Crimson",
+    body_family = "Source Sans",
+    grid = "both"
+  ) +
+    theme(
+      plot.background = element_rect(
+        fill = "white",
+        color = topo_colors$neat_line_black,
+        size = 3  # Thicker British style border
+      ),
+      panel.grid.major = element_line(
+        color = topo_colors$grid_gray,
+        size = 0.4
+      ),
+      legend.position = "bottom"
+    )
+}
+```
+
+```{r}
+# ============================================================================
+# COLOR SCALES FOR TOPOGRAPHIC MAPS
+# ============================================================================
+
+scale_color_topo <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- topo_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "colour",
+    paste0("topo_", palette),
+    palette = function(n) {
+      if (n > length(pal)) {
+        colorRampPalette(pal)(n)
+      } else {
+        pal[1:n]
+      }
+    },
+    ...
+  )
+}
+
+scale_fill_topo <- function(palette = "categorical", reverse = FALSE, ...) {
+  pal <- topo_palette(palette = palette, reverse = reverse)
+  
+  ggplot2::discrete_scale(
+    "fill",
+    paste0("topo_", palette),
+    palette = function(n) {
+      if (n > length(pal)) {
+        colorRampPalette(pal)(n)
+      } else {
+        pal[1:n]
+      }
+    },
+    ...
+  )
+}
+
+# Continuous scales
+scale_color_topo_c <- function(palette = "elevation_scale", reverse = FALSE, ...) {
+  pal <- topo_palette(palette = palette, reverse = reverse)
+  ggplot2::scale_color_gradientn(colors = pal, ...)
+}
+
+scale_fill_topo_c <- function(palette = "elevation_scale", reverse = FALSE, ...) {
+  pal <- topo_palette(palette = palette, reverse = reverse)
+  ggplot2::scale_fill_gradientn(colors = pal, ...)
+}
+```
+
+```{r}
+# ============================================================================
+# HACHURE AND SHADING PATTERNS
+# Historical relief representation methods
+# ============================================================================
+
+# Define hachure patterns for different slopes/aspects
+topo_patterns <- list(
+  # Slope patterns (steepness indicators)
+  gentle_slope = list(
+    pattern = "stripe",
+    angle = 45,
+    density = 0.1,
+    spacing = 0.04
+  ),
+  
+  moderate_slope = list(
+    pattern = "stripe",
+    angle = 45,
+    density = 0.25,
+    spacing = 0.03
+  ),
+  
+  steep_slope = list(
+    pattern = "stripe",
+    angle = 45,
+    density = 0.4,
+    spacing = 0.02
+  ),
+  
+  # Aspect patterns (direction-facing)
+  north_facing = list(
+    pattern = "stripe",
+    angle = 0,
+    density = 0.3,
+    spacing = 0.025
+  ),
+  
+  south_facing = list(
+    pattern = "stripe",
+    angle = 180,
+    density = 0.15,
+    spacing = 0.035
+  ),
+  
+  east_facing = list(
+    pattern = "stripe",
+    angle = 90,
+    density = 0.2,
+    spacing = 0.03
+  ),
+  
+  west_facing = list(
+    pattern = "stripe",
+    angle = 270,
+    density = 0.2,
+    spacing = 0.03
+  ),
+  
+  # Terrain type patterns
+  ridge = list(
+    pattern = "stripe",
+    angle = 90,
+    density = 0.2,
+    spacing = 0.03
+  ),
+  
+  valley = list(
+    pattern = "crosshatch",
+    angle = 45,
+    density = 0.3,
+    spacing = 0.025
+  ),
+  
+  plateau = list(
+    pattern = "circle",
+    angle = 0,
+    density = 0.15,
+    spacing = 0.04
+  ),
+  
+  depression = list(
+    pattern = "crosshatch",
+    angle = 0,
+    density = 0.35,
+    spacing = 0.02
+  ),
+  
+  # Land cover patterns
+  forest = list(
+    pattern = "circle",
+    angle = 0,
+    density = 0.3,
+    spacing = 0.02
+  ),
+  
+  marsh = list(
+    pattern = "wave",
+    angle = 0,
+    density = 0.25,
+    spacing = 0.025
+  ),
+  
+  sand = list(
+    pattern = "circle",
+    angle = 0,
+    density = 0.15,
+    spacing = 0.035
+  ),
+  
+  rock = list(
+    pattern = "crosshatch",
+    angle = 45,
+    density = 0.4,
+    spacing = 0.015
+  ),
+  
+  # Water patterns
+  shallow_water = list(
+    pattern = "wave",
+    angle = 0,
+    density = 0.2,
+    spacing = 0.03
+  ),
+  
+  deep_water = list(
+    pattern = "stripe",
+    angle = 0,
+    density = 0.1,
+    spacing = 0.05
+  )
+)
+
+# Function to apply hachure pattern
+apply_hachure <- function(pattern_name) {
+  pattern_params <- topo_patterns[[pattern_name]]
+  
+  if (is.null(pattern_params)) {
+    warning(paste("Pattern", pattern_name, "not found. Using default."))
+    pattern_params <- topo_patterns$gentle_slope
+  }
+  
+  return(pattern_params)
+}
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 1: ELEVATION MAP WITH HACHURES
+# ============================================================================
+
+# Create sample elevation data
+set.seed(1234)
+df_elevation <- expand.grid(
+  x = seq(0, 100, by = 2),
+  y = seq(0, 100, by = 2)
+)
+
+# Create elevation with peaks and valleys
+df_elevation$elevation <- with(df_elevation,
+  300 + 
+  50 * sin(x / 10) * cos(y / 10) +
+  30 * sin(x / 15) +
+  20 * cos(y / 12) +
+  rnorm(nrow(df_elevation), 0, 5)
+)
+
+# Categorize terrain
+df_elevation$terrain <- cut(
+  df_elevation$elevation,
+  breaks = c(-Inf, 280, 300, 320, 340, Inf),
+  labels = c("Valley", "Low Hills", "Hills", "High Hills", "Peaks")
+)
+
+p1 <- ggplot(df_elevation, aes(x = x, y = y, fill = elevation)) +
+  geom_tile() +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale,
+    name = "Elevation\n(meters)"
+  ) +
+  coord_equal() +
+  labs(
+    title = "TOPOGRAPHIC MAP",
+    subtitle = "Sample Quadrangle • 7.5 Minute Series",
+    caption = "Scale 1:24,000 • Contour Interval 20 meters • Datum: WGS84"
+  ) +
+  theme_topo_usgs()
+
+print(p1)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 2: SLOPE MAP WITH HACHURE PATTERNS
+# ============================================================================
+
+# Calculate slope categories
+df_slope <- df_elevation
+df_slope$slope_category <- cut(
+  abs(df_slope$elevation - mean(df_slope$elevation)),
+  breaks = c(0, 10, 25, 50, Inf),
+  labels = c("Gentle", "Moderate", "Steep", "Very Steep")
+)
+
+p2 <- ggplot(df_slope, aes(x = x, y = y, pattern = slope_category, fill = slope_category)) +
+  geom_tile_pattern(
+    pattern_fill = topo_colors$shadow_gray,
+    pattern_color = topo_colors$shadow_gray,
+    pattern_density = 0.3,
+    pattern_spacing = 0.025,
+    color = NA
+  ) +
+  scale_pattern_manual(
+    values = c(
+      "Gentle" = "stripe",
+      "Moderate" = "stripe",
+      "Steep" = "stripe",
+      "Very Steep" = "crosshatch"
+    ),
+    name = "Slope"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Gentle" = alpha(topo_colors$light_shadow, 0.3),
+      "Moderate" = alpha(topo_colors$medium_shadow, 0.4),
+      "Steep" = alpha(topo_colors$shadow_gray, 0.5),
+      "Very Steep" = alpha(topo_colors$shadow_gray, 0.7)
+    ),
+    name = "Slope"
+  ) +
+  coord_equal() +
+  labs(
+    title = "SLOPE ANALYSIS MAP",
+    subtitle = "Terrain Relief Representation",
+    caption = "Hachures indicate slope gradient and direction"
+  ) +
+  theme_topo()
+
+print(p2)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 3: LAND COVER MAP WITH PATTERN SYMBOLS
+# ============================================================================
+
+df_landcover <- data.frame(
+  region = c("Forest A", "Marsh B", "Urban C", "Agriculture D", "Water E", "Rocky F"),
+  area_km2 = c(125, 45, 78, 156, 34, 28),
+  cover_type = c("Forest", "Marsh", "Urban", "Agriculture", "Water", "Rock")
+)
+
+p3 <- ggplot(df_landcover, aes(x = region, y = area_km2, pattern = cover_type, fill = cover_type)) +
+  geom_col_pattern(
+    pattern_fill = topo_colors$place_name_black,
+    pattern_color = topo_colors$place_name_black,
+    pattern_density = 0.3,
+    pattern_spacing = 0.025,
+    color = topo_colors$neat_line_black,
+    width = 0.7,
+    size = 0.8
+  ) +
+  scale_pattern_manual(
+    values = c(
+      "Forest" = "circle",
+      "Marsh" = "wave",
+      "Urban" = "crosshatch",
+      "Agriculture" = "stripe",
+      "Water" = "wave",
+      "Rock" = "crosshatch"
+    ),
+    name = "Land Cover\nType"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Forest" = alpha(topo_colors$forest_green, 0.4),
+      "Marsh" = alpha(topo_colors$stream_blue, 0.4),
+      "Urban" = alpha(topo_colors$road_red, 0.3),
+      "Agriculture" = alpha(topo_colors$meadow_green, 0.4),
+      "Water" = alpha(topo_colors$water_blue, 0.4),
+      "Rock" = alpha(topo_colors$medium_shadow, 0.4)
+    ),
+    name = "Land Cover\nType"
+  ) +
+  labs(
+    title = "LAND COVER CLASSIFICATION",
+    subtitle = "Regional Survey Map",
+    caption = "Area in Square Kilometers • Pattern symbols per USGS standards",
+    x = "Survey Region",
+    y = "Area (km²)"
+  ) +
+  theme_topo() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.key.size = unit(1.5, "lines")
+  )
+
+print(p3)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 4: CONTOUR MAP STYLE
+# ============================================================================
+# EXAMPLE 4 CORRECTED: CONTOUR MAP WITH metR
+df_contour <- df_elevation
+contour_levels <- seq(260, 380, by = 20)
+
+p4_metR <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background terrain tint
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines with labels using metR
+  geom_contour2(
+    breaks = contour_levels,
+    size = 0.4,
+    color = topo_colors$contour_brown
+  ) +
+  geom_text_contour(
+    breaks = contour_levels,
+    size = 2.5,
+    family = "Courier",
+    stroke = 0.2,
+    color = topo_colors$elevation_brown_text
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    name = "Elevation\n(meters)",
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_metR)
+```
+
+```{r}
+# ============================================================================
+# Option 2: Using geom_contour_filled (Base ggplot2 - No labels)
+# ============================================================================
+
+p4_filled <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Filled contour areas
+  geom_contour_filled(
+    breaks = contour_levels,
+    alpha = 0.7
+  ) +
+  # Contour lines on top
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.5
+  ) +
+  scale_fill_brewer(
+    palette = "YlOrBr",
+    name = "Elevation\n(meters)",
+    direction = 1
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_filled)
+```
+
+```{r}
+# ============================================================================
+# Option 4: Simple contours without labels (Most compatible)
+# ============================================================================
+
+p4_simple <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background terrain tint
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines - using the group aesthetic instead of after_stat
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.5
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    name = "Elevation\n(meters)"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_simple)
+```
+
+```{r}
+elevation
+```
+
+```{r}
+# ============================================================================
+# ALTERNATIVE: Even simpler approach
+# ============================================================================
+
+# Method A: Sample every Nth point
+label_positions_simple <- contour_data %>%
+  group_by(level) %>%
+  filter(row_number() %% 50 == 1) %>%  # Every 50th point
+  ungroup()
+
+p4_manual_simple <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  geom_label(
+    data = label_positions_simple,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    family = "Courier",
+    fill = alpha(topo_colors$map_background, 0.85),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.3,
+    label.padding = unit(0.15, "lines")
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_manual_simple)
+```
+
+```{r}
+# Build contour data
+contour_build <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  stat_contour(breaks = contour_levels)
+
+contour_data <- ggplot_build(contour_build)$data[[1]]
+
+# Select label positions - FIXED: Use integer indices
+set.seed(123)
+label_positions <- contour_data %>%
+  group_by(level) %>%
+  slice(seq(1, n(), length.out = min(3, n())) %>% round()) %>%  # Round to integers
+  ungroup()
+
+p4_manual <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  # Manual labels
+  geom_label(
+    data = label_positions,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    family = "Courier",
+    fill = alpha(topo_colors$map_background, 0.85),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.3,
+    label.padding = unit(0.15, "lines")
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours with elevation labels"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_manual)
+```
+
+```{r}
+
+# ============================================================================
+# Option 6: Using ggrepel for smart label placement
+# ============================================================================
+# Get contour data
+contour_build <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  stat_contour(breaks = contour_levels)
+
+contour_data <- ggplot_build(contour_build)$data[[1]]
+
+# Create label data - one label per contour level
+label_data <- contour_data %>%
+  group_by(level) %>%
+  summarize(
+    x = median(x),
+    y = median(y),
+    .groups = "drop"
+  )
+
+p4_ggrepel <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  # Contour lines
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  # Smart non-overlapping labels
+  geom_label_repel(
+    data = label_data,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    family = "Courier",
+    fill = alpha(topo_colors$map_background, 0.9),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.2,
+    box.padding = 0.5,
+    point.padding = 0.3,
+    segment.color = topo_colors$contour_brown,
+    segment.size = 0.3,
+    min.segment.length = 0
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Brown contours with smart label placement"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_ggrepel)
+```
+
+```{r}
+# ============================================================================
+# Method B: Take specific positions (beginning, middle, end)
+# ============================================================================
+
+label_positions_three <- contour_data %>%
+  group_by(level) %>%
+  mutate(n_points = n()) %>%
+  filter(
+    row_number() == 1 |                    # First point
+    row_number() == floor(n_points / 2) |  # Middle point
+    row_number() == n_points               # Last point
+  ) %>%
+  select(-n_points) %>%
+  ungroup()
+
+p4_manual_three <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  geom_label(
+    data = label_positions_three,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    family = "Courier",
+    fill = alpha(topo_colors$map_background, 0.85),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.3,
+    label.padding = unit(0.15, "lines")
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_manual_three)
+
+# ============================================================================
+# Method C: Random sampling (good distribution)
+# ============================================================================
+
+set.seed(123)
+label_positions_random <- contour_data %>%
+  group_by(level) %>%
+  slice_sample(n = min(3, n())) %>%  # Sample up to 3 points per level
+  ungroup()
+
+p4_manual_random <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  geom_tile(aes(fill = elevation), alpha = 0.3) +
+  geom_contour(
+    breaks = contour_levels,
+    color = topo_colors$contour_brown,
+    size = 0.4
+  ) +
+  geom_label(
+    data = label_positions_random,
+    aes(x = x, y = y, label = round(level)),
+    size = 2.5,
+    family = "Courier",
+    fill = alpha(topo_colors$map_background, 0.85),
+    color = topo_colors$elevation_brown_text,
+    label.size = 0.3,
+    label.padding = unit(0.15, "lines")
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_manual_random)
+
+```
+
+```{r}
+# ============================================================================
+# CORRECTED COMPLETE FUNCTION
+# ============================================================================
+
+create_topo_contour <- function(data, x, y, z, 
+                                interval = 20,
+                                label_method = "none",
+                                labels_per_contour = 3) {
+  
+  # Calculate breaks
+  z_range <- range(data[[z]], na.rm = TRUE)
+  breaks <- seq(
+    floor(z_range[1] / interval) * interval,
+    ceiling(z_range[2] / interval) * interval,
+    by = interval
+  )
+  
+  # Base plot with background and contours
+  p <- ggplot(data, aes_string(x = x, y = y, z = z)) +
+    geom_tile(aes_string(fill = z), alpha = 0.3) +
+    geom_contour(
+      breaks = breaks,
+      color = topo_colors$contour_brown,
+      size = 0.4
+    ) +
+    scale_fill_gradientn(
+      colors = topo_colors$elevation_scale[3:7],
+      guide = if(label_method == "none") "colorbar" else "none"
+    ) +
+    coord_equal() +
+    labs(
+      title = "CONTOUR MAP",
+      subtitle = paste0(interval, "-Meter Contour Interval"),
+      caption = "Elevation in meters above sea level"
+    ) +
+    theme_topo(grid = "major")
+  
+  # Add labels based on method
+  if (label_method == "metR") {
+    if (!requireNamespace("metR", quietly = TRUE)) {
+      warning("metR package not installed. Falling back to 'none'")
+      return(p)
+    }
+    p <- ggplot(data, aes_string(x = x, y = y, z = z)) +
+      geom_tile(aes_string(fill = z), alpha = 0.3) +
+      metR::geom_contour2(breaks = breaks, size = 0.4, color = topo_colors$contour_brown) +
+      metR::geom_text_contour(breaks = breaks, size = 2.5, family = "Courier") +
+      scale_fill_gradientn(colors = topo_colors$elevation_scale[3:7], guide = "none") +
+      coord_equal() +
+      labs(title = "CONTOUR MAP", subtitle = paste0(interval, "-Meter Contour Interval")) +
+      theme_topo(grid = "major")
+      
+  } else if (label_method == "manual") {
+    # Extract contour data
+    temp_plot <- ggplot(data, aes_string(x = x, y = y, z = z)) +
+      stat_contour(breaks = breaks)
+    
+    contour_data <- ggplot_build(temp_plot)$data[[1]]
+    
+    # Sample labels - FIXED VERSION
+    label_data <- contour_data %>%
+      group_by(level) %>%
+      slice_sample(n = min(labels_per_contour, n())) %>%
+      ungroup()
+    
+    p <- p +
+      geom_label(
+        data = label_data,
+        aes(x = x, y = y, label = round(level)),
+        size = 2.5,
+        family = "Courier",
+        fill = alpha(topo_colors$map_background, 0.85),
+        label.size = 0.2
+      )
+      
+  } else if (label_method == "ggrepel") {
+    if (!requireNamespace("ggrepel", quietly = TRUE)) {
+      warning("ggrepel package not installed. Falling back to 'none'")
+      return(p)
+    }
+    
+    temp_plot <- ggplot(data, aes_string(x = x, y = y, z = z)) +
+      stat_contour(breaks = breaks)
+    
+    contour_data <- ggplot_build(temp_plot)$data[[1]]
+    
+    label_data <- contour_data %>%
+      group_by(level) %>%
+      summarize(x = median(x), y = median(y), .groups = "drop")
+    
+    p <- p +
+      ggrepel::geom_label_repel(
+        data = label_data,
+        aes(x = x, y = y, label = round(level)),
+        size = 2.5,
+        family = "Courier",
+        fill = alpha(topo_colors$map_background, 0.9)
+      )
+  }
+  
+  return(p)
+```
+
+```{r}
+# ============================================================================
+# Option 6: Color-coded contours by elevation (NO LABELS, NO EXTRA PACKAGES)
+# ============================================================================
+
+p4_colored <- ggplot(df_contour, aes(x = x, y = y, z = elevation)) +
+  # Background
+  geom_tile(aes(fill = elevation), alpha = 0.4) +
+  # Contour lines colored by elevation
+  stat_contour(
+    aes(color = ..level..),  # Use ..level.. for older ggplot2 compatibility
+    breaks = contour_levels,
+    size = 0.6
+  ) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[3:7],
+    name = "Elevation\n(meters)",
+    guide = "none"
+  ) +
+  scale_color_gradientn(
+    colors = c(topo_colors$contour_brown, topo_colors$elevation_brown),
+    name = "Contour\nElevation\n(meters)"
+  ) +
+  coord_equal() +
+  labs(
+    title = "CONTOUR MAP",
+    subtitle = "20-Meter Contour Interval",
+    caption = "Elevation in meters above sea level • Contours color-coded by elevation"
+  ) +
+  theme_topo(grid = "major")
+
+print(p4_colored)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 5: ASPECT MAP (Hillside Direction)
+# ============================================================================
+
+# Create aspect data (which direction slopes face)
+df_aspect <- df_elevation
+df_aspect$aspect <- cut(
+  (df_aspect$x + df_aspect$y) %% 360,
+  breaks = c(0, 90, 180, 270, 360),
+  labels = c("North", "East", "South", "West"),
+  include.lowest = TRUE
+)
+
+p5 <- ggplot(df_aspect, aes(x = x, y = y, pattern = aspect, fill = aspect)) +
+  geom_tile_pattern(
+    aes(pattern_angle = aspect),
+    pattern = "stripe",
+    pattern_fill = topo_colors$shadow_gray,
+    pattern_color = topo_colors$shadow_gray,
+    pattern_density = 0.25,
+    pattern_spacing = 0.025,
+    color = NA
+  ) +
+  scale_pattern_angle_discrete(
+    range = c(0, 90, 180, 270),
+    name = "Aspect"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "North" = alpha(topo_colors$shadow_gray, 0.5),
+      "East" = alpha(topo_colors$medium_shadow, 0.4),
+      "South" = alpha(topo_colors$light_shadow, 0.3),
+      "West" = alpha(topo_colors$medium_shadow, 0.4)
+    ),
+    name = "Aspect"
+  ) +
+  coord_equal() +
+  labs(
+    title = "ASPECT MAP",
+    subtitle = "Hillslope Direction Analysis",
+    caption = "Hachure orientation indicates slope aspect • Density shows relative steepness"
+  ) +
+  theme_topo()
+
+print(p5)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 6: HYDROGRAPHIC MAP (Water Features)
+# ============================================================================
+
+df_hydro <- data.frame(
+  feature = c("River", "Lake", "Stream", "Reservoir", "Wetland", "Canal"),
+  length_km = c(245, 89, 134, 67, 45, 23),
+  feature_type = c("Flowing", "Standing", "Flowing", "Standing", "Standing", "Flowing")
+)
+
+p6 <- ggplot(df_hydro, aes(x = reorder(feature, length_km), y = length_km, 
+                           pattern = feature_type, fill = feature_type)) +
+  geom_col_pattern(
+    pattern_fill = topo_colors$water_blue,
+    pattern_color = topo_colors$deep_water,
+    pattern_density = 0.3,
+    pattern_spacing = 0.025,
+    color = topo_colors$neat_line_black,
+    width = 0.65,
+    size = 0.6
+  ) +
+  scale_pattern_manual(
+    values = c(
+      "Flowing" = "wave",
+      "Standing" = "stripe"
+    ),
+    name = "Water Type"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Flowing" = alpha(topo_colors$stream_blue, 0.6),
+      "Standing" = alpha(topo_colors$water_blue, 0.6)
+    ),
+    name = "Water Type"
+  ) +
+  coord_flip() +
+  labs(
+    title = "HYDROGRAPHIC FEATURES",
+    subtitle = "Water Feature Classification",
+    caption = "Length in kilometers • Blue patterns indicate water features",
+    x = "Feature",
+    y = "Length/Area (km)"
+  ) +
+  theme_topo(grid = "x") +
+  theme(legend.key.size = unit(1.5, "lines"))
+
+print(p6)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 7: GEOLOGICAL MAP WITH ROCK PATTERNS
+# ============================================================================
+
+df_geology <- data.frame(
+  formation = c("Sandstone", "Limestone", "Shale", "Granite", "Basalt", "Schist"),
+  age_ma = c(250, 350, 400, 500, 180, 600),
+  thickness_m = c(450, 380, 520, 340, 290, 410),
+  rock_type = c("Sedimentary", "Sedimentary", "Sedimentary", 
+                "Igneous", "Igneous", "Metamorphic")
+)
+
+p7 <- ggplot(df_geology, aes(x = reorder(formation, -age_ma), y = thickness_m,
+                             pattern = rock_type, fill = rock_type)) +
+  geom_col_pattern(
+    aes(pattern_angle = rock_type),
+    pattern_fill = topo_colors$place_name_black,
+    pattern_color = topo_colors$place_name_black,
+    pattern_density = 0.3,
+    pattern_spacing = 0.02,
+    color = topo_colors$neat_line_black,
+    width = 0.7,
+    size = 0.7
+  ) +
+  scale_pattern_manual(
+    values = c(
+      "Sedimentary" = "stripe",
+      "Igneous" = "crosshatch",
+      "Metamorphic" = "wave"
+    ),
+    name = "Rock Type"
+  ) +
+  scale_pattern_angle_discrete(
+    range = c(0, 45, 90),
+    name = "Rock Type"
+  ) +
+  scale_fill_manual(
+    values = c(
+      "Sedimentary" = alpha(topo_colors$light_brown, 0.5),
+      "Igneous" = alpha(topo_colors$elevation_brown, 0.5),
+      "Metamorphic" = alpha(topo_colors$medium_shadow, 0.5)
+    ),
+    name = "Rock Type"
+  ) +
+  geom_text(
+    aes(label = paste0(age_ma, " Ma")),
+    vjust = -0.5,
+    family = "Courier",
+    size = 2.8,
+    color = topo_colors$place_name_black
+  ) +
+  labs(
+    title = "GEOLOGICAL FORMATIONS",
+    subtitle = "Stratigraphic Column and Rock Classification",
+    caption = "Thickness in meters • Age in millions of years (Ma) • Pattern symbols per USGS standards",
+    x = "Formation (oldest to youngest)",
+    y = "Thickness (meters)"
+  ) +
+  theme_topo(grid = "y") +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.key.size = unit(1.5, "lines")
+  )
+
+print(p7)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 8: MULTI-PANEL MAP SHEET (Faceted)
+# ============================================================================
+
+# Create data for multiple map quadrants
+df_quadrants <- expand.grid(
+  x = seq(0, 50, by = 2),
+  y = seq(0, 50, by = 2),
+  quadrant = c("NW", "NE", "SW", "SE")
+)
+
+# Different elevation profiles for each quadrant
+set.seed(42)
+df_quadrants$elevation <- with(df_quadrants, {
+  base_elev <- case_when(
+    quadrant == "NW" ~ 200,
+    quadrant == "NE" ~ 300,
+    quadrant == "SW" ~ 250,
+    quadrant == "SE" ~ 350
+  )
+  base_elev + 50 * sin(x / 8) * cos(y / 8) + rnorm(n(), 0, 10)
+})
+
+p8 <- ggplot(df_quadrants, aes(x = x, y = y, fill = elevation)) +
+  geom_tile() +
+  facet_wrap(~ quadrant, ncol = 2) +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale,
+    name = "Elevation\n(meters)"
+  ) +
+  coord_equal() +
+  labs(
+    title = "TOPOGRAPHIC MAP SERIES",
+    subtitle = "Four-Quadrant Survey Sheet • 1:50,000 Scale",
+    caption = "NW, NE, SW, SE Quadrants • 50-meter resolution • Elevation in meters MSL"
+  ) +
+  theme_topo_usgs() +
+  theme(
+    strip.text = element_text(size = rel(1.1)),
+    panel.spacing = unit(1, "lines")
+  )
+
+print(p8)
+```
+
+```{r}
+# ============================================================================
+# EXAMPLE 9: RELIEF SHADING (Hillshade Effect)
+# ============================================================================
+
+# Create hillshade effect data
+df_hillshade <- df_elevation
+
+# Simple hillshade calculation (light from NW)
+df_hillshade$hillshade <- with(df_hillshade, {
+  dx <- c(diff(elevation), 0)
+  dy <- c(0, diff(elevation))
+  shade <- (dx + dy) / 2
+  # Normalize to 0-1
+  (shade - min(shade)) / (max(shade) - min(shade))
+})
+
+p9 <- ggplot(df_hillshade, aes(x = x, y = y)) +
+  # Base elevation colors
+  geom_tile(aes(fill = elevation), alpha = 0.6) +
+  # Hillshade overlay
+  geom_tile(aes(alpha = hillshade), fill = "black") +
+  scale_fill_gradientn(
+    colors = topo_colors$elevation_scale[2:7],
+    name = "Elevation\n(meters)"
+  ) +
+  scale_alpha_continuous(
+    range = c(0, 0.5),
+    guide = "none"
+  ) +
+  coord_equal() +
+  labs(
+    title = "RELIEF SHADING MAP",
+    subtitle = "Hillshade Representation • Illumination from Northwest",
+    caption = "Shaded relief shows terrain form • Light source angle: 315° • Altitude: 45°"
+  ) +
+  theme_topo(grid = "major")
+
+print(p9)
+```
+
+```{r}
+# ============================================================================
+# CUSTOM PATTERN FUNCTIONS
+# ============================================================================
+
+# Function to create a complete hachured map
+create_hachure_map <- function(data, x, y, z, pattern_by = "slope", 
+                                title = "TOPOGRAPHIC MAP") {
+  
+  # Calculate slope if needed
+  if (pattern_by == "slope") {
+    data$pattern_var <- cut(
+      abs(data[[z]] - mean(data[[z]])),
+      breaks = c(0, 10, 25, 50, Inf),
+      labels = c("Gentle", "Moderate", "Steep", "Very Steep")
+    )
+    pattern_values <- c("stripe", "stripe", "stripe", "crosshatch")
+    densities <- c(0.1, 0.25, 0.4, 0.5)
+  }
+  
+  p <- ggplot(data, aes_string(x = x, y = y, pattern = "pattern_var", fill = z)) +
+    geom_tile_pattern(
+      pattern_fill = topo_colors$shadow_gray,
+      pattern_color = topo_colors$shadow_gray,
+      aes(pattern_density = pattern_var),
+      pattern_spacing = 0.025,
+      color = NA
+    ) +
+    scale_pattern_manual(values = pattern_values) +
+    scale_pattern_density_manual(values = densities) +
+    scale_fill_gradientn(colors = topo_colors$elevation_scale) +
+    coord_equal() +
+    labs(title = title) +
+    theme_topo()
+  
+  return(p)
+}
+```
+
+```{r}
+# ============================================================================
+# HELPER FUNCTIONS
+# ============================================================================
+
+# Add north arrow (as text annotation)
+add_north_arrow <- function(plot, x = 0.95, y = 0.95) {
+  plot + 
+    annotation_custom(
+      grob = textGrob(
+        "N\n↑",
+        gp = gpar(
+          fontfamily = "Source Sans",
+          fontsize = 12,
+          fontface = "bold"
+        )
+      ),
+      xmin = x, xmax = x,
+      ymin = y, ymax = y
+    )
+}
+
+# Add scale bar (as geom)
+add_scale_bar <- function(plot, x, y, length_km, units = "km") {
+  plot +
+    annotate(
+      "segment",
+      x = x, xend = x + length_km,
+      y = y, yend = y,
+      color = topo_colors$neat_line_black,
+      size = 2
+    ) +
+    annotate(
+      "text",
+      x = x + length_km/2,
+      y = y - 2,
+      label = paste(length_km, units),
+      family = "Courier",
+      size = 3
+    )
+}
+
+# Save topographic map with proper settings
+save_topo_map <- function(plot, filename, width = 10, height = 8, dpi = 300) {
+  ggsave(
+    filename = filename,
+    plot = plot,
+    width = width,
+    height = height,
+    dpi = dpi,
+    bg = topo_colors$map_background
+  )
+  message("✓ Topographic map saved: ", filename)
+}
+```
+
+```{r}
+# ============================================================================
+# PATTERN REFERENCE GUIDE
+# ============================================================================
+
+cat("\n=== TOPOGRAPHIC MAP PATTERN GUIDE ===\n\n")
+
+cat("SLOPE REPRESENTATION (Hachures):\n")
+cat("  • Gentle slope:     Light, sparse stripes (density 0.1-0.2)\n")
+cat("  • Moderate slope:   Medium density stripes (density 0.2-0.3)\n")
+cat("  • Steep slope:      Dense stripes (density 0.3-0.4)\n")
+cat("  • Very steep:       Crosshatch pattern (density 0.4-0.5)\n\n")
+
+cat("TERRAIN FEATURES:\n")
+cat("  • Ridge lines:      Vertical stripes, angle 90°\n")
+cat("  • Valleys:          Crosshatch, angle 45°\n")
+cat("  • Plateaus:         Light dots/circles\n")
+cat("  • Depressions:      Dense crosshatch\n\n")
+
+cat("LAND COVER SYMBOLS:\n")
+cat("  • Forest:           Circles (tree symbols)\n")
+cat("  • Marsh/Wetland:    Wave pattern\n")
+cat("  • Sand/Beach:       Light circles\n")
+cat("  • Rocky terrain:    Dense crosshatch\n\n")
+
+cat("WATER FEATURES:\n")
+cat("  • Flowing water:    Wave pattern (horizontal)\n")
+cat("  • Standing water:   Light stripes (horizontal)\n")
+cat("  • Shallow water:    Sparse waves\n")
+cat("  • Deep water:       Solid blue fill\n\n")
+
+cat("GEOLOGICAL PATTERNS:\n")
+cat("  • Sedimentary:      Horizontal stripes\n")
+cat("  • Igneous:          Crosshatch, angle 45°\n")
+cat("  • Metamorphic:      Wave or diagonal patterns\n\n")
+
+cat("ASPECT (SLOPE DIRECTION):\n")
+cat("  • North-facing:     Stripes at 0° (vertical)\n")
+cat("  • East-facing:      Stripes at 90° (horizontal)\n")
+cat("  • South-facing:     Stripes at 180° (vertical)\n")
+cat("  • West-facing:      Stripes at 270° (horizontal)\n\n")
+
+cat("RECOMMENDED DPI FOR TOPOGRAPHIC MAPS:\n")
+cat("  • Screen display:   150-300 DPI\n")
+cat("  • Standard print:   300 DPI\n")
+cat("  • Large format:     150-200 DPI\n")
+cat("  • Professional:     600 DPI\n\n")
+
+cat("FILE FORMATS:\n")
+cat("  • PDF: Best for vector elements and printing\n")
+cat("  • PNG: Good for web display (use high DPI)\n")
+cat("  • TIFF: Professional GIS use\n\n")
+```
+
+```{r}
+geom_tile_pattern(
+  aes(pattern = terrain_type),
+  pattern = "stripe",              # Pattern type
+  pattern_angle = 45,              # Angle in degrees
+  pattern_density = 0.3,           # How dense (0-1)
+  pattern_spacing = 0.025,         # Space between elements
+  pattern_fill = "black",          # Pattern color
+  pattern_color = "black",         # Pattern outline
+  fill = "tan",                    # Base fill color
+  color = "black",                 # Tile border
+  size = 0.5                       # Border thickness
+)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
