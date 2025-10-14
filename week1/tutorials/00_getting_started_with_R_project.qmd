@@ -163,3 +163,5 @@ However, for this course, you will download course materials from a Github repos
     c\. *Encountering errors is a regular part of programming* - Read the error message carefully (especially the first and last lines of the error message). If it's an unfamiliar error type look it up on line. Some good debugging tips are found in the *Advanced R* book, [Chapter 22](https://adv-r.hadley.nz/debugging.html).
 
 4.  **Modifying your local version of the repository**
+
+    1.  We suggest that you do not change any of the original files in the repository. Instead, if you want to modify one of the notebooks for your own purposes, save it under a different name before making your modifications.
