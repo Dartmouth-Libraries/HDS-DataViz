@@ -25,7 +25,7 @@ editor: visual
     b\. Creating a new project
 :::
 
-## 1. Value of Reproducible Research
+## Part 1. Value of Reproducible Research
 
 ::: incremental
 1.  Improve collaboration
@@ -35,7 +35,7 @@ editor: visual
 5.  protect confidential data
 :::
 
-## 2. Best Practices for Reproducible Research
+## Part 2. Best Practices for Reproducible Research
 
 ### 2a. Some foundational principles for reproducible research
 
@@ -51,7 +51,7 @@ editor: visual
 
 -   For additional considerations, taking into consideration ethics, community relations, and trust, other researchers have proposed expanding the FAIR principles to "FAIREST" (Ethics, Source, and Trust) and adding the "CARE" principles (Collective Benefit, Authority to Control, Responsibility, and Ethics). Dartmouth Libraries provides a [brief overview](https://researchguides.dartmouth.edu/OSCARRS/FAIREST) of these principles.
 
-## 2b. Additional Key Practices
+## Part 2b. Additional Key Practices
 
 1.  Developing a **project-oriented workflow**: each project is stored in its own folder or directory on your computer, with different types of materials stored in different sub-directories (i.e. "data", "code", "notes", "results", and "lit").
 
@@ -97,13 +97,13 @@ great_films_project/
 ```
 
 1.  Follow **file naming best practices** to improve the organization and legibility of your files. See [this guide](https://datamanagement.hms.harvard.edu/plan-design/file-naming-conventions) from Harvard and [this one](https://r4ds.hadley.nz/workflow-scripts.html#saving-and-naming) from *R for Data Science*. Some commonly recommended conventions include: avoid white-space and all special characters (except for underscores) in file names, use simple but descriptive lower-cases names for folders when possible, consider how sorting your files in alphabetical order can be leveraged to quickly find a specific file (i.e. begin your filename with an iso data like "2025-10-14", with the type of file \["field_notes_2025-10-14"\], or with a numerical order \["001_field-notes_2025-10-14"\]), and include important metadata in the filename (i.e. date). See the guides above for more suggestions.
-2.  **Portability / containerization**: For coding projects, **virtual environments** are recommended, so that all necessary packages are found locally and other users can recreate the exact same environment for the project on their computers. This ensures consistent execution across different computers.creating separate directories for each project, each with their own virtual environment, allows users to share their code with others who can then recreate the same environment and therefore reuse all code. Experienced users of R (or those eager to follow best practices from the start) may want to install and use [**renv**](https://rstudio.github.io/renv/articles/renv.html), an R package that allows you to create a virtual environment for each project.
+2.  **Portability / containerization**: For coding projects, **virtual environments** are recommended, so that all necessary packages are found locally and other users can recreate the exact same environment for the project on their computers. This ensures consistent execution across different computers.creating separate directories for each project, each with their own virtual environment, allows users to share their code with others who can then recreate the same environment and therefore reuse all code.
 3.  **Preserve original data**: Create a copy of your data and then save the originals in a folder and only operate any code on copies of your data. You can even make your original data "read only" to prevent you from modifying them in mistake. See the sample folder structures above.
 4.  **Transparency**: Document everything. Create codebooks to describe how data is encoded in your datasets. Add detailed documentation directly into your coding notebooks or scripts so another user understands what each chunk of code does. Record overviews of your project workflows and methods in a README or other documents found in your project's root folder. *AI Tip*: if you don't have time to do this as you go and want to revisit old code, you can feed your code into an LLM and ask it to provide documentation. That said, it's best to do this as you go.
 5.  **Data Versioning**: Backup your work and use version control to preserve previous versions of your code, data, and other files so you can rewind to a previous step when you make errors. Programmers most commonly use git to store older versions of their code, which is then linked with Github to push your code onto a remote (online) repository (useful for both backup and sharing).
 6.  **Code Modularity**: Write functions for any tasks that you may want to repeat. If you are creating multiple code scripts or notebooks for your project, then it is recommended to store your functions in a separate script file (`.R` for R) where you can call these functions from any notebook or script in your project folder.
 
-## 3. Project Set-Up
+## Part 3. Project Set-Up
 
 1.  If you haven't already, download R and Rstudio from Posit: <https://posit.co/download/rstudio-desktop/>
 2.  If you haven't already, create an organized file structure for your materials for this Master's program. Something like:
@@ -140,16 +140,26 @@ However, for this course, you will download course materials from a Github repos
 
     a\. From the course github homepage (link above), select the green **Code** button and choose **Clone** and then copy the SSH key. You can then clone the repository into the location of your choice by typing `git clone <ssh-or-htttps-key>` into a terminal. Note: this requires having set up your own github account and setting up your own SSH key. For new git users, we recommend following the [Software Carpentry's Version Control with Git](https://swcarpentry.github.io/git-novice/index.html) tutorial.
 
-## 4. Intro to Projects with R Studio
+## Part 4. Intro to Projects with R Studio
 
 1.  **Create a New Project in R Studio**
 
-    a\.
+    a\. **File** –\> **New Project** –\> **Existing Directory** –\> Browse to the project folder you created in Part 3 above.
 
-2.  **Creating a Virtual Environment** for course materials using `renv` .
+    b\. you can re-open this project using **File** –\> **Open Project** or, more quickly if in recent memory, **Recent Projects**
 
-3.  **Installing all needed packages** for course code using the renv lockfile.
+2.  **Create a Virtual Environment** (optional) for course materials using `renv` .
 
-4.  **Running repository code**
+    a\. Experienced users of R (or those eager to follow best practices from the start) may want to install and use [**renv**](https://rstudio.github.io/renv/articles/renv.html), an R package that allows you to create a virtual environment for each project. New users of R may be okay without it for a while, but as you develop a portfolio of diverse projects, you may want to begin using renv sooner or later.
 
-5.  **Modifying your local version of the repository**
+    b\. **Install all needed packages** for course code (in the console type `renv::restore()`) using the renv lockfile (`renv.lock`).
+
+3.  **Running repository code**
+
+    a\. When running course notebooks or creating your own, you will need to ensure any imported R packages (import with the **library()** function) are first installed on your system. If using the renv virtual environment option (see above), all packages used in the existing code in this repository should be already installed in the project virtual environment after having run `renv::restore()`. For other users, you will have to run `install.packages("<package-name>")` in the console or in a coding notebook to install any imported packages not already installed. To view what packages are already installed run `installed_packages()` in the console or in a notebook.
+
+    b\. After installing necessary packages for a given notebook, try running it in its entirety by selecting **Run All** to see if the notebook runs.
+
+    c\. *Encountering errors is a regular part of programming* - Read the error message carefully (especially the first and last lines of the error message). If it's an unfamiliar error type look it up on line. Some good debugging tips are found in the *Advanced R* book, [Chapter 22](https://adv-r.hadley.nz/debugging.html).
+
+4.  **Modifying your local version of the repository**
