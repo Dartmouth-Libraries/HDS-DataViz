@@ -6,7 +6,9 @@ format: html
 editor: visual
 ---
 
-# 1. Set up
+# Thunderplots: Visualizing Weather Data
+
+## 1. Set up
 
 In this notebook, we will work with some time-series weather data.
 

@@ -253,7 +253,7 @@ Plot = Data + Mapping (how data variables are to be visualized)
 Five mapping components:
 
 | Component | Description |
-|----|----|
+|------------------------------------|------------------------------------|
 | layer | includes **geoms** (geometric elements visible in the plot like points, lines, polygons, etc.) and **stats** (statistical transformations that summarize the data, simplifying it for visualization; i.e. binning or counting observations to make a histogram, or fitting a linear model) |
 | scale | maps data values to visual variables like color, shape, and size |
 | coord | describes how data will be placed spatially and what coordinate system will be used |
@@ -287,7 +287,7 @@ ggplot(data=msleep, aes(x = sleep_total)) +
   geom_histogram()   #binwidth=4
 ```
 
-However, the gglot version doesn't look as nice. Since ggplot allows a lot more customization, we will need to be more specific in our instructions, adding in parameters for the color fill (`fill`), color outline (`color`), and `binwidth`.
+However, the ggplot version doesn't look as nice. Since ggplot allows a lot more customization, we will need to be more specific in our instructions, adding in parameters for the color fill (`fill`), color outline (`color`), and `binwidth`.
 
 ```{r}
 ggplot(data=msleep, aes(x = sleep_total)) +

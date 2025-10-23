@@ -5,7 +5,7 @@ format: html
 editor: visual
 ---
 
-# Data Wrangling for Visualization, Weather Data Part 2
+# Tidy Weather: Data Wrangling for Visualization, Part 2
 
 In the previous notebook, you learned how to subset and re-shape a large dataset to create a simple line graph showing changes in yearly max and min temperatures for Hanover, NH. If nothing else, the results clearly show steadily warming local temperatures.
 
@@ -53,7 +53,6 @@ Examine the columns and data contained in this dataset using the functions below
 
     ```         
     # Write the steps you think are needed below:
-
 
 
 
