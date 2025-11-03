@@ -1,5 +1,5 @@
 ---
-title: "Getting Started with your Research Project in RStudio"
+title: "Starting a Research Project in RStudio"
 author: "Jeremy Mikecz"
 format: html
 editor: visual
@@ -124,7 +124,7 @@ Within each course folder, you may want to add sub-directories to separate your 
 
 However, for this course, you will download course materials from a Github repository, which already has this structure setup.
 
-3.  Visit our course repository at <https://github.com/Dartmouth-Libraries/HDS-DataViz>. Use your Dartmouth email to access the repository. Please let me know if you still cannot access it.
+3.  Visit our course repository at <https://github.com/Dartmouth-Libraries/HDS-DataViz>. Use your Dartmouth email to access the repository. Please let me know if you cannot access it.
 
 4.  There are two main ways to download the course materials onto your own computer (or onto your cloud drive):
 
