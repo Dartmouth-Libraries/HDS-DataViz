@@ -489,7 +489,7 @@ Think about which data variables you would like to plot and what visual variable
 ### 6.1. [Scatterplot Matrix](https://r-graph-gallery.com/199-correlation-matrix-with-ggally.html)
 
 ```{r}
-install.packages("GGally")
+# install.packages("GGally")
 ```
 
 ```{r}

@@ -7,7 +7,7 @@ editor: visual
 
 # Tidy Weather: Data Wrangling for Visualization, Part 1
 
-In this lesson we will import a dataset of local weather data.
+In this lesson we will import a dataset of local weather data and modify it to answer the question: how has Hanover's data changed over time? Then, we will create a basic line graph showing this change.
 
 When searching for local weather data, I found [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) found on NOAA's National Centers for Environmental Information website. I chose "Hanover", the type of data I wanted, and the date range (earliest to present). Next, I requested this data, and downloaded it from a link they sent me.
 
@@ -206,14 +206,15 @@ ggplot(data=yearly_temps) +
     geom_line(aes(x=YEAR, y=avg_TMIN), color="blue")
 ```
 
-We can add a 10-day rolling average using the **rollmean()** function from the **zoo** library.
+We can add a 10-day rolling average using the **rollmean()** function from the **zoo** library and a more useful y-axis label.
 
 ```{r}
 ggplot(data=yearly_temps, aes(x=YEAR)) +
     geom_line(aes(y=avg_TMAX), color="red", linewidth=1, alpha=0.5) + 
     geom_line(aes(y=rollmean(avg_TMAX, 10, na.pad=TRUE)), linetype="dashed") +
     geom_line(aes(y=avg_TMIN), color="blue", linewidth=1, alpha=0.5)+
-    geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), linetype="dashed")
+    geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), linetype="dashed") +
+    ylab("Temperature (yearly average)")
 ```
 
 # EXERCISE:

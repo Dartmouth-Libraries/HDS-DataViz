@@ -37,7 +37,7 @@ Some possibly useful commands:
 -   `renv::migrate(path/to/root/dir)`: to migrate an existing project's dependencies stored in **packrat** (previous but deprecated R library for creating virtual environments) to **renv**.
 
 ```{r}
-#install.packages("renv")    # only un-comment out and run once
+#install.packages("renv")    # un-comment out and run once for each new project
 #renv::init()                # un-comment out and run once for each new project
 
 # for more info: https://rstudio.github.io/renv/articles/renv.html
