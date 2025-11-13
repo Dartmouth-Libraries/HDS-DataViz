@@ -10,7 +10,15 @@ jupyter: ir
 
 ## 0. Setup
 
-For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project. The recommended tool for doing this is the [renv](https://rstudio.github.io/renv/) package. Review the documentation at this link for more advanced uses like sharing an R project with a **renv** virtual environment on Github.
+For experienced users of R who regularly share their code with other researchers and experiment with others' code, we recommend setting up a separate **virtual environment** for each project.
+
+If you are using R for a variety of different projects, you may risk encountering dependency conflicts. These occur when you may need Package *A* for a text analysis project and that package requires version 1.0 of Package *B*, while Package *C* for a machine-learning projects requires version 2.0 of Package *B*.
+
+Setting up a virtual environment allows you to avoid such conflicts. Often, programmers use a different virtual environment for each project (and each project should be stored in a separate project folder).
+
+This also provides another benefit. When sharing code with others, programmers can send a list of packages (and their specific versions) to collaborators so that they can reproduce the exact same environment on their machines. This, in turn, ensures that the experience of running the team's code is exactly the same for project members working on their own computers.
+
+In Python, users typically use the **venv** library to create and use virtual environments. The primary tool for doing this in R is the [renv](https://rstudio.github.io/renv/) package. Review the documentation at this link for more advanced uses like sharing an R project with a **renv** virtual environment on Github.
 
 Some possibly useful commands:
 
@@ -18,11 +26,15 @@ Some possibly useful commands:
 
 -   `renv::init()`: initiate a R project for use with **renv** (do once upon creating a new project)
 
-<!-- -->
+-   `renv::snapshot()`: creates a file (called a lockfile) containing the metadata for all currently-used packages in the project library. You can then share this lockfile with others so that they can reproduce the same virtual environment on their own computer.
 
--   `renv::migrate(path/to/root/dir)`: to migrate an existing project's dependencies stored in **packrat** to **renv**.
+-   `renv::restore()`: imports R packages (and their specific versions) as stored in the project lockfile.
 
--   \`
+-   `renv::install(package-name)`: You may still use the typical `install.packages(package-name)` command to install packages to your project from the R package repository **CRAN**. However, **renv::install()** allows you to install packages from Github, Bioconductor, and more, in addition to CRAN.
+
+-   `renv::update()`: to update your existing project package library with the latest versions.
+
+-   `renv::migrate(path/to/root/dir)`: to migrate an existing project's dependencies stored in **packrat** (previous but deprecated R library for creating virtual environments) to **renv**.
 
 ```{r}
 #install.packages("renv")    # only un-comment out and run once
@@ -32,7 +44,7 @@ Some possibly useful commands:
 ```
 
 ```{r}
-
+library(tidyverse)
 ```
 
 ## 1. Retrieve Pre-loaded Datasets

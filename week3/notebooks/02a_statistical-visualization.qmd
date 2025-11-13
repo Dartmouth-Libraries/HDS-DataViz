@@ -29,6 +29,8 @@ library(broom)      # For tidying model output
 library(GGally)     # For ggpairs and other multivariate plots
 library(car)        # For diagnostic plots
 library(performance) # For model checking
+# install.packages("see")
+# library(see)
 ```
 
 ## Part 1: Data Import and Exploration
@@ -192,11 +194,16 @@ Now let's create some interactive visualizations using plotly.
 
 ```{r plotly-basic}
 # Convert a ggplot to an interactive plotly visualization
-p <- ggplot(penguins_clean, aes(x = bill_length_mm, y = bill_depth_mm, 
-                               color = species, text = paste("Species:", species,
-                                                            "<br>Island:", island,
-                                                            "<br>Sex:", sex,
-                                                            "<br>Body Mass:", body_mass_g, "g"))) +
+p <- ggplot(penguins_clean,
+            aes(x = bill_length_mm,
+                y = bill_depth_mm, 
+                color = species,
+                text = paste(
+                    "Species:", species,
+                    "<br>Island:", island,
+                    "<br>Sex:", sex,
+                    "<br>Body Mass:",body_mass_g, "g"))
+            ) +
   geom_point(alpha = 0.7) +
   labs(
     title = "Bill Length vs. Bill Depth",

@@ -77,6 +77,7 @@ ggplot(diamonds, aes(x = carat)) +
 
 # Convert to interactive plot with plotly
 p <- ggplot(diamonds, aes(x = carat, fill = cut)) +
+  # geom_density(alpha = 0.5) +
   geom_histogram(bins = 50, alpha = 0.7, position = "dodge") +
   labs(title = "Distribution of Carat by Cut Quality",
        x = "Carat",

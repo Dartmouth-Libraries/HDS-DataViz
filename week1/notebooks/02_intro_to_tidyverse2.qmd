@@ -30,26 +30,6 @@ For a more detailed introduction to working with tidy data in R see:
 
 -   Silge and Robinson, [Text Mining with R](https://www.tidytextmining.com/), Ch. 1 "The tidy text format".
 
-## *Optional*: Working with Virtual Environments
-
-If you are using R for a variety of different projects, you may risk encountering dependency conflicts. These occur when you may need Package *A* for a text analysis project and that package requires version 1.0 of Package *B*, while Package *C* for a machine-learning projects requires version 2.0 of Package *B*.
-
-Setting up a virtual environment allows you to avoid such conflicts. Often, programmers use a different virtual environment for each project (and each project should be stored in a separate project folder). This also provides another benefit. When sharing code with others, programmers can send a list of packages (and their specific versions) to collaborators so that they can reproduce the exact same environment on their machines. This, in turn, ensures that the experience of running the team's code is exactly the same for project members each working on their own computers.
-
-In Python, users typically use the **venv** library to create and use virtual environments. In R, users often use the **Packrat** library / package.
-
-To set up a local virtual environment with packrat:\\
-
-1.  First, install packrat using `install.packages("packrat")`.
-2.  From within your project folder, initialize it using the command `packrat::init()`.
-3.  R should activite your new virtual environment automatically whenever you work in that project folder. To ensure it is activated, however, you can run the code `packrat::on()`. To deactivate, simply run `packrat::off()`.
-
-```{r}
-#install.packages("packrat")
-#packrat::init()
-#packrat::on
-```
-
 ## Getting Started with Tidyverse
 
 Data analysis usually involves working with two-dimensional datasets known as dataframes. There are different ways to work with dataframes in R, these include:
