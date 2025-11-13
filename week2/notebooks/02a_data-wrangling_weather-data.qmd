@@ -198,7 +198,38 @@ We should save this dataset before doing anything else:
 write.csv(yearly_temps, "../data/Hanover_yearly-temp-averages_1894-2024.csv")
 ```
 
-# 6. Visualizing
+# 6. Tidying the Data: Wide to Long 
+
+At times, you will need to convert a dataframe from wide format to long (or vice-versa).
+
+The long format is often, but not always, preferred for data analysis. In particular, you want each row of your data to represent one observation. Thus, for our temperature data, one observation is not multiple metrics for a given year (that would be multiple observations) but, rather, one metric per year. To convert a dataset into such a long format, we will have to move all values into one column (sometimes called `value` but in this case `average_yearly_temp` or `T_yravg` is more descriptive) and record the type of value being recorded in other column (in a column called `type`).
+
+```{r}
+head(yearly_temps)
+```
+
+```{r}
+yearly_temps_long <- yearly_temps |>
+    pivot_longer(
+        cols = c(avg_TMAX, avg_TMIN),
+        names_to = "type",
+        values_to = "T_yravg",
+    ) |>
+    mutate(
+        type = case_when (
+            type == "avg_TMAX" ~"maxtemp",
+            type == "avg_TMIN" ~"mintemp",
+            TRUE ~type
+        )
+    )
+head(yearly_temps_long)
+```
+
+```{r}
+write.csv(yearly_temps_long, "../data/Hanover_yearly-temp-averages_long_1894-2024.csv")
+```
+
+# 7. Visualizing with wide dataset
 
 ```{r}
 ggplot(data=yearly_temps) +
@@ -214,7 +245,41 @@ ggplot(data=yearly_temps, aes(x=YEAR)) +
     geom_line(aes(y=rollmean(avg_TMAX, 10, na.pad=TRUE)), linetype="dashed") +
     geom_line(aes(y=avg_TMIN), color="blue", linewidth=1, alpha=0.5)+
     geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), linetype="dashed") +
-    ylab("Temperature (yearly average)")
+    ylab("Temperature (yearly average)") + 
+    ggtitle("Yearly Average Temperatures with 10-Year Rolling Mean")
+```
+
+# 8. Visualizing with long dataset
+
+```{r}
+ggplot(data = yearly_temps_long) +
+  geom_line(aes(x = YEAR, y = T_yravg, color = type)) +
+  scale_color_manual(
+    values = c(maxtemp = "red", mintemp = "blue"),
+    name = "Temperature Type"
+  )
+```
+
+```{r}
+# Compute rolling means by group (type)
+yearly_temps_rolled <- yearly_temps_long %>%
+  arrange(type, YEAR) %>%
+  group_by(type) %>%
+  mutate(
+    rollmean_10 = rollmean(T_yravg, k = 10, fill = NA, align = "center")
+  ) %>%
+  ungroup()
+
+ggplot(data = yearly_temps_rolled, aes(x = YEAR, color = type)) +
+  geom_line(aes(y = T_yravg), linewidth = 0.5, alpha = 0.6) +
+  # we need to group by type below so that it creates two separate lines in the color "gray25"
+  geom_line(aes(y = rollmean_10, group=type), linewidth=1, color="gray25", linetype = "dashed") +
+  scale_color_manual(
+    values = c(maxtemp = "red", mintemp = "blue"),
+    name = "Temperature Type"
+  ) +
+  ylab("Temperature (yearly average)") +
+  ggtitle("Yearly Average Temperatures with 10-Year Rolling Mean")
 ```
 
 # EXERCISE:
@@ -223,10 +288,4 @@ Create a similar graph, but this time showing the average yearly rain and snowfa
 
 \*\*OR, download data for your hometown from NOAA and create a similar graph (temperature, snowfall, precipitation, etc.)
 
-## Exploring the Dataset
-
-## Wide to Long
-
-## Long to Wide
-
-## Factors & Data Type Conversion
+## 

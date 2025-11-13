@@ -127,9 +127,11 @@ df20c <- df2 |>
 ```{r}
 df20c_avgs <- df20c |>
     group_by(MON, DAY) |>
-    summarize(Avg_TMAX_20c = mean(TMAX, na.rm = TRUE),
-              Avg_TMIN_20c = mean(TMIN, na.rm = TRUE),
-              .groups = 'drop')
+    summarise(
+        Avg_TMAX_20c = mean(TMAX, na.rm = TRUE),
+        Avg_TMIN_20c = mean(TMIN, na.rm = TRUE),
+        .groups = 'drop'
+        )
     
 
 ```
@@ -174,7 +176,7 @@ We want to place monthly labels at the midway point of each month.
 ```{r}
 month_positions <- df_2024 |>
   group_by(month) |>
-  summarize(mid_day = mean(daynum)) |>
+  summarise(mid_day = mean(daynum)) |>
   ungroup()
 month_positions
 ```
