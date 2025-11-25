@@ -348,7 +348,7 @@ starwars |>
 ```
 
 ::: callout-tip
-# Exercise
+# CODING ASSIGNMENT Week 1, Notebooks 01-02: Exploring a Built-in Dataset
 
 In a new Quarto document, choose another built-in dataset (run `data()` to see what datasets are available).
 
@@ -357,7 +357,7 @@ In a new Quarto document, choose another built-in dataset (run `data()` to see w
 3.  To answer this question re-shape, filter, sort, and aggregate the dataset using the tidyverse functions demonstrated above.
 4.  Write a brief paragraph explaining what you learned from this preliminary analysis.
 5.  **To complete this assignment: Create a brief, clean version of this Quarto document (removing all unnecessary code). Then submit a pdf version of this document. To convert the document into a pdf see the directions below.**
-6.  Instructions for converting a Quarto Document (.qmd) into a PDF:
+6.  Instructions for converting a Quarto Document (.qmd) into a PDF (for more details see [Quarto: pdf basics](https://quarto.org/docs/output-formats/pdf-basics.html)):
     1.  Place the following format instructions in the YAML header of the document:
 
         \`\`\``format:`
@@ -367,4 +367,6 @@ In a new Quarto document, choose another built-in dataset (run `data()` to see w
         `documentclass: report`
 
         `papersize: letter`\`\`\`
+
+    2.  Install **tinytex** if you haven't already. To do so, run `quarto install tinytex` in the terminal.
 :::

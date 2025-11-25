@@ -282,10 +282,4 @@ ggplot(data = yearly_temps_rolled, aes(x = YEAR, color = type)) +
   ggtitle("Yearly Average Temperatures with 10-Year Rolling Mean")
 ```
 
-# EXERCISE:
-
-Create a similar graph, but this time showing the average yearly rain and snowfall for Hanover.
-
-\*\*OR, download data for your hometown from NOAA and create a similar graph (temperature, snowfall, precipitation, etc.)
-
-## 
+# 

@@ -93,3 +93,26 @@ ggplot(temps |> filter(Year>2015), aes(x=daynum, y=maxdiff20c, fill=maxdiff20c))
     facet_wrap(~Year, ncol=1) +
     scale_fill_viridis(option = "plasma")
 ```
+
+::: callout-tip
+# CODING ASSIGNMENT Week 2, Notebooks 02-03: Visualizing Weather Data
+
+Create a new Quarto document.
+
+1.  Go to [*Climate Data Online*](https://www.ncei.noaa.gov/cdo-web/) and download weather data for your hometown or a town/ location you have spent some time in. Pose a weather-related question you would like to answer about this location.
+2.  Re-create one of the visualizations created in Notebooks 02 and 03 here or create your own visualization to answer your question.
+3.  Write a brief paragraph stating the weather-related question you posed and explaining how your visualization helped you answer this question.
+4.  **To complete this assignment: Create a brief, clean version of this Quarto document (removing all unnecessary code). Then submit a pdf version of this document to CANVAS. To convert the document into a pdf see the directions below.**
+5.  Instructions for converting a Quarto Document (.qmd) into a PDF (for more details see [Quarto: pdf basics](https://quarto.org/docs/output-formats/pdf-basics.html)):
+    1.  Place the following format instructions in the YAML header of the document:
+
+        \`\`\``format:`
+
+        `pdf:`
+
+        `documentclass: report`
+
+        `papersize: letter`\`\`\`
+
+    2.  Install **tinytex** if you haven't already. To do so, run `quarto install tinytex` in the terminal.
+:::

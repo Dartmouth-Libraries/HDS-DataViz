@@ -53,7 +53,6 @@ Examine the columns and data contained in this dataset using the functions below
 
     ```         
     # Write the steps you think are needed below:
-
     ```
 
 # 3. Steps
@@ -251,14 +250,4 @@ ggplot(df2 |> filter(YEAR>2015), aes(x=daynum, y=Avg_TMAX_20c, fill=Avg_TMAX_20c
     #scale_fill_viridis(option = "plasma")
 ```
 
-# EXERCISE:
-
-Create a similar graph, but this time showing the average yearly rain and snowfall for Hanover.
-
-## Exploring the Dataset
-
-## Wide to Long
-
-## Long to Wide
-
-## Factors & Data Type Conversion
+# 
