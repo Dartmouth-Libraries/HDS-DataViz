@@ -54,7 +54,6 @@ Examine the columns and data contained in this dataset using the functions below
     ```         
     # Write the steps you think are needed below:
 
-
     ```
 
 # 3. Steps

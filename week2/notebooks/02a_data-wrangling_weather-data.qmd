@@ -198,7 +198,7 @@ We should save this dataset before doing anything else:
 write.csv(yearly_temps, "../data/Hanover_yearly-temp-averages_1894-2024.csv")
 ```
 
-# 6. Tidying the Data: Wide to Long 
+# 6. Tidying the Data: Wide to Long
 
 At times, you will need to convert a dataframe from wide format to long (or vice-versa).
 

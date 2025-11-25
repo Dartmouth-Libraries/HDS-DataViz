@@ -1,0 +1,67 @@
+---
+title: "Shiny test"
+author: "Jeremy"
+format: html
+editor: visual
+---
+
+## Shiny Test
+
+Install and import [NHANES package](https://cran.r-project.org/web/packages/NHANES/refman/NHANES.html).s
+
+```{r}
+# renv::install("NHANES")
+library(NHANES)
+```
+
+```{r}
+data(NHANES)
+```
+
+```{r}
+# renv::install("medicaldata")
+library(medicaldata)
+```
+
+## rdhs package to access Demographic and Health Survey Data
+
+Note: *you need to register for an account with DHS to be able to access data through the **rdhs** package.* Instructions [here](https://docs.ropensci.org/rdhs/).
+
+```{r}
+# renv::install("rdhs")
+library(rdhs)
+```
+
+```{r}
+# renv::install("MedDataSets")
+library(MedDataSets)
+```
+
+```{r}
+data()
+```
+
+```{r}
+?babies_crawl_tbl_df
+```
+
+```{r}
+head(babies_crawl_tbl_df)
+```
+
+```{r}
+# renv::install("sociome")
+library(sociome)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

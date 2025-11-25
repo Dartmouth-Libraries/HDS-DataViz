@@ -223,7 +223,8 @@ cat("✓ Extracted contour data:", nrow(contour_data), "points\n")
 set.seed(123)
 label_positions <- contour_data %>%
   group_by(level) %>%
-  slice_sample(n = min(3, n())) %>%
+  slice_sample(n=3) %>%
+  #slice_sample(n = min(3, n())) %>% # causes Error: n must be a constant
   ungroup()
 
 cat("✓ Created", nrow(label_positions), "label positions\n\n")
