@@ -1,0 +1,42 @@
+---
+title: "Creating a Shiny App with AI"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Creating a Shiny App with an AI Assistant
+
+## **1. Project Overview & Learning Objectives**
+
+### **Objective**
+
+To design, build, and deploy a simple, interactive data visualization dashboard using R Shiny. This project will synthesize your skills in data exploration, visualization design (ggplot2/plotly), storytelling, and basic web application development. You will create a dashboard that allows a user to explore a health-related dataset and gain insights into a specific question or topic.
+
+### **A Key Component: The AI Copilot**
+
+You are not only permitted but **encouraged** to use Large Language Models (LLMs) like ChatGPT, GitHub Copilot, or Claude to assist you in writing and debugging your Shiny code. A critical part of this assignment will be documenting and reflecting on how you used AI as a tool to accelerate your development and learning process.
+
+### Guiding Framework
+
+1.  AUTOMATE THE TEDIOUS: Let AI, more specifically LLMs, help you code and do much of the tedious work for you.
+2.  FOCUS ON THE BIG IDEAS AND CONCEPTS:
+3.  USE AI AS AN ASSISTANT NOT REPLACEMENT
+4.  MULTI-SHOT PROMPTING - ENGAGE IN CONVERSATION
+5.  USE AI AS A LEARNING ASSISTANT
+
+## 2. Shiny Basics
+
+\[insert\]
+
+## 3. Building a Minimal Shiny App with AI
+
+## 4. Re-creating an animated Gapminder plot within Shiny
+
+### Prompt
+
+### Review Results, Modify
+
+## 5. Registering for a shinyapps.io free account
+
+## 6. Deploying your app on shinyapps
