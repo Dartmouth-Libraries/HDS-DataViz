@@ -156,13 +156,19 @@ p + theme_wsj()
 
 ## Reconstruct theme from *The Urban Institute*
 
-The Urban Institute's [style guide](https://urbaninstitute.github.io/graphics-styleguide/).
+As you have seen, there are a few different preloaded themes available for use with ggplot, but they are rather limited and not very interesting.
 
-[List](https://docs.google.com/spreadsheets/d/1F1gm5QLXh3USC8ZFx_M9TXYxmD-X5JLDD0oJATRTuIE/edit?usp=sharing) of other style guides available online
+**ggthemes** provides additional options.
 
 Often, however, we may prefer to create our own theme based on our own style guide.
 
-Before trying to create our own personalized theme, however, let's try to create a theme using an existing style guide, that of the *Urban Institute*. Note: the Urban Institute has already done this using [urbnthemes](https://urbaninstitute.github.io/urbnthemes/) package, but we will recreate this theme from scratch.
+Before trying to create our own personalized theme, however, let's try to create a theme using an existing style guide, that of the *Urban Institute*.
+
+-   this is a useful theme to start with as The Urban Institute has carefully outlined their design choices in their [style guide](https://urbaninstitute.github.io/graphics-styleguide/).
+
+-   Note: the Urban Institute has already done this using [urbnthemes](https://urbaninstitute.github.io/urbnthemes/) package, but we will recreate this theme from scratch.
+
+-   [List](https://docs.google.com/spreadsheets/d/1F1gm5QLXh3USC8ZFx_M9TXYxmD-X5JLDD0oJATRTuIE/edit?usp=sharing) of other style guides available online
 
 First, the Urban Institute uses Google's [Lato](https://fonts.google.com/specimen/Lato) font. Let's import it:
 
