@@ -1,0 +1,189 @@
+---
+title: "Setup"
+author: "Jeremy Mikecz"
+date: "2026-01-07"
+format: html
+editor: visual
+---
+
+------------------------------------------------------------------------
+
+# Setup Instructions
+
+This document provides detailed instructions for setting up your R environment for this course/workshop.
+
+## Table of Contents
+
+1.  [Installing R and RStudio](#installing-r-and-rstudio)
+2.  [Downloading Course Materials](#downloading-course-materials)
+3.  [Setting Up the R Environment](#setting-up-the-r-environment)
+4.  [Verifying Your Setup](#verifying-your-setup)
+5.  [Troubleshooting](#troubleshooting)
+
+## Installing R and RStudio {#installing-r-and-rstudio}
+
+### Install R
+
+1.  Go to <https://cran.r-project.org/>
+2.  Click on the link for your operating system (Windows, Mac, or Linux)
+3.  Download and install the latest version (4.0 or higher)
+
+**Windows users:** Download "base" R\
+**Mac users:** Choose the appropriate .pkg file for your chip (Intel or Apple Silicon)\
+**Linux users:** Follow distribution-specific instructions
+
+### Install RStudio (Recommended)
+
+1.  Go to <https://posit.co/download/rstudio-desktop/>
+2.  Download RStudio Desktop (free version)
+3.  Install using the downloaded installer
+
+**Alternative:** You can use other R interfaces, but course instructions assume RStudio.
+
+## Downloading Course Materials {#downloading-course-materials}
+
+### Option 1: Using Git (Recommended for experienced users)
+
+If you have Git installed:
+
+```{bash}
+git clone [REPOSITORY-URL]
+cd [repository-name]
+```
+
+To update materials throughout the course:
+
+```{bash}
+git pull origin main
+
+```
+
+### Option 2: Download as ZIP
+
+```         
+ Click the green "Code" button on the repository page
+ Select "Download ZIP"
+ Extract the ZIP file to a memorable location (e.g., ~/Documents/R-Courses/)
+ Important: To get updates, you'll need to re-download
+```
+
+## Setting Up the R Environment {#setting-up-the-r-environment}
+
+This repository uses renv for package management, ensuring everyone has the same package versions.
+
+### Step 1: Open the Project
+
+Double-click the \[project-name\].Rproj file to open the project in RStudio.
+
+### Step 2: Install renv
+
+If prompted to install renv, click "Yes" or run:
+
+```{r}
+install.packages("renv")
+```
+
+### Step 3: Restore Packages
+
+In the R console, run:
+
+```{r}
+renv::restore()
+```
+
+This will install all required packages. This may take 10-30 minutes depending on your system and internet connection.
+
+Type `y` when prompted to proceed.
+
+### Step 4: Test the Setup
+
+Run the setup verification script:
+
+```{r}
+source("scripts/00_setup.R")
+```
+
+If you see "✓ Setup complete!" you're ready to go!
+
+## Verifying Your Setup {#verifying-your-setup}
+
+Run this code in your R console to verify everything is working:
+
+```{r}
+# Check R version
+R.version.string
+
+# Check if key packages load
+required_packages <- c("tidyverse", "rmarkdown", "here")
+sapply(required_packages, require, character.only = TRUE)
+
+# Test plot generation
+library(ggplot2)
+ggplot(mtcars, aes(x = mpg, y = wt)) +
+  geom_point() +
+  labs(title = "Test Plot - If you see this, ggplot2 works!")
+```
+
+## Troubleshooting {#troubleshooting}
+
+### Issue: "renv::restore() fails with compilation errors"
+
+#### Solution 1: Install binary packages instead of compiling from source
+
+```{r}
+# On Mac/Linux, when prompted about installing from source, choose "No"
+# Or set this option:
+options(install.packages.check.source = "no")
+renv::restore()
+```
+
+#### Solution 2: Install system dependencies (Linux users)
+
+On Ubuntu/Debian:
+
+```{bash}
+sudo apt-get install libxml2-dev libcurl4-openssl-dev libssl-dev
+```
+
+### Issue: "Cannot open file 'data/raw/myfile.csv'"
+
+#### Solution: Always use the here package for file paths
+
+```{r}
+library(here)
+data <- read.csv(here("data", "raw", "myfile.csv"))
+```
+
+Using **setwd()** is not recommended \[EXPLAIN WHY!\]
+
+### Issue: "Package 'X' is not available for R version Y"
+
+#### Solution: Update R to the latest version, or use an older package version
+
+```{r}
+# Install specific older version
+renv::install("package@version")
+```
+
+### Issue: RStudio doesn't recognize the project
+
+#### Solution: Ensure you opened the `.Rproj` file, not just a script
+
+-   Close RStudio
+
+-   Navigate to the repository folder
+
+-   Double-click the .Rproj file
+
+### Issue: Git clone fails
+
+#### Solution: Check your network connection, or try HTTPS instead of SSH
+
+```{bash}
+# If SSH fails, try HTTPS
+git clone https://github.com/username/repository.git
+```
+
+### Still Having Issues?
+
+\[insert possible steps, i.e. contact instructor, review particular online materials, etc.\]
