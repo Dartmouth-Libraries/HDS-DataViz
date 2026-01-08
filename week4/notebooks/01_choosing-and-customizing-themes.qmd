@@ -216,15 +216,15 @@ Save plot.
 
 ```{r}
 ggsave(
-    "gapminder-scatter_custom.png",
+    "../images/gapminder-scatter_custom.png",
 )
 ```
 
-You'll probably notice in this outputed png that the text appears too small. We can fix this in two ways. One is to reduce the resolution of the plot:
+You'll probably notice in this outputed png (in the `week4/images` folder that the text appears too small. We can fix this in two ways. One is to reduce the resolution of the plot:
 
 ```{r}
 ggsave(
-    "gapminder-scatter_custom-small.png",
+    "../images/gapminder-scatter_custom-small.png",
     width = 6,
     height = 4.5
 )
@@ -241,13 +241,13 @@ p <- p +
     )
 
 ggsave(
-    "gapminder-scatter_custom-largerfont.png",
+    "../images/gapminder-scatter_custom-largerfont.png",
     width = 10,
     height = 7
 )
 ```
 
-I still don't like the scaling of this image's legend (open "gapminder-scatter_custom-largerfont.png" which is saved in the current working directory). Before trying to further customize the `fivethirtyeight()` theme we used above, let's view the underlying code:
+I still don't like the scaling of this image's legend (open "gapminder-scatter_custom-largerfont.png" which is saved in the `week4/images` folder). Before trying to further customize the `fivethirtyeight()` theme we used above, let's view the underlying code:
 
 ```{r}
 theme_fivethirtyeight
@@ -263,7 +263,7 @@ p +
   )
 
 ggsave(
-    "gapminder-scatter_custom-largerfont2.png",
+    "../images/gapminder-scatter_custom-largerfont2.png",
     width = 10,
     height = 7
 )
@@ -596,7 +596,7 @@ sample_p <- ggplot(sample_df, aes(x = reorder(category, value), y = value)) +
 print(sample_p)
 
 # Save with proper font rendering
-ggsave("urban_plot.png", sample_p, width = 8, height = 6, dpi = 150)
+ggsave("../images/urban_plot.png", sample_p, width = 8, height = 6, dpi = 150)
 ```
 
 We can also apply it to our Gapminder plot:
@@ -623,7 +623,7 @@ p_urban <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop
          size = "Population") +
     theme_urban()  # This handles the styling/typography
 
-ggsave("gapminder_UrbanInst-theme.png", p_urban, width = 5, height = 4)
+ggsave("../images/gapminder_UrbanInst-theme.png", p_urban, width = 5, height = 4)
 p
 
 ```
