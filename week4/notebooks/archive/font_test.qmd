@@ -1,0 +1,135 @@
+---
+title: "font test"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+## Test Importing Fonts
+
+```{r}
+# install.packages("sysfonts")
+# install.packages("gfonts")
+library(gfonts)
+library(sysfonts)
+```
+
+```{r}
+all_fonts_df <- get_all_fonts()
+```
+
+```{r}
+library(showtext)
+```
+
+```{r}
+font_config <- list(
+    title = list(
+        # name = "EB Garamond", #family = "eb_garamond",
+        name = "Playfair Display",
+        family = "playfair-display",
+        sizes = list(
+            viz_title = 18,
+            viz_subtitle = 13,
+            map_country = 14,
+            map_province = 11,
+            map_range = 9
+        ),
+        weights = list(
+            bold = "bold",
+            semibold = "600",
+            regular = "400"
+        )
+    ),
+    caption = list(
+        name = "Montserrat",
+        family = "montserrat",
+        sizes = list(
+            viz_caption = 9,
+            map_town = 7,
+            map_peak = 7,
+            map_water = 8
+        ),
+        weights = list(
+            regular = "400",
+            italic = "italic"
+        )
+    ),
+    axis = list(
+        name = "Vollkorn",
+        family = "vollkorn",
+        sizes = list(
+            axis_label = 9,
+            axis_text = 8,
+            legend = 9
+        ),
+        weights = list(
+            regular = "400",
+            medium = "500"
+        )
+    ),
+    map_city = list(
+        name = "Montserrat",
+        family = "montserrat",
+        sizes = list(
+            major_city = 10,
+            small_city = 8
+        ),
+        weights = list(
+            bold = "bold",
+            regular = "400"
+        )
+    )
+    
+)
+```
+
+```{r}
+# Add fonts with error handling
+tryCatch({
+    font_add_google(font_config$title$name, font_config$title$family)
+    cat(sprintf("✓ %s loaded\n", font_config$title$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$title$name, e$message))
+})
+
+tryCatch({
+    font_add_google(font_config$caption$name, font_config$caption$family)
+    cat(sprintf("✓ %s loaded\n", font_config$caption$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$caption$name, e$message))
+})
+
+tryCatch({
+    font_add_google(font_config$axis$name, font_config$axis$family)
+    cat(sprintf("✓ %s loaded\n", font_config$axis$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$axis$name, e$message))
+})
+
+tryCatch({
+    font_add_google(font_config$map_city$name, font_config$map_city$family)
+    cat(sprintf("✓ %s loaded\n", font_config$map_city$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$map_city$name, e$message))
+})
+```
+
+```{r}
+# Enable showtext for rendering
+showtext_auto()
+showtext_opts(dpi = 300)
+```
+
+```{r}
+# Simplified font references for backward compatibility
+# ------------------------------------------------------
+fonts <- list(
+    title = font_config$title$family,
+    caption = font_config$caption$family,
+    axis = font_config$axis$family,
+    map_country = font_config$title$family,
+    map_city = font_config$map_city$family,
+    map_feature = font_config$caption$family
+)
+```

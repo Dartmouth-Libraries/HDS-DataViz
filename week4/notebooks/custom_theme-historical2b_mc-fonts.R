@@ -4,7 +4,7 @@
 
 # Install and load required packages
 # ----------------------------------
-packages <- c("ggplot2", "sf", "rnaturalearth", "rnaturalearthdata", 
+packages <- c("ggplot2", "ggrepel", "sf", "rnaturalearth", "rnaturalearthdata", 
               "dplyr", "showtext", "scales", "patchwork", "tidyr")
 
 # Install if needed
@@ -27,8 +27,9 @@ library(showtext)
 # ---------------------------------------------------------
 font_config <- list(
     title = list(
-        name = "EB Garamond",
-        family = "eb_garamond",
+        # name = "EB Garamond", #family = "eb_garamond",
+        name = "Playfair Display",
+        family = "playfair-display",
         sizes = list(
             viz_title = 18,
             viz_subtitle = 13,
@@ -42,9 +43,22 @@ font_config <- list(
             regular = "400"
         )
     ),
+    country_name = list(
+        name = "Montserrat",
+        family = "montserrat",
+        sizes = list(
+            major_country = 20,
+            small_country = 16
+        ),
+        weights = list(
+            bold = "bold",
+            regular = "700"
+        )
+    ),
+    
     caption = list(
-        name = "Crimson Pro",
-        family = "crimson",
+        name = "Montserrat",
+        family = "montserrat",
         sizes = list(
             viz_caption = 9,
             map_town = 7,
@@ -57,8 +71,8 @@ font_config <- list(
         )
     ),
     axis = list(
-        name = "Libre Franklin",
-        family = "libre_franklin",
+        name = "Lato",
+        family = "lato",
         sizes = list(
             axis_label = 9,
             axis_text = 8,
@@ -70,8 +84,8 @@ font_config <- list(
         )
     ),
     map_city = list(
-        name = "Libre Baskerville",
-        family = "libre_baskerville",
+        name = "Montserrat",
+        family = "montserrat",
         sizes = list(
             major_city = 10,
             small_city = 8
@@ -80,7 +94,22 @@ font_config <- list(
             bold = "bold",
             regular = "400"
         )
+    ),
+    geog_features = list(
+        name = "Vollkorn",
+        family = "vollkorn",
+        sizes = list(
+            large_features = 16,
+            small_features = 10
+        ),
+        weights = list(
+            light = "300",
+            regular = "400",
+            medium = "500",
+            italic = "italic"
+        )
     )
+    
 )
 
 
@@ -118,6 +147,20 @@ tryCatch({
     cat(sprintf("✓ %s loaded\n", font_config$map_city$name))
 }, error = function(e) {
     cat(sprintf("✗ %s failed: %s\n", font_config$map_city$name, e$message))
+})
+
+tryCatch({
+    font_add_google(font_config$country_name$name, font_config$country_name$family)
+    cat(sprintf("✓ %s loaded\n", font_config$country_name$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$country_name$name, e$message))
+})
+
+tryCatch({
+    font_add_google(font_config$geog_features$name, font_config$geog_features$family)
+    cat(sprintf("✓ %s loaded\n", font_config$geog_features$name))
+}, error = function(e) {
+    cat(sprintf("✗ %s failed: %s\n", font_config$geog_features$name, e$message))
 })
 
 # Enable showtext for rendering
@@ -196,9 +239,10 @@ fonts <- list(
     title = font_config$title$family,
     caption = font_config$caption$family,
     axis = font_config$axis$family,
-    map_country = font_config$title$family,
+    map_country = font_config$country_name$family,
     map_city = font_config$map_city$family,
-    map_feature = font_config$caption$family
+    map_feature = font_config$caption$family,
+    geog_feature = font_config$geog_features$family
 )
 
 # Custom ggplot2 theme
@@ -296,10 +340,10 @@ bar_chart <- ggplot(book_sales, aes(x = reorder(region, sales), y = sales,
     theme(legend.position = "none") +
     scale_y_continuous(expand = c(0, 0), limits = c(0, 3500))
 
-print(bar_chart)
+# print(bar_chart)
 
 # Save
-ggsave("lithographic_bar_chart.png", bar_chart, width = 10, height = 7, dpi = 300, bg = lithographic_colors$land)
+ggsave("week4/images/lithographic_theme/lithographic_bar_chart.png", bar_chart, width = 10, height = 7, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
 # EXAMPLE 2: LINE CHART WITH MULTIPLE SERIES
@@ -344,9 +388,9 @@ line_chart <- ggplot(population_data, aes(x = year, y = population,
         )
     )
 
-print(line_chart)
+# print(line_chart)
 
-ggsave("lithographic_line_chart.png", line_chart, width = 10, height = 7, dpi = 300, bg = lithographic_colors$land)
+ggsave("week4/images/lithographic_theme/lithographic_line_chart.png", line_chart, width = 10, height = 7, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
 # EXAMPLE 3: CHOROPLETH MAP
@@ -402,9 +446,9 @@ choropleth_map <- ggplot(data = world_data) +
         legend.justification = c(0, 0.5)
     )
 
-print(choropleth_map)
+# print(choropleth_map)
 
-ggsave("lithographic_choropleth_map.png", choropleth_map, width = 10, height = 8, dpi = 300)
+ggsave("week4/images/lithographic_theme/lithographic_choropleth_map.png", choropleth_map, width = 10, height = 8, dpi = 300)
 
 # ==============================================================================
 # EXAMPLE 4: DETAILED REFERENCE MAP WITH LABELS
@@ -490,9 +534,9 @@ reference_map <- ggplot() +
         legend.justification = c(0, 0)
     )
 
-print(reference_map)
+# print(reference_map)
 
-ggsave("lithographic_reference_map.png", reference_map, width = 8, height = 10, dpi = 300)
+ggsave("week4/images/lithographic_theme/lithographic_reference_map.png", reference_map, width = 8, height = 10, dpi = 300)
 
 # ==============
 
@@ -626,7 +670,7 @@ topographic_map <- ggplot() +
                   y = (lat_start + lat_end) / 2, 
                   label = name,
                   angle = atan2(lat_end - lat_start, lon_end - lon_start) * 180 / pi),
-              family = fonts$map_feature,
+              family = fonts$geog_feature,
               fontface = "italic",
               color = darken(lithographic_colors$water, 0.3),
               size = 3,
@@ -635,7 +679,7 @@ topographic_map <- ggplot() +
     # Mountain ranges - large text with transparency
     geom_text(data = mountain_ranges,
               aes(x = lon, y = lat, label = name, angle = angle),
-              family = fonts$map_country,
+              family = fonts$geog_feature,
               fontface = "bold",
               color = lithographic_colors$accent3,
               size = 5,
@@ -655,7 +699,7 @@ topographic_map <- ggplot() +
     geom_text_repel(data = mountain_peaks,
                     aes(x = lon, y = lat, 
                         label = paste0(name, "\n", elevation, " m")),
-                    family = fonts$map_feature,
+                    family = fonts$geog_feature,
                     fontface = "italic",
                     color = lithographic_colors$text,
                     size = 2.5,
@@ -669,7 +713,7 @@ topographic_map <- ggplot() +
     # Valley labels
     geom_text(data = valleys,
               aes(x = lon, y = lat, label = name),
-              family = fonts$map_feature,
+              family = fonts$geog_feature,
               fontface = "italic",
               color = lighten(lithographic_colors$text, 0.3),
               size = 3.5,
@@ -741,9 +785,9 @@ topographic_map <- ggplot() +
         width = unit(1.5, "cm")
     )
 
-print(topographic_map)
+# print(topographic_map)
 
-ggsave("lithographic_topographic_map.png", topographic_map, 
+ggsave("week4/images/lithographic_theme/lithographic_topographic_map.png", topographic_map, 
        width = 12, height = 10, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
@@ -803,7 +847,7 @@ elevation_profile <- ggplot() +
     # Label peaks
     geom_text(data = profile_peaks,
               aes(x = distance, y = elevation + 300, label = name),
-              family = fonts$caption,
+              family = fonts$geog_feature,
               size = 3.5,
               lineheight = 0.9,
               color = lithographic_colors$text) +
@@ -845,9 +889,9 @@ elevation_profile <- ggplot() +
         panel.grid.minor = element_blank()
     )
 
-print(elevation_profile)
+# print(elevation_profile)
 
-ggsave("lithographic_elevation_profile.png", elevation_profile,
+ggsave("week4/images/lithographic_theme/lithographic_elevation_profile.png", elevation_profile,
        width = 12, height = 6, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
@@ -957,7 +1001,7 @@ watershed_map <- ggplot() +
     # River labels
     geom_text(data = river_labels,
               aes(x = lon, y = lat, label = river, angle = angle),
-              family = fonts$map_feature,
+              family = fonts$geog_feature,
               fontface = ifelse(river_labels$river == "DANUBE", "bold.italic", "italic"),
               color = darken(lithographic_colors$water, 0.4),
               size = river_labels$size) +
@@ -1008,7 +1052,7 @@ watershed_map <- ggplot() +
         caption = "Source: Hydrological surveys and historical maps. River courses simplified.\nLine width indicates relative discharge volume."
     ) +
     
-    theme_lithographic() +
+    theme_lithographic2() +
     theme(
         panel.background = element_rect(fill = lighten(lithographic_colors$land, 0.2)),
         panel.grid.major = element_line(color = lithographic_colors$border_secondary,
@@ -1026,9 +1070,9 @@ watershed_map <- ggplot() +
         line_col = lithographic_colors$text
     )
 
-print(watershed_map)
+# print(watershed_map)
 
-ggsave("lithographic_watershed_map.png", watershed_map,
+ggsave("week4/images/lithographic_theme/lithographic_watershed_map.png", watershed_map,
        width = 12, height = 10, dpi = 300, bg = lithographic_colors$land)
 
 
@@ -1153,9 +1197,9 @@ demo_panel <- demo_layout +
         )
     )
 
-print(demo_panel)
+# print(demo_panel)
 
-ggsave("lithographic_style_guide_demo.png", demo_panel,
+ggsave("week4/images/lithographic_theme/lithographic_style_guide_demo.png", demo_panel,
        width = 16, height = 12, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
@@ -1244,25 +1288,26 @@ print_font_guide <- function() {
                 font_config$map_city$sizes$small_city + 2,
                 font_config$map_city$weights$regular))
     cat(sprintf("Towns: %s, %d-%dpt, %s\n",
-                font_config$caption$name,
-                font_config$caption$sizes$map_town,
-                font_config$caption$sizes$map_town + 2,
-                font_config$caption$weights$regular))
+                font_config$map_city$name,
+                font_config$map_city$sizes$small_city - 3,
+                font_config$map_city$sizes$small_city - 1,
+                font_config$map_city$weights$light))
     cat(sprintf("Mountain Ranges: %s, %d-%dpt, %s, ALL CAPS\n",
-                font_config$title$name,
-                font_config$title$sizes$map_range,
-                font_config$title$sizes$map_range + 3,
-                font_config$title$weights$semibold))
+                font_config$geog_features$name,
+                font_config$geog_features$sizes$large_features,
+                font_config$geog_features$sizes$large_features + 4,
+                font_config$geog_features$weights$medium
+                ))
     cat(sprintf("Peaks: %s, %d-%dpt, %s\n",
-                font_config$caption$name,
-                font_config$caption$sizes$map_peak,
-                font_config$caption$sizes$map_peak + 2,
-                font_config$caption$weights$italic))
+                font_config$geog_features$name,
+                font_config$geog_features$sizes$small_features,
+                font_config$geog_features$sizes$small_features + 2,
+                font_config$geog_features$weights$regular))
     cat(sprintf("Water Features: %s, %d-%dpt, %s\n\n",
-                font_config$caption$name,
-                font_config$caption$sizes$map_water - 1,
-                font_config$caption$sizes$map_water + 3,
-                font_config$caption$weights$italic))
+                font_config$geog_features$name,
+                font_config$geog_features$sizes$large_features- 1,
+                font_config$geog_features$sizes$small_features + 3,
+                font_config$geog_features$weights$italic))
 }
 
 # Export palette
@@ -1323,11 +1368,12 @@ plain_zone2$id <- 5
 terrain_data <- rbind(mountain_zone, forest_zone1, forest_zone2, 
                       plain_zone1, plain_zone2)
 
-# Convert to sf object (FIXED)
+# Convert to sf object (RECOMMENDED)
 terrain_sf <- terrain_data %>%
-    group_by(id, terrain) %>%
-    summarise(geometry = st_polygon(list(cbind(lon, lat))), .groups = "drop") %>%
-    st_as_sf()
+    nest(data = c(lon, lat)) %>%
+    mutate(geometry = map(data, ~st_polygon(list(as.matrix(.x))))) %>%
+    select(-data) %>%
+    st_as_sf(sf_column_name = "geometry", crs = 4326)
 
 # Define terrain colors
 terrain_colors <- c(
@@ -1374,21 +1420,21 @@ terrain_map <- ggplot() +
     
     # Add terrain labels
     annotate("text", x = 10, y = 47, label = "Alpine\nRegion",
-             family = fonts$map_feature,
+             family = fonts$geog_feature,
              fontface = "italic",
              size = 4,
              color = lithographic_colors$text,
              lineheight = 0.9) +
     
     annotate("text", x = 8, y = 46.5, label = "Forested\nUplands",
-             family = fonts$map_feature,
+             family = fonts$geog_feature,
              fontface = "italic",
              size = 3.5,
              color = lithographic_colors$text,
              lineheight = 0.9) +
     
     annotate("text", x = 7, y = 48, label = "Northern Plains",
-             family = fonts$map_feature,
+             family = fonts$geog_feature,
              fontface = "italic",
              size = 3.5,
              color = lithographic_colors$text) +
@@ -1403,7 +1449,7 @@ terrain_map <- ggplot() +
         caption = "Source: Geological and topographic surveys (conceptual). Zones simplified for illustration.\nAlpha transparency used to show overlapping terrain features."
     ) +
     
-    theme_lithographic() +
+    theme_lithographic2() +
     theme(
         panel.background = element_rect(fill = lighten(lithographic_colors$land, 0.2)),
         panel.grid.major = element_line(color = lithographic_colors$border_secondary,
@@ -1412,9 +1458,9 @@ terrain_map <- ggplot() +
         legend.justification = c(0, 0.5)
     )
 
-print(terrain_map)
+# print(terrain_map)
 
-ggsave("lithographic_terrain_map.png", terrain_map,
+ggsave("week4/images/lithographic_theme/lithographic_terrain_map.png", terrain_map,
        width = 10, height = 9, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
@@ -1463,10 +1509,10 @@ growth_circles <- do.call(rbind, lapply(c(1800, 1850, 1900), function(yr) {
     }))
 }))
 
-# Convert to sf (FIXED)
+# Convert to sf (FIXED - with CRS)
 growth_sf <- growth_circles %>%
     group_by(city, year) %>%
-    summarise(geometry = st_polygon(list(cbind(lon, lat))), .groups = "drop") %>%
+    summarise(geometry = st_sfc(st_polygon(list(cbind(lon, lat))), crs = 4326), .groups = "drop") %>%
     st_as_sf()
 
 # Get Europe map
@@ -1523,7 +1569,7 @@ small_multiples_map <- ggplot() +
         fill = "City"
     ) +
     
-    theme_lithographic(base_size = 10) +
+    theme_lithographic2(base_size = 10) +
     theme(
         panel.background = element_rect(fill = lighten(lithographic_colors$land, 0.2)),
         panel.grid.major = element_blank(),
@@ -1543,9 +1589,9 @@ small_multiples_map <- ggplot() +
         axis.text = element_blank()
     )
 
-print(small_multiples_map)
+# print(small_multiples_map)
 
-ggsave("lithographic_small_multiples_map.png", small_multiples_map,
+ggsave("week4/images/lithographic_theme/lithographic_small_multiples_map.png", small_multiples_map,
        width = 14, height = 6, dpi = 300, bg = lithographic_colors$land)
 
 # ==============================================================================
@@ -1610,7 +1656,7 @@ color_reference <- data.frame(
 # Print color reference table
 cat("COLOR REFERENCE TABLE:\n")
 cat("=====================\n\n")
-print(color_reference, row.names = FALSE)
+# print(color_reference, row.names = FALSE)
 
 # Save color reference to CSV for easy reference
 write.csv(color_reference, "lithographic_color_reference.csv", row.names = FALSE)
@@ -1649,17 +1695,17 @@ create_style_reference <- function() {
                     font_config$axis$sizes$axis_text,
                     font_config$axis$sizes$axis_label + 1),
             sprintf("COUNTRY NAMES (%s %s ALL CAPS)", 
-                    font_config$title$name,
-                    font_config$title$weights$bold),
+                    font_config$country_name$family,
+                    font_config$country_name$weights$bold),
             sprintf("Major City (%s %s)", 
                     font_config$map_city$name,
                     font_config$map_city$weights$bold),
             sprintf("Geographic Feature (%s %s)", 
-                    font_config$caption$name,
-                    font_config$caption$weights$italic)
+                    font_config$geog_features$family,
+                    font_config$geog_features$weights$medium)
         ),
         font = c(fonts$title, fonts$title, fonts$caption, fonts$axis,
-                 fonts$map_country, fonts$map_city, fonts$map_feature),
+                 fonts$map_country, fonts$map_city, fonts$geog_feature),
         face = c("bold", "plain", "plain", "plain", "bold", "bold", "italic"),
         size = c(6, 5, 4, 3.5, 5.5, 4.5, 4)
     )
@@ -1806,9 +1852,9 @@ create_style_reference <- function() {
 
 # Generate and save the reference sheet
 reference_sheet <- create_style_reference()
-print(reference_sheet)
+# print(reference_sheet)
 
-ggsave("lithographic_style_reference_sheet.png", reference_sheet,
+ggsave("week4/images/lithographic_theme/lithographic_style_reference_sheet.png", reference_sheet,
        width = 11, height = 14, dpi = 300, bg = lithographic_colors$land)
 
 cat("\nStyle reference sheet saved to: lithographic_style_reference_sheet.png\n")
@@ -1823,7 +1869,7 @@ apply_lithographic_style <- function(plot,
                                      subtitle_size = 13,
                                      caption_size = 9) {
     plot +
-        theme_lithographic(base_size = 11) +
+        theme_lithographic2(base_size = 11) +
         theme(
             plot.title = element_text(size = title_size),
             plot.subtitle = element_text(size = subtitle_size),
@@ -1884,9 +1930,9 @@ demo_plot <- ggplot(mtcars, aes(x = wt, y = mpg, color = factor(cyl))) +
 styled_demo_plot <- apply_lithographic_style(demo_plot) +
     scale_color_lithographic()
 
-print(styled_demo_plot)
+# print(styled_demo_plot)
 
-ggsave("lithographic_utility_example.png", styled_demo_plot,
+ggsave("week4/images/lithographic_theme/lithographic_utility_example.png", styled_demo_plot,
        width = 10, height = 7, dpi = 300, bg = lithographic_colors$land)
 
 cat("\nUtility function example saved to: lithographic_utility_example.png\n")

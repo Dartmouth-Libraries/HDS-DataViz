@@ -1,0 +1,53 @@
+---
+title: "02 Creating your own custom theme with an AI Assist"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+## 
+
+# Creating your own visualization theme
+
+Large Language Models can be really helpful assistants for coding.
+
+## 1. Setup + Reload Gapminder data
+
+Before beginning with customization, let's first reload our gapminder visualization.
+
+```{r}
+library(tidyverse)
+library(viridis)
+library(systemfonts)
+library(showtext)
+```
+
+```{r}
+df <- read.csv("../../week3/data/gapminder.csv")
+head(df)
+```
+
+## 2. Create static scatterplot of Gapminder data
+
+This is the same code we developed in the previous notebook.
+
+```{r}
+yr = 2007
+tempdf <- df |>
+    filter(year == yr)
+
+p <- ggplot(tempdf, aes(x= gdpPercap, y=lifeExp, color=continent, size=pop)) +
+    geom_point(alpha=0.6) +
+    scale_x_continuous(trans="log10") +
+    scale_size_continuous(range = c(1, 15)) +
+    labs(x="GDP per capita", y = "Life expectancy at birth (years)", 
+         title = sprintf("Scatterplot: per capita GDP vs. life expectancy, %s", yr),
+       caption = "(Based on data from Hans Rosling - gapminder.com)", 
+       color = 'Continent',
+       size = "Population")
+    #scale_color_viridis(discrete=TRUE, option="turbo")
+
+p
+```
+
+## 3. Using a LLM

@@ -1,0 +1,27 @@
+LITHOGRAPHIC ATLAS COLOR PALETTE
+================================
+
+Base Colors:
+Land/Background: #F4EAD5
+Water Bodies: #7BA8C5
+Primary Borders: #8B4513
+Secondary Borders: #C19A6B
+Text: #2C1810
+
+Categorical Colors:
+Category 1: #2D5F5D
+Category 2: #D4A574
+Category 3: #4A6741
+Category 4: #7BA8C5
+Category 5: #9B7E6B
+Category 6: #B8956A
+
+Sequential Colors (light to dark):
+Step 1: #F4EAD5
+Step 2: #D4C4A8
+Step 3: #B8956A
+Step 4: #8B6F47
+Step 5: #5D4A2F
+Step 6: #2C1810
+
+Palette exported successfully!
