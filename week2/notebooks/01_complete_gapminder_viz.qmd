@@ -11,7 +11,7 @@ editor: visual
 #jupyter: ir
 ---
 
-## 
+This notebook accompanies the Week 2 Video "Plotting some positive data." We recommend creating a new Quarto document and following along with the video. Only after watching the video and creating your own version of this notebook, you can review this completed version to check your work and get more information about what each line of code does.
 
 ```{r}
 library(tidyverse)
