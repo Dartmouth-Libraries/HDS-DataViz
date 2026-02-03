@@ -1,11 +1,11 @@
 ---
-title: "01_creating-your-own-theme"
+title: "01 Customizing Themes"
 author: "Jeremy Mikecz"
 editor: visual
 format: html
 ---
 
-# Applying your own style guide to your visualizations
+# Applying Themes to your ggplot visualizations
 
 ## 1. Setup + Reload Gapminder data
 

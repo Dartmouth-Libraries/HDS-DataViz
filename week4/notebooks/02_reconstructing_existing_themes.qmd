@@ -93,13 +93,13 @@ p
 ```
 
 ```{r}
-source("theme_custom_scratch.R") 
+source("sample_themes/theme_custom_scratch.R") 
 p +
     theme_custom_scratch()
 ```
 
 ```{r}
-source("theme_custom.R")
+source("sample_themes/theme_custom.R")
 p +
     theme_custom()
 ```
@@ -379,7 +379,7 @@ p
 
 For further instructions how to create custom themes visit [Maddie Pickens, "Learning to create custom themes in ggplot"](https://rpubs.com/mclaire19/ggplot2-custom-themes).
 
-\*\*In the following notebook, you will use AI - LLMs specifically - to help you create your own custom theme.
+**In the following notebook, you will use AI - LLMs specifically - to help you create your own custom theme.**
 
 # 
 
