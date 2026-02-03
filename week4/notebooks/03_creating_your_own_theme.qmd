@@ -9,7 +9,66 @@ editor: visual
 
 # Creating your own visualization theme
 
-Large Language Models can be really helpful assistants for coding.
+Large Language Models can serve as helpful assistants for coding. Some keys:
+
+-   learn the basics of the language (i.e. R) and the tools you want to use (i.e. ggplot, etc.).
+
+-   Write specific, precise prompts describing the data you are working with (include precise details like column names), what you want to do, the tools you want to use to do (if you have a preference), and model the output you want the model to return
+
+-   for complex projects start simple, for multi-step tasks, do one step at a time
+
+-   don't expect perfect results on your first pass; instead engage in a conversation with the LLM as you troubleshoot errors and fine-tune results
+
+-   use LLMs to explain syntax you don't understand and ask for suggestions to alternative approaches
+
+-   use AI in ways that enhances your learning rather than replacing it
+
+-   cite your use when required; don't use it when prohibited; never become dependent or lazy
+
+-   always take responsibility for your work; never submit AI-assisted work you cannot explain or defend.
+
+-   chose a LLM appropriate for the task; choose a strong coding LLM for complex tasks (i.e. Claude Sonnet or Opus); choose a basic, cheaper LLM for simpler tasks
+
+An example approach:
+
+```         
+# start small
+
+1. show me the key elements of a custom theme in ggplot
+
+2. create a simple script for a custom ggplot theme that incorporates [color scheme]; modern, bold fonts; [describe symbology]; ...
+
+# test the code in R; identify discrete chunks and run each one at a time
+
+# build incrementally
+
+3. add a light background
+
+4. simplify the axis, showing only major gridlines
+
+# troubleshoot any errors:
+
+5. I received this error [insert error message] when running this code: [insert code cell/chunk]
+
+# ask questions / refine
+
+6. How can I make the legend smaller, but retain its legibility?
+```
+
+## Exercise: Create your own custom ggplot theme
+
+1.  Create your own custom ggplot theme in a separate .R script.
+2.  You can then create the plot below and apply the custom theme to the plot using this syntax:
+
+```         
+source("path_to_my_custom_theme.R")
+
+# custom theme script contains a theme named `theme_custom`
+p +  # existing plot code
+    theme_custom()
+```
+
+\*\*Apply your custom theme to the Gapminder plot (or to a dataset and plot of your choosing). Then submit a screenshot of the results alongside a short description of your design choices and the reasoning behind them to the CANVAS page for this assignment.
 
 ## 1. Setup + Reload Gapminder data
 
