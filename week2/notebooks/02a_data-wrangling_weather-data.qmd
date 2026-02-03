@@ -61,6 +61,10 @@ We would like to examine changes in Hanover's temperature over time.
 Brainstorm how you would need to modify this dataset to do this analysis. Write your thoughts below:
 
 ```         
+
+
+
+
 ```
 
 # 4. Tidyverse / dplyr verbs for Data Wrangling
@@ -231,13 +235,21 @@ write.csv(yearly_temps_long, "../data/Hanover_yearly-temp-averages_long_1894-202
 
 # 7. Visualizing with wide dataset
 
+Creating long dataframes is often recommended for data visualization.
+
+Generally, you want one row per observation. In this case, wide and long dataframes answer the question - what is an observation here? - in different ways.
+
+The wide dataset contains one row per year. However, since we want to visualize both yearly maximum and minimum temperatures, each year will actually contain two separate observations. Thus, the long dataset is better because it contains one row for every observation we want to record.
+
+Nonetheless, R and ggplot will still work with the wide dataset. Here, we just create two distinct lines using two separate **geom_line** functions.
+
 ```{r}
 ggplot(data=yearly_temps) +
     geom_line(aes(x=YEAR, y=avg_TMAX), color="red") +
     geom_line(aes(x=YEAR, y=avg_TMIN), color="blue")
 ```
 
-We can add a 10-day rolling average using the **rollmean()** function from the **zoo** library and a more useful y-axis label.
+We can add a 10-year rolling average using the **rollmean()** function from the **zoo** library and a more useful y-axis label.
 
 ```{r}
 ggplot(data=yearly_temps, aes(x=YEAR)) +
@@ -249,7 +261,31 @@ ggplot(data=yearly_temps, aes(x=YEAR)) +
     ggtitle("Yearly Average Temperatures with 10-Year Rolling Mean")
 ```
 
-# 8. Visualizing with long dataset
+# 8. Climate vs. Weather
+
+Or, we can just show the 10-year rolling mean to remove the noise of year-to-year variability and instead focus on long-term climate patterns. This time, we will also use the **labs** function to add a subtitle.
+
+```{r}
+ggplot(data=yearly_temps, aes(x=YEAR)) +
+    geom_line(aes(y=rollmean(avg_TMAX, 10, na.pad=TRUE)), color="red", linetype="dashed") +
+    geom_line(aes(y=rollmean(avg_TMIN, 10, na.pad=TRUE)), color="blue", linetype="dashed") +
+    ylab("Temperature (yearly average)") + 
+    labs(
+        title = "Tracking Changes to Temperature, Hanover NH",
+        subtitle = "10-Year Rolling Mean of Average Yearly Maximum and Minimum Temperatures"
+    )
+```
+
+# 9. Visualizing with long dataset
+
+Here, we will try using the long dataset. Instead of containing two separate values (max and min temps) for each year within the same row, this dataset contains one value per row and identifies that value as being either a maximum or minimum temperature.
+
+```{r}
+ggplot(data = yearly_temps_long) +
+  geom_line(aes(x = YEAR, y = T_yravg, color = type))
+```
+
+If we want to customize the selection of colors, we can use the **scale_color_manual** function:
 
 ```{r}
 ggplot(data = yearly_temps_long) +
@@ -259,6 +295,10 @@ ggplot(data = yearly_temps_long) +
     name = "Temperature Type"
   )
 ```
+
+Now, below, we insert a 10-year rolling mean just as we did above, but this time using the long dataset.
+
+Note: even though using datasets in long form is often recommended, in this case, the code got more complex when working with the long form data. Instead of creating two separate lines for max and min temps and two more for max and min 10-year rolling means, we need to group the data by temperature type to calculate the rolling means.
 
 ```{r}
 # Compute rolling means by group (type)
