@@ -22,7 +22,7 @@ Research Facilitation, Darmouth Libraries
 + Jeremy Mikecz (Research Facilitation, Dartmouth), Lead Instructor (W2026)
 + Leah D'Souza, Teaching Assistant (W2026)
     
-## 7. Getting Started
+## 5. Getting Started
 
 Follow the instructions in the [Getting Started with R Projects](week1/tutorials/00_getting_started_with_R_project.qmd) to:
 
@@ -34,11 +34,11 @@ Follow the instructions in the [Getting Started with R Projects](week1/tutorials
 
 4. set up a virtual environment (optional)
 
-## 9. LICENSE
+## 6. LICENSE
 
 Instructional materials produced here are available under the [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.en) License. Code is available for reuse under the Open Source Initiative's [The MIT License](https://opensource.org/license/mit-0).
 
-## 10. Acknowledgements
+## 7. Acknowledgements
 
 **Template Information**: This repository was created using the [R Tutorial Template](https://github.com/Dartmouth-Libraries/R-tutorial-template) (created by Research Facilitation, Dartmouth Libraries).
 
