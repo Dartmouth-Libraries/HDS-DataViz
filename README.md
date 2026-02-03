@@ -17,7 +17,7 @@ Research Facilitation, Darmouth Libraries
 
 + an online course for the Health Data Science Masters program.
   
-## 4. Instructor(s) and Years Taught (if taught live)
+## 4. Instructor(s) and Years Taught
 
 + Jeremy Mikecz (Research Facilitation, Dartmouth), Lead Instructor (W2026)
 + Leah D'Souza, Teaching Assistant (W2026)
