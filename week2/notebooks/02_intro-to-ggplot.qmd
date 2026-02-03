@@ -503,7 +503,7 @@ ggpairs(msleep, columns=6:11, ggplot2::aes(color=vore))
 1.  Create a new Quarto document. Choose another preloaded dataset. Explore the data within using some of the visualization types introduced here.
 2.  Choose one visualization that you think best shows some interesting patterns found within the dataset.
 3.  Write a brief paragraph explaining what you learned about this dataset from this visualization and why you found it more useful than others.
-4.  **To complete this assignment: Create a brief, clean version of this Quarto document (removing all unnecessary code). Then submit a pdf version of this document to CANVAS. To convert the document into a pdf see the directions below.**
+4.  **To complete this assignment: Create a brief, clean version of your Quarto document (removing all unnecessary code). Then submit a pdf version of this document to CANVAS (make sure it includes your visualizations!). To convert the document into a pdf see the directions below.**
 5.  Instructions for converting a Quarto Document (.qmd) into a PDF (for more details see [Quarto: pdf basics](https://quarto.org/docs/output-formats/pdf-basics.html)):
     1.  Place the following format instructions in the YAML header of the document:
 

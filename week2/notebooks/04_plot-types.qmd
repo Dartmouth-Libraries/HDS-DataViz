@@ -1,0 +1,112 @@
+---
+title: "Plot Types"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+head(starwars)
+```
+
+```{r}
+starwars |>
+  filter(!is.na(height)) |>
+  ggplot(aes(x = height, fill = gender)) +
+  geom_density(alpha = 0.5) +
+  labs(title = "Density Plot of Star Wars Character Heights by Gender",
+       x = "Height (cm)",
+       y = "Density",
+       fill = "Gender") +
+  theme_minimal()
+```
+
+```{r}
+starwars |>
+  filter(!is.na(height), !is.na(mass), mass < 1000) |>
+  filter(gender %in% c("masculine", "feminine")) |>
+  ggplot(aes(x = height, y = mass, color = gender)) +
+  geom_point(size = 2, alpha = 0.7) +
+  facet_wrap(~gender) +
+  labs(title = "Star Wars Characters: Height vs Mass by Gender",
+       x = "Height (cm)",
+       y = "Mass (kg)") +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+```{r}
+starwars %>%
+  filter(!is.na(species)) |>
+  count(species, sort = TRUE) |>
+  top_n(10, n) |>  # Top 10 species
+  ggplot(aes(x = fct_reorder(species, n), y = n)) +
+  geom_col(fill = "skyblue") +
+  coord_flip() +
+  labs(title = "Top 10 Most Common Species in Star Wars",
+       x = "Species",
+       y = "Count") +
+  theme_minimal()
+```
+
+```{r}
+starwars %>%
+  filter(!is.na(homeworld), !is.na(species)) %>%
+  count(homeworld, species) %>%
+  group_by(homeworld) %>%
+  filter(sum(n) >= 2) %>%  # Homeworlds with 2+ characters
+  ggplot(aes(x = fct_reorder(homeworld, n, .fun = sum), y = n, fill = homeworld)) +
+  geom_col() +
+  coord_flip() +
+  facet_wrap(~species, scales = "free_x") +
+  labs(title = "Character Count by Homeworld and Species",
+       x = "Homeworld",
+       y = "Count") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+```{r}
+starwars %>%
+  filter(!is.na(species), !is.na(homeworld)) %>%
+  count(species, homeworld) %>%
+  group_by(species) %>%
+  filter(sum(n) >= 2) %>%  # Species with 2+ characters
+  group_by(homeworld) %>%
+  filter(sum(n) >= 2) %>%  # Homeworlds with 2+ characters
+  ggplot(aes(x = homeworld, y = species, fill = n)) +
+  geom_tile(color = "white") +
+  scale_fill_gradient(low = "lightyellow", high = "darkred") +
+  labs(title = "Species Distribution Across Homeworlds",
+       x = "Homeworld",
+       y = "Species",
+       fill = "Count") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+starwars %>%
+  filter(!is.na(films)) %>%
+  mutate(n_films = lengths(films)) %>%
+  count(n_films) %>%
+  ggplot(aes(x = factor(n_films), y = n)) +
+  geom_col(fill = "gold") +
+  geom_text(aes(label = n), vjust = -0.5) +
+  labs(title = "Distribution of Film Appearances",
+       x = "Number of Films Appeared In",
+       y = "Number of Characters") +
+  theme_minimal()
+```
+
+```{r}
+sw_films <- starwars |>
+    filter(!is.na(films)) |>
+    mutate(n_films = lengths(films)) |>
+    arrange(-n_films)
+sw_films
+```
