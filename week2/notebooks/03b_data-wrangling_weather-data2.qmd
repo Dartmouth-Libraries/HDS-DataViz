@@ -228,8 +228,8 @@ ggplot(df_2024, aes(
         vjust = 0.5
       ) +
 
-    labs(title = "Daily Max Temperature Difference from 20th Century Average",
-       x = "Day of Year",
+    labs(title = "2024 Daily Max Temperature Difference from 20th Century Average",
+       x = "Day of Year (2024)",
        y = "Temperature Difference (°C)") +
     theme(
         axis.title.x = element_text(margin = margin(t = 15)),
