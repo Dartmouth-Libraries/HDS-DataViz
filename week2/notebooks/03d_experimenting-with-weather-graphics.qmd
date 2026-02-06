@@ -1,0 +1,931 @@
+---
+title: "Data Wrangling for Visualization, Part 2"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Experimenting with Weather Graphics
+
+# 1. Setup
+
+## 1.1 Import necessary packages
+
+```{r}
+library(tidyverse)
+library(lubridate)  # For easier date manipulation
+options(repr.plot.width = 20, repr.plot.height = 12)
+```
+
+## 1.2 Import Data
+
+```{r}
+weather_raw <- read.csv("../data/Hanover_weather-data_1884-2026-01.csv")
+
+```
+
+## Handle Mixed Date Formats
+
+This chunk handles the common problem of inconsistent date formats in your data. NOAA data sometimes has dates in "M/D/YYYY" format (e.g., "1/15/2020") and sometimes in "YYYY-MM-DD" format (e.g., "2020-01-15").
+
+We use lubridate's parse_date_time() which can try multiple formats and pick the one that works for each row.
+
+TWEAK:
+
+\- If you have other date formats, add them to the "orders" argument
+
+\- Common formats: "ymd", "mdy", "dmy", "ymd_HMS", etc.
+
+```{r}
+# First, let's see what date formats we're dealing with
+cat("Sample of DATE values:\n")
+head(weather_raw$DATE, 20)
+
+# Convert dates handling multiple formats
+weather <- weather_raw |>
+  mutate(
+    # parse_date_time tries each format in "orders" until one works
+    # "mdy" handles "M/D/YYYY" (e.g., "1/15/2020")
+    # "ymd" handles "YYYY-MM-DD" (e.g., "2020-01-15")
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    
+    # Now extract components from the clean dates
+    year = year(DATE),
+    month = month(DATE),
+    day = day(DATE),
+    
+    # Create winter_year: December belongs to that year's winter,
+    # January belongs to the previous year's winter
+    # e.g., Dec 2010 -> 2010, Jan 2011 -> 2010
+    winter_year = case_when(
+      month == 12 ~ year,
+      month == 1 ~ year - 1,
+      TRUE ~ NA_integer_
+    ),
+    
+    # Create a readable label for the winter period
+    winter_label = paste0(winter_year, "-", str_sub(winter_year + 1, 3, 4)),
+    
+    # Create a day-of-winter variable for alignment in line plots
+    # Dec 1 = Day 1, Dec 31 = Day 31, Jan 1 = Day 32, Jan 31 = Day 62
+    day_of_winter = case_when(
+      month == 12 ~ day,
+      month == 1 ~ 31 + day,
+      TRUE ~ NA_integer_
+    )
+  ) |>
+  # Keep only December and January
+  filter(month %in% c(12, 1)) |>
+  # Remove any incomplete winter periods
+  filter(!is.na(winter_year))
+
+# Verify the date conversion worked
+cat("\nDate conversion check:\n")
+cat("Date range:", as.character(min(weather$DATE)), "to", as.character(max(weather$DATE)), "\n")
+cat("Any NA dates?", sum(is.na(weather$DATE)), "\n\n")
+
+# Check the range of winters in your data
+cat("Winter periods in dataset:\n")
+print(sort(unique(weather$winter_label)))
+```
+
+```{r}
+# ============================================================================
+# VISUALIZATION 1: Below Zero Temperature Days (Grouped Bar Chart) - FIXED
+# ============================================================================
+# This creates a bar chart showing:
+# - Bold blue bars: Days where TMIN < 0°F (background, wider bars)
+# - Smaller bars in front: Days where TMAX < 0°F (really cold days!)
+#
+# FIX: We explicitly call dplyr::summarize() to avoid package conflicts.
+# Alternatively, you could detach plyr if it's loaded: detach("package:plyr")
+#
+# TWEAK:
+# - Change threshold (currently 0) to any temperature you want to analyze
+# - Adjust bar widths (0.7 and 0.4) to change relative sizing
+# - Modify colors in scale_fill_manual() to your preference
+# ============================================================================
+
+# Summarize below-zero days for each winter
+# Using dplyr:: prefix to ensure we're using the right function
+below_zero_summary <- weather |>
+  group_by(winter_year, winter_label) |>
+  summarize(
+    days_tmin_below_zero = sum(TMIN < 0, na.rm = TRUE),
+    days_tmax_below_zero = sum(TMAX < 0, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  # Pivot to long format for easier plotting
+  pivot_longer(
+    cols = c(days_tmin_below_zero, days_tmax_below_zero),
+    names_to = "measure",
+    values_to = "days"
+  ) |>
+  mutate(
+    measure = factor(measure, 
+                     levels = c("days_tmin_below_zero", "days_tmax_below_zero"),
+                     labels = c("Min Temp < 0°F", "Max Temp < 0°F"))
+  )
+
+# Identify which winter_labels fall on decades for axis labeling
+decade_labels <- below_zero_summary |>
+  distinct(winter_year, winter_label) |>
+  filter(winter_year %% 10 == 0) |>  # TWEAK: Change 10 to other intervals
+  pull(winter_label)
+
+# Create the plot
+plot1 <- ggplot(below_zero_summary, 
+                aes(x = winter_label, y = days, fill = measure)) +
+  # Use position_identity so bars overlap (smaller in front)
+  geom_col(data = dplyr::filter(below_zero_summary, measure == "Min Temp < 0°F"),
+           width = 0.7, alpha = 0.9) +
+  geom_col(data = dplyr::filter(below_zero_summary, measure == "Max Temp < 0°F"),
+           width = 0.4, alpha = 0.95) +
+  
+  # Color scheme: bold blue for TMIN, darker/contrasting for TMAX
+  scale_fill_manual(
+    values = c("Min Temp < 0°F" = "#2166AC",    # Bold blue
+               "Max Temp < 0°F" = "#B2182B"),   # Deep red for contrast
+    name = "Temperature Measure"
+  ) +
+  
+  # X-axis: Only show decade labels
+  scale_x_discrete(
+    breaks = decade_labels,  # Only show these labels
+    labels = function(x) str_extract(x, "^\\d{4}")  # Show just the year (e.g., "1990" not "1990-91")
+  ) +
+  
+  # Labels and theme
+  labs(
+    title = "Subzero Days Each December-January Period",
+    subtitle = "Days with minimum temperature below 0°F (blue) and maximum below 0°F (red)",
+    x = "Winter Period",
+    y = "Number of Days",
+    caption = "Data: NOAA Weather Station"
+  ) +
+  
+  theme_minimal(base_size = 14) +
+  theme(
+    # Bold, readable text
+    plot.title = element_text(face = "bold", size = 18),
+    plot.subtitle = element_text(color = "gray40", size = 12),
+    
+    # X-axis labels - no longer need rotation with fewer labels
+    axis.text.x = element_text(size = 11, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    
+    # Clean legend
+    legend.position = "top",
+    legend.title = element_text(face = "bold"),
+    
+    # Add some padding
+    plot.margin = margin(20, 20, 20, 20)
+  )
+
+# Display the plot
+print(plot1)
+
+
+# Save high-resolution version
+ggsave("below_zero_days.png", plot1, width = 20, height = 7, dpi = 300)
+```
+
+```{r}
+# ============================================================================
+# VISUALIZATION 2: Snow Depth Throughout Winter (Spaghetti Plot)
+# ============================================================================
+# This creates a line plot showing snow depth progression through each winter:
+# - Faint gray lines: Winters up to 2013-14
+# - Light blue lines: Winters from 2014-15 to 2023-24
+# - Thick white line: Current winter (2024-25)
+#
+# The dark background makes the white current-year line stand out dramatically.
+#
+# TWEAK:
+# - Adjust the year cutoffs (2014, 2024) to change which groups get which color
+# - Modify line thickness with the size parameters
+# - Change alpha values to make historical lines more/less visible
+# ============================================================================
+
+# Categorize winters for coloring
+weather_snow <- weather |>
+  filter(!is.na(SNWD)) |>
+  mutate(
+    era = case_when(
+      winter_year < 2015 ~ "pre_2015",
+      winter_year >= 2015 & winter_year < 2025 ~ "2015_to_2025",
+      winter_year >= 2025 ~ "current"
+    ),
+    era = factor(era, levels = c("pre_2015", "2015_to_2025", "current"))
+  )
+
+# Create the plot
+plot2 <- ggplot(weather_snow, 
+                aes(x = day_of_winter, y = SNWD, group = winter_label)) +
+  
+  # Layer 1: Pre-2014 winters (faint gray, background)
+  geom_line(data = filter(weather_snow, era == "pre_2015"),
+            color = "gray50", alpha = 0.3, linewidth = 0.5) +
+  
+  # Layer 2: 2014-2024 winters (light blue, middle layer)
+  geom_line(data = filter(weather_snow, era == "2015_to_2025"),
+            color = "#6BAED6", alpha = 0.5, linewidth = 1.0) +
+  
+  # Layer 3: Current winter (thick white, foreground)
+  geom_line(data = filter(weather_snow, era == "current"),
+            color = "white", linewidth = 1.8) +
+  
+  # X-axis: Show month labels instead of day numbers
+  scale_x_continuous(
+    breaks = c(1, 15, 32, 47, 62),
+    labels = c("Dec 1", "Dec 15", "Jan 1", "Jan 15", "Jan 31"),
+    expand = c(0.02, 0)
+  ) +
+  
+  # Y-axis formatting
+  scale_y_continuous(
+    expand = c(0, 0),
+    limits = c(0, NA)  # Start at 0, let max be determined by data
+  ) +
+  
+  # Labels
+  labs(
+    title = "Snow Depth Through Winter",
+    subtitle = "Gray: Pre-2014 | Light Blue: 2014-2024 | White: Current Winter (2024-25)",
+    x = NULL,
+    y = "Snow Depth (inches)",
+    caption = "Data: NOAA Weather Station"
+  ) +
+  
+  # Dark theme
+  theme_minimal(base_size = 14) +
+  theme(
+    # Dark background
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.3),
+    panel.grid.minor = element_blank(),
+    
+    # White text for dark background
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 11, color = "gray70"),
+    plot.caption = element_text(color = "gray50"),
+    
+    axis.text = element_text(color = "gray80", size = 11),
+    axis.title = element_text(color = "white", face = "bold"),
+    
+    # Padding
+    plot.margin = margin(20, 25, 15, 20)
+  )
+
+# Display the plot
+print(plot2)
+
+# Save high-resolution version
+ggsave("snow_depth_comparison.png", plot2, width = 14, height = 7, dpi = 300)
+```
+
+```{r}
+# ============================================================================
+# VISUALIZATION 2: Snow Depth with Extreme Value Callouts
+# ============================================================================
+# This creates a line plot showing snow depth progression through each winter:
+# - Faint gray lines: Winters up to 2013-14
+# - Light blue lines: Winters from 2014-15 to 2023-24
+# - Thick white line: Current winter (2024-25)
+# - Callout labels for extreme snow depth days
+#
+# NEW: We identify and label the most extreme snow depth days for each era
+# using ggrepel for clean, non-overlapping labels.
+#
+# TWEAK:
+# - Change number of extreme points: modify the slice_max(n = 3) values
+# - Adjust label appearance with the geom_label_repel() parameters
+# - Modify nudge_x/nudge_y to shift label positions
+# ============================================================================
+
+# First, install ggrepel if you haven't already
+# install.packages("ggrepel")
+library(ggrepel)
+
+# Categorize winters for coloring
+weather_snow <- weather |>
+  filter(!is.na(SNWD)) |>
+  mutate(
+    era = case_when(
+      winter_year < 2015 ~ "pre_2015",
+      winter_year >= 2015 & winter_year < 2025 ~ "2015_to_2025",
+      winter_year >= 2025 ~ "current"
+    ),
+    era = factor(era, levels = c("pre_2015", "2015_to_2025", "current"))
+  )
+
+# ============================================================================
+# FIND EXTREME VALUES FOR CALLOUTS
+# ============================================================================
+# We find the top snow depth days for each era. Using slice_max() to get
+# the rows with the highest SNWD values.
+#
+# TWEAK: Change n = 3 to show more or fewer callout points
+# ============================================================================
+
+# Top 3 snow depth days pre-2015
+extreme_pre2015 <- weather_snow |>
+  filter(era == "pre_2015") |>
+  slice_max(order_by = SNWD, n = 3) |>
+  mutate(
+    # Create a nice label showing date and depth
+    label = paste0(format(DATE, "%b %d, %Y"), "\n", SNWD, "\"")
+  )
+
+# Top 1 snow depth day 2015-2025
+extreme_2015_2025 <- weather_snow |>
+  filter(era == "2015_to_2025") |>
+  slice_max(order_by = SNWD, n = 1) |>
+  mutate(
+    label = paste0(format(DATE, "%b %d, %Y"), "\n", SNWD, "\"")
+  )
+
+# Combine all extreme points for plotting
+extreme_points <- bind_rows(
+  extreme_pre2015 |> mutate(label_color = "gray80"),
+  extreme_2015_2025 |> mutate(label_color = "#6BAED6")
+)
+
+# Check what we found
+cat("Extreme snow depth days:\n\n")
+cat("Pre-2015:\n")
+print(extreme_pre2015 |> select(DATE, SNWD, winter_label))
+cat("\n2015-2025:\n")
+print(extreme_2015_2025 |> select(DATE, SNWD, winter_label))
+
+# ============================================================================
+# CREATE THE PLOT WITH CALLOUTS
+# ============================================================================
+
+plot2 <- ggplot(weather_snow, 
+                aes(x = day_of_winter, y = SNWD, group = winter_label)) +
+  
+  # Layer 1: Pre-2014 winters (faint gray, background)
+  geom_line(data = dplyr::filter(weather_snow, era == "pre_2015"),
+            color = "gray50", alpha = 0.3, linewidth = 0.5) +
+  
+  # Layer 2: 2014-2024 winters (light blue, middle layer)
+  geom_line(data = dplyr::filter(weather_snow, era == "2015_to_2025"),
+            color = "#6BAED6", alpha = 0.5, linewidth = 1.0) +
+  
+  # Layer 3: Current winter (thick white, foreground)
+  geom_line(data = dplyr::filter(weather_snow, era == "current"),
+            color = "white", linewidth = 1.8) +
+  
+  # Layer 4: Points marking the extreme values
+  geom_point(data = extreme_points,
+             aes(x = day_of_winter, y = SNWD),
+             color = extreme_points$label_color,
+             size = 3,
+             shape = 16) +
+  
+  # Layer 5: Labels for extreme values using ggrepel
+  # Pre-2015 labels (gray)
+  geom_label_repel(
+    data = filter(extreme_points, era == "pre_2015"),
+    aes(x = day_of_winter, y = SNWD, label = label),
+    fill = "gray20",
+    color = "gray80",
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = 5,
+    segment.color = "gray60",
+    segment.size = 0.3,
+    min.segment.length = 0,
+    max.overlaps = 20
+  ) +
+  
+  # 2014-2024 label (light blue)
+  geom_label_repel(
+    data = filter(extreme_points, era == "2015_to_2025"),
+    aes(x = day_of_winter, y = SNWD, label = label),
+    fill = "#1a3a5c",
+    color = "#6BAED6",
+    size = 3.5,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = 8,
+    nudge_x = -5,
+    segment.color = "#6BAED6",
+    segment.size = 0.4,
+    min.segment.length = 0
+  ) +
+  
+  # X-axis: Show month labels instead of day numbers
+  scale_x_continuous(
+    breaks = c(1, 15, 32, 47, 62),
+    labels = c("Dec 1", "Dec 15", "Jan 1", "Jan 15", "Jan 31"),
+    expand = c(0.02, 0)
+  ) +
+  
+  # Y-axis formatting
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1)),  # Add 10% padding at top for labels
+    limits = c(0, NA)
+  ) +
+  
+  # Labels
+  labs(
+    title = "Snow Depth Through Winter",
+    subtitle = "Gray: Pre-2015 | Light Blue: 2015-2025 | White: Current Winter (2025-26)",
+    x = NULL,
+    y = "Snow Depth (inches)",
+    caption = "Data: NOAA Weather Station | Callouts show record snow depths"
+  ) +
+  
+  # Dark theme
+  theme_minimal(base_size = 14) +
+  theme(
+    # Dark background
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.3),
+    panel.grid.minor = element_blank(),
+    
+    # White text for dark background
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 11, color = "gray70"),
+    plot.caption = element_text(color = "gray50"),
+    
+    axis.text = element_text(color = "gray80", size = 11),
+    axis.title = element_text(color = "white", face = "bold"),
+    
+    # Padding
+    plot.margin = margin(20, 25, 15, 20)
+  )
+
+# Display the plot
+print(plot2)
+
+# Save high-resolution version
+ggsave("snow_depth_comparison_with_callouts.png", plot2, width = 16, height = 8, dpi = 300)
+```
+
+```{r}
+library(ggridges)
+```
+
+```{r}
+
+# ----------------------------------------------------------------------------
+# STEP 1: Prepare the data
+# ----------------------------------------------------------------------------
+
+weather_ridges <- weather_raw |>
+  mutate(
+    # Parse dates handling multiple formats
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    year = year(DATE),
+    day_of_year = yday(DATE)
+  ) |>
+  # Filter to years of interest
+  filter(year >= 2000 & year <= 2026) |>
+  # Remove missing snow depth values
+  filter(!is.na(SNWD)) |>
+  # Create year as factor (reversed so recent years appear at top)
+  mutate(
+    year_factor = factor(year, levels = rev(2000:2026))
+  )
+
+# Quick data check
+cat("Data summary:\n")
+cat("Year range:", min(weather_ridges$year), "to", max(weather_ridges$year), "\n")
+cat("Snow depth range:", min(weather_ridges$SNWD), "to", max(weather_ridges$SNWD), "\n")
+cat("Total rows:", nrow(weather_ridges), "\n")
+```
+
+```{r}
+# ----------------------------------------------------------------------------
+# STEP 2: Create the ridgeline plot
+# ----------------------------------------------------------------------------
+
+plot_ridges <- ggplot(
+  data = weather_ridges,
+  aes(
+    x = day_of_year,
+    y = year_factor,
+    height = SNWD,
+    group = year_factor
+  )
+) +
+  geom_ridgeline(
+    scale = 0.01,        # TWEAK: Increase for taller ridges, decrease for shorter
+    fill = "#4DABF7",    # Fill color
+    color = "white",     # Outline color
+    linewidth = 0.3,
+    alpha = 0.7
+  ) +
+  
+  # X-axis: Month labels
+  scale_x_continuous(
+    breaks = c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335),
+    labels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+               "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"),
+    expand = c(0.02, 0)
+  ) +
+  
+  # Labels
+  labs(
+    title = "Snow Depth Throughout the Year",
+    subtitle = "Each ridge shows daily snow depth for one year (2000-2026)",
+    x = NULL,
+    y = NULL,
+    caption = "Data: NOAA Weather Station"
+  ) +
+  
+  # Dark theme
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major.x = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 11, color = "gray70", margin = margin(b = 15)),
+    plot.caption = element_text(color = "gray50"),
+    
+    axis.text.x = element_text(color = "gray80", size = 10),
+    axis.text.y = element_text(color = "gray80", size = 9, face = "bold"),
+    
+    plot.margin = margin(20, 20, 15, 15)
+  )
+
+# Display
+print(plot_ridges)
+
+# Save
+# ggsave("snow_ridgeline.png", plot_ridges, width = 14, height = 12, dpi = 300)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+# ============================================================================
+# RIDGELINE PLOT: Snow Depth - Winter Centered (July to June)
+# ============================================================================
+# This ridgeline plot centers winter in the middle by running from July to June.
+# Each ridge spans two calendar years (e.g., July 2002 - June 2003).
+# Left y-axis shows the starting year, right y-axis shows the ending year.
+#
+# TWEAK:
+# - Adjust the winter_year range in the filter
+# - Change scale parameter to control ridge height/overlap
+# - Modify colors for different visual effects
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# STEP 1: Prepare the data with winter-year alignment
+# ----------------------------------------------------------------------------
+# We create a "winter_year" where:
+# - July 2002 through June 2003 = winter_year 2002
+# - The x-axis runs from day 1 (July 1) to day 365/366 (June 30)
+# ----------------------------------------------------------------------------
+
+weather_winter <- weather_raw |>
+  mutate(
+    # Parse dates handling multiple formats
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    year = year(DATE),
+    month = month(DATE),
+    day = day(DATE)
+  ) |>
+  # Create winter_year: July starts a new winter year
+  # July 2002 - June 2003 = winter_year 2002
+  mutate(
+    winter_year = if_else(month >= 7, year, year - 1)
+  ) |>
+  # Create day_of_winter_year: July 1 = day 1, June 30 = day 365/366
+  mutate(
+    # Days in each month for non-leap year reference
+    day_of_winter_year = case_when(
+      month == 7 ~ day,                          # Jul: 1-31
+      month == 8 ~ 31 + day,                     # Aug: 32-62
+      month == 9 ~ 31 + 31 + day,                # Sep: 63-92
+      month == 10 ~ 31 + 31 + 30 + day,          # Oct: 93-123
+      month == 11 ~ 31 + 31 + 30 + 31 + day,     # Nov: 124-153
+      month == 12 ~ 31 + 31 + 30 + 31 + 30 + day, # Dec: 154-184
+      month == 1 ~ 184 + day,                    # Jan: 185-215
+      month == 2 ~ 184 + 31 + day,               # Feb: 216-243/244
+      month == 3 ~ 184 + 31 + 28 + day,          # Mar: 244-274 (approx)
+      month == 4 ~ 184 + 31 + 28 + 31 + day,     # Apr: 275-304
+      month == 5 ~ 184 + 31 + 28 + 31 + 30 + day, # May: 305-335
+      month == 6 ~ 184 + 31 + 28 + 31 + 30 + 31 + day # Jun: 336-365
+    )
+  ) |>
+  # Filter to winter years of interest and remove missing snow depth
+filter(winter_year >= 2000 & winter_year <= 2025) |>
+  filter(!is.na(SNWD)) |>
+  # Create labels for left and right y-axis
+  mutate(
+    left_label = as.character(winter_year),
+    right_label = as.character(winter_year + 1),
+    # Factor for ordering (most recent at top)
+    winter_year_factor = factor(winter_year, levels = rev(2000:2025))
+  )
+
+# Quick data check
+cat("Data summary:\n")
+cat("Winter year range:", min(weather_winter$winter_year), "to", max(weather_winter$winter_year), "\n")
+cat("Day of winter year range:", min(weather_winter$day_of_winter_year), "to", max(weather_winter$day_of_winter_year), "\n")
+cat("Snow depth range:", min(weather_winter$SNWD), "to", max(weather_winter$SNWD), "\n")
+
+
+
+
+```
+
+```{r}
+# ----------------------------------------------------------------------------
+# STEP 2: Create label data frames for dual y-axes
+# ----------------------------------------------------------------------------
+
+# Get unique winter years for labeling
+year_labels <- weather_winter |>
+  dplyr::distinct(winter_year, winter_year_factor, left_label, right_label)
+```
+
+```{r}
+# ----------------------------------------------------------------------------
+# STEP 3: Create the ridgeline plot
+# ----------------------------------------------------------------------------
+
+# Define x-axis breaks and labels (first of each month)
+month_breaks <- c(1, 32, 63, 93, 124, 154, 185, 216, 244, 275, 305, 336)
+month_labels <- c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", 
+                  "Jan", "Feb", "Mar", "Apr", "May", "Jun")
+
+plot_winter <- ggplot(
+  data = weather_winter,
+  aes(
+    x = day_of_winter_year,
+    y = winter_year_factor,
+    height = SNWD,
+    group = winter_year_factor
+  )
+) +
+  geom_ridgeline(
+    scale = 0.025,        # TWEAK: Adjust for ridge height
+    fill = "#4DABF7",
+    color = "white",
+    linewidth = 0.3,
+    alpha = 0.5
+  ) +
+  
+  # X-axis: Month labels centered on winter
+  scale_x_continuous(
+    breaks = month_breaks,
+    labels = month_labels,
+    expand = c(0.02, 0)
+  ) +
+  
+  # Primary y-axis (left side - starting year)
+  scale_y_discrete(
+    labels = setNames(year_labels$left_label, year_labels$winter_year_factor)
+  ) +
+  
+  # Add right-side year labels using secondary axis
+  # We'll add these as text annotations
+  geom_text(
+    data = year_labels,
+    aes(
+      x = 375,  # Position just past the right edge
+      y = winter_year_factor,
+      label = right_label
+    ),
+    hjust = 0,
+    color = "gray80",
+    size = 3,
+    fontface = "bold",
+    inherit.aes = FALSE
+  ) +
+  
+  # Expand x-axis to make room for right labels
+  coord_cartesian(xlim = c(1, 365), clip = "off") +
+  
+  # Labels
+  labs(
+    title = "Snow Depth Throughout the Winter Year",
+    subtitle = "July to June | Each ridge shows daily snow depth spanning two calendar years",
+    x = NULL,
+    y = NULL,
+    caption = "Data: NOAA Weather Station"
+  ) +
+  
+  # Dark theme
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major.x = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 11, color = "gray70", margin = margin(b = 15)),
+    plot.caption = element_text(color = "gray50"),
+    
+    axis.text.x = element_text(color = "gray80", size = 10),
+    axis.text.y = element_text(color = "gray80", size = 9, face = "bold"),
+    
+    # Add right margin for the secondary year labels
+    plot.margin = margin(20, 50, 15, 15)
+  )
+
+# Display
+print(plot_winter)
+
+# Save
+ggsave("snow_ridgeline_winter.png", plot_winter, width = 14, height = 12, dpi = 300)
+```
+
+```{r}
+
+```
+
+Revise Ridgeline to focus on months when snow actually falls
+
+```{r}
+
+weather_winter <- weather_raw |>
+  mutate(
+    # Parse dates handling multiple formats
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    year = year(DATE),
+    month = month(DATE),
+    day = day(DATE)
+  ) |>
+  # Create winter_year: July starts a new winter year
+  # July 2002 - June 2003 = winter_year 2002
+  mutate(
+    winter_year = if_else(month >= 7, year, year - 1)
+  ) |>
+  # Create day_of_winter_year: July 1 = day 1, June 30 = day 365/366
+  mutate(
+    # Days in each month for non-leap year reference
+    day_of_winter_year = case_when(                                      # MODIF 1
+          month == 9 ~ day,                              # Sep: 1-30
+          month == 10 ~ 30 + day,                        # Oct: 31-61
+          month == 11 ~ 30 + 31 + day,                   # Nov: 62-91
+          month == 12 ~ 30 + 31 + 30 + day,              # Dec: 92-122
+          month == 1 ~ 30 + 31 + 30 + 31 + day,          # Jan: 123-153
+          month == 2 ~ 30 + 31 + 30 + 31 + 31 + day,     # Feb: 154-181/182
+          month == 3 ~ 30 + 31 + 30 + 31 + 31 + 28 + day, # Mar: 182-212
+          month == 4 ~ 30 + 31 + 30 + 31 + 31 + 28 + 31 + day # Apr: 213-242
+        )
+  ) |>
+  # Filter to winter years of interest and remove missing snow depth
+filter(winter_year >= 2000 & winter_year <= 2025) |>
+  filter(month %in% c(9, 10, 11, 12, 1, 2, 3, 4)) |>                  # MODIF 2
+  filter(!is.na(SNWD)) |>
+  # Create labels for left and right y-axis
+  mutate(
+    left_label = as.character(winter_year),
+    right_label = as.character(winter_year + 1),
+    # Factor for ordering (most recent at top)
+    winter_year_factor = factor(winter_year, levels = rev(2000:2025))
+  )
+
+# Quick data check
+cat("Data summary:\n")
+cat("Winter year range:", min(weather_winter$winter_year), "to", max(weather_winter$winter_year), "\n")
+cat("Day of winter year range:", min(weather_winter$day_of_winter_year), "to", max(weather_winter$day_of_winter_year), "\n")
+cat("Snow depth range:", min(weather_winter$SNWD), "to", max(weather_winter$SNWD), "\n")
+```
+
+```{r}
+# ----------------------------------------------------------------------------
+# STEP 2: Create label data frames for dual y-axes
+# ----------------------------------------------------------------------------
+
+# Get unique winter years for labeling
+year_labels <- weather_winter |>
+  dplyr::distinct(winter_year, winter_year_factor, left_label, right_label)
+```
+
+```{r}
+# ----------------------------------------------------------------------------
+# STEP 3: Create the ridgeline plot
+# ----------------------------------------------------------------------------
+
+# Define x-axis breaks and labels (first of each month)
+# month_breaks <- c(1, 32, 63, 93, 124, 154, 185, 216, 244, 275, 305, 336)
+month_breaks <- c(1, 31, 62, 92, 123, 154, 182, 213)                        # MODIF 3
+# month_labels <- c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec", 
+#                   "Jan", "Feb", "Mar", "Apr", "May", "Jun")
+month_labels <- c("Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr")    # MODIF 4
+
+plot_winter <- ggplot(
+  data = weather_winter,
+  aes(
+    x = day_of_winter_year,
+    y = winter_year_factor,
+    height = SNWD,
+    group = winter_year_factor
+  )
+) +
+  geom_ridgeline(
+    scale = 0.025,        # TWEAK: Adjust for ridge height
+    fill = "#4DABF7",
+    color = "white",
+    linewidth = 0.3,
+    alpha = 0.5
+  ) +
+  
+  # X-axis: Month labels centered on winter
+  scale_x_continuous(
+    breaks = month_breaks,
+    labels = month_labels,
+    expand = c(0.02, 0)
+  ) +
+  
+  # Primary y-axis (left side - starting year)
+  scale_y_discrete(
+    labels = setNames(year_labels$left_label, year_labels$winter_year_factor)
+  ) +
+  
+  # Add right-side year labels using secondary axis
+  # We'll add these as text annotations
+  geom_text(
+    data = year_labels,
+    aes(                                                      # MODIF 6
+      x = 252,  # Adjusted for shorter x-axis (was 375)
+      y = winter_year_factor,
+      label = right_label
+      ),
+    hjust = 0,
+    color = "gray80",
+    size = 3,
+    fontface = "bold",
+    inherit.aes = FALSE
+  ) +
+  
+  # Expand x-axis to make room for right labels
+  # coord_cartesian(xlim = c(1, 365), clip = "off") +
+  coord_cartesian(xlim = c(1, 242), clip = "off") +    # MODIF 5
+  
+  # Labels
+  labs(
+    title = "Snow Depth Throughout the Winter Year",
+    # subtitle = "July to June | Each ridge shows daily snow depth spanning two calendar years",
+    subtitle = "September to April | Each ridge shows daily snow depth spanning two calendar years",    # MODIF 7
+    x = NULL,
+    y = NULL,
+    caption = "Data: NOAA Weather Station"
+  ) +
+  
+  # Dark theme
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major.x = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 11, color = "gray70", margin = margin(b = 15)),
+    plot.caption = element_text(color = "gray50"),
+    
+    axis.text.x = element_text(color = "gray80", size = 10),
+    axis.text.y = element_text(color = "gray80", size = 9, face = "bold"),
+    
+    # Add right margin for the secondary year labels
+    plot.margin = margin(20, 50, 15, 15)
+  )
+
+# Display
+print(plot_winter)
+
+# Save
+ggsave("snow_ridgeline_winter_sept-apr.png", plot_winter, width = 14, height = 12, dpi = 300)
+```
+
+```{r}
+
+```
+
+```{r}
+
+```

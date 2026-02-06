@@ -61,9 +61,6 @@ We would like to examine changes in Hanover's temperature over time.
 Brainstorm how you would need to modify this dataset to do this analysis. Write your thoughts below:
 
 ```         
-
-
-
 ```
 
 # 4. Tidyverse / dplyr verbs for Data Wrangling
