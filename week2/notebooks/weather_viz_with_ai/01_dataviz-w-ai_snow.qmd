@@ -1,11 +1,13 @@
 ---
-title: "Data Wrangling for Visualization, Part 2"
+title: "Data Viz with AI 1: Snow Depth"
 author: "Jeremy Mikecz"
 format: html
 editor: visual
 ---
 
-# Experimenting with Weather Graphics
+# Data Viz with AI: Visualizing Snow Depth
+
+## Experimenting with Weather Graphics
 
 # 1. Setup
 

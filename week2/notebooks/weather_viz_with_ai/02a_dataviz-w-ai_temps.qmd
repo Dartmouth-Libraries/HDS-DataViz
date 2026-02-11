@@ -1,0 +1,798 @@
+---
+title: "Data Viz with AI 2a: Temperature Analysis"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Experimenting with Weather Graphics and AI 2
+
+# 1. Setup
+
+## 1.1 Import necessary packages
+
+```{r}
+library(tidyverse)
+library(lubridate)  # For easier date manipulation
+library(zoo)        # for rollmean function
+library(ggrepel)
+options(repr.plot.width = 20, repr.plot.height = 12)
+```
+
+## 1.2 Import Data
+
+```{r}
+weather_raw <- read.csv("../data/Hanover_weather-data_1884-2026-01.csv")
+```
+
+## 2. Prepare the Data
+
+```{r}
+weather_tmin <- weather_raw |>
+  dplyr::mutate(
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    year = year(DATE),
+    month = month(DATE),
+    day_of_year = yday(DATE)
+  ) |>
+  dplyr::filter(!is.na(TMIN)) |>
+  dplyr::mutate(
+    era = case_when(
+      year >= 2025 ~ "current",
+      year >= 2015 & year < 2025 ~ "recent",
+      TRUE ~ "historical"
+    ),
+    era = factor(era, levels = c("historical", "recent", "current"))
+  )
+
+# Quick data check
+cat("Data summary:\n")
+cat("Year range:", min(weather_tmin$year), "to", max(weather_tmin$year), "\n")
+cat("TMIN range:", min(weather_tmin$TMIN), "to", max(weather_tmin$TMIN), "\n")
+```
+
+## 3. Find Extreme Days
+
+```{r}
+hottest_day <- weather_tmin |>
+  dplyr::slice_max(order_by = TMIN, n = 1) |>
+  dplyr::mutate(
+    label = paste0("Hottest Min: ", TMIN, "°F\n", format(DATE, "%b %d, %Y"))
+  )
+
+coldest_day <- weather_tmin |>
+  dplyr::slice_min(order_by = TMIN, n = 1) |>
+  dplyr::mutate(
+    label = paste0("Coldest: ", TMIN, "°F\n", format(DATE, "%b %d, %Y"))
+  )
+
+cat("\nExtreme days:\n")
+cat("Hottest min temp:", hottest_day$TMIN, "on", as.character(hottest_day$DATE), "\n")
+cat("Coldest min temp:", coldest_day$TMIN, "on", as.character(coldest_day$DATE), "\n")
+```
+
+## 3. Find Extreme Years
+
+```{r}
+yearly_avg <- weather_tmin |>
+  dplyr::group_by(year) |>
+  dplyr::summarize(
+    avg_tmin = mean(TMIN, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+hottest_year <- yearly_avg |>
+  dplyr::slice_max(order_by = avg_tmin, n = 1)
+
+coldest_year <- yearly_avg |>
+  dplyr::slice_min(order_by = avg_tmin, n = 1)
+
+cat("\nExtreme years (by average min temp):\n")
+cat("Hottest year:", hottest_year$year, "- Avg min:", round(hottest_year$avg_tmin, 1), "°F\n")
+cat("Coldest year:", coldest_year$year, "- Avg min:", round(coldest_year$avg_tmin, 1), "°F\n")
+
+# Get data for extreme years to highlight
+hottest_year_data <- weather_tmin |>
+  dplyr::filter(year == hottest_year$year) |>
+  dplyr::mutate(extreme_type = "hottest_year")
+
+coldest_year_data <- weather_tmin |>
+  dplyr::filter(year == coldest_year$year) |>
+  dplyr::mutate(extreme_type = "coldest_year")
+
+# Create label points for extreme years (place at a readable location)
+hottest_year_label <- hottest_year_data |>
+  dplyr::filter(day_of_year == 180) |>  # Mid-year for label placement
+dplyr::mutate(
+    label = paste0("Hottest Year: ", year, "\nAvg Min: ", round(hottest_year$avg_tmin, 1), "°F")
+  )
+
+coldest_year_label <- coldest_year_data |>
+  dplyr::filter(day_of_year == 45) |>  # Early year for label placement
+  dplyr::mutate(
+    label = paste0("Coldest Year: ", year, "\nAvg Min: ", round(coldest_year$avg_tmin, 1), "°F")
+  )
+```
+
+## 4. Calculate Era Averages
+
+```{r}
+era_averages <- weather_tmin |>
+  dplyr::mutate(
+    avg_era = case_when(
+      year < 2000 ~ "Pre-2000",
+      year >= 2000 & year < 2015 ~ "2000-2014",
+      year >= 2015 ~ "2015-Present"
+    )
+  ) |>
+  dplyr::group_by(avg_era) |>
+  dplyr::summarize(
+    avg_tmin = mean(TMIN, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    avg_era = factor(avg_era, levels = c("Pre-2000", "2000-2014", "2015-Present"))
+  )
+
+cat("\nEra averages:\n")
+print(era_averages)
+
+```
+
+## 5. Create Plot
+
+```{r}
+# Define month breaks for x-axis
+month_breaks <- c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+month_labels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+plot_tmin <- ggplot() +
+  
+  # ---- Layer 1: Historical years (pre-2015) - faint gray ----
+  geom_line(
+    data = weather_tmin |> dplyr::filter(era == "historical"),
+    aes(x = day_of_year, y = TMIN, group = year),
+    color = "gray50",
+    alpha = 0.4,
+    linewidth = 0.3
+
+  ) +
+  
+  # ---- Layer 2: Recent years (2015-2024) - medium blue ----
+  geom_line(
+    data = weather_tmin |> dplyr::filter(era == "recent"),
+    aes(x = day_of_year, y = TMIN, group = year),
+    color = "#4DABF7",
+    alpha = 0.6,
+    linewidth = 0.5
+  ) +
+  
+  # ---- Layer 3: Current years (2025-2026) - thick white ----
+  geom_line(
+    data = weather_tmin |> dplyr::filter(era == "current"),
+    aes(x = day_of_year, y = TMIN, group = year),
+    color = "white",
+    alpha = 1,
+    linewidth = 1.2
+  ) +
+  
+  # ---- Layer 4: Highlight coldest year - bright blue ----
+  geom_line(
+    data = coldest_year_data,
+    aes(x = day_of_year, y = TMIN),
+    color = "#00BFFF",
+    linewidth = 1.0,
+    alpha = 0.9
+  ) +
+  
+  # ---- Layer 5: Highlight hottest year - orange/red ----
+  geom_line(
+    data = hottest_year_data,
+    aes(x = day_of_year, y = TMIN),
+    color = "#FF6B6B",
+    linewidth = 1.0,
+    alpha = 0.9
+  ) +
+    
+  # ---- Layer 6: Temperature reference lines ----
+  annotate(
+    "text", x = 370, y = 100, label = "100°F",
+    color = "#E03131", hjust = 0, size = 3, fontface = "bold"
+  ) +
+  annotate(
+    "text", x = 370, y = 32, label = "32°F",
+    color = "#339AF0", hjust = 0, size = 3, fontface = "bold"
+  ) +
+  annotate(
+    "text", x = 370, y = 0, label = "0°F",
+    color = "#D0EBFF", hjust = 0, size = 3, fontface = "bold"
+  ) +
+  
+  # Era average labels on left side
+  annotate(
+    "text", 
+    x = 5, 
+    y = era_averages$avg_tmin + 3,
+    label = paste0(era_averages$avg_era, " Avg: ", round(era_averages$avg_tmin, 1), "°F"),
+    color = c("#868E96", "#74C0FC", "#FFFFFF"),
+    hjust = 0, 
+    size = 2.8, 
+    fontface = "italic"
+  ) +
+  
+  # ---- Layer 9: Extreme day callouts ----
+  # Hottest day point and label
+  geom_point(
+    data = hottest_day,
+    aes(x = day_of_year, y = TMIN),
+    color = "#FF6B6B",
+    size = 4,
+    shape = 16
+  ) +
+  geom_label_repel(
+    data = hottest_day,
+    aes(x = day_of_year, y = TMIN, label = label),
+    fill = "#2C2C3E",
+    color = "#FF6B6B",
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.5,
+    nudge_y = 15,
+    segment.color = "#FF6B6B",
+    segment.size = 0.4,
+    min.segment.length = 0
+  ) +
+  
+  # Coldest day point and label
+  geom_point(
+    data = coldest_day,
+    aes(x = day_of_year, y = TMIN),
+    color = "#D0EBFF",
+    size = 4,
+    shape = 16
+  ) +
+  geom_label_repel(
+    data = coldest_day,
+    aes(x = day_of_year, y = TMIN, label = label),
+    fill = "#2C2C3E",
+    color = "#D0EBFF",
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.5,
+    nudge_y = -15,
+    segment.color = "#D0EBFF",
+    segment.size = 0.4,
+    min.segment.length = 0
+  ) +
+    
+   # ---- Layer 10: Extreme year callouts ----
+  geom_label_repel(
+    data = hottest_year_label,
+    aes(x = day_of_year, y = TMIN, label = label),
+    fill = "#2C2C3E",
+    color = "#FF6B6B",
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = 20,
+    nudge_x = 30,
+    segment.color = "#FF6B6B",
+    segment.size = 0.4,
+    min.segment.length = 0
+  ) +
+  geom_label_repel(
+    data = coldest_year_label,
+    aes(x = day_of_year, y = TMIN, label = label),
+    fill = "#2C2C3E",
+    color = "#00BFFF",
+    size = 3,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = -20,
+    nudge_x = 20,
+    segment.color = "#00BFFF",
+    segment.size = 0.4,
+    min.segment.length = 0
+  ) +
+  
+  # ---- Scales ----
+  scale_x_continuous(
+    breaks = month_breaks,
+    labels = month_labels,
+    expand = c(0.02, 0)
+  ) +
+  scale_y_continuous(
+    breaks = seq(-40, 100, by = 20),
+    expand = expansion(mult = c(0.05, 0.05))
+  ) +
+  
+  # Allow labels outside plot area
+  coord_cartesian(xlim = c(1, 365), clip = "off") +
+  
+  # ---- Labels ----
+  labs(
+    title = "Daily Minimum Temperatures: A Historical View",
+    subtitle = "Gray: Pre-2015 | Blue: 2015-2024 | White: 2025-2026 | Highlighted: Coldest & Hottest Years on Record",
+    x = NULL,
+    y = "Minimum Temperature (°F)",
+    caption = paste0(
+      "Data: NOAA Weather Station | ",
+      "Dashed lines show temperature thresholds (100°F, 32°F freezing, 0°F) | ",
+      "Dotted lines show era averages\n",
+      "Highlighted lines show the coldest year (", coldest_year$year, ", blue) and ",
+      "hottest year (", hottest_year$year, ", red) by average minimum temperature"
+    )
+  ) +
+  
+  # ---- Dark Theme ----
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title =element_text(face = "bold", size = 20, color = "white"),
+    plot.subtitle = element_text(size = 12, color = "gray70", margin = margin(b = 15)),
+    plot.caption = element_text(size = 9, color = "gray50", lineheight = 1.3, 
+                                 margin = margin(t = 15)),
+    
+    axis.text = element_text(color = "gray80", size = 11),
+    axis.title.y = element_text(color = "white", face = "bold", margin = margin(r = 10)),
+    
+    legend.position = "none",
+    
+    # Extra margin for annotations outside plot
+    plot.margin = margin(20, 60, 20, 15)
+  )
+
+# Display
+print(plot_tmin)
+
+# ---- Save as large, high-resolution graphic ----
+ggsave(
+  "minimum_temperature_historical.png", 
+  plot_tmin, 
+  width = 18,      # Large width
+  height = 11,     # Large height
+  dpi = 300,       # High resolution
+  bg = "#1a1a2e"   # Match background color
+)
+
+cat("\nPlot saved as 'minimum_temperature_historical.png' (18x11 inches, 300 DPI)\n")
+    
+```
+
+## Ridgeline Temperature Plot
+
+```{r}
+library(patchwork)  # For combining plots
+```
+
+## Create aggregated averages
+
+```{r}
+avg_pre2000 <- weather_tmin |>
+  dplyr::filter(year < 2000) |>
+  dplyr::group_by(day_of_year) |>
+  dplyr::summarize(
+    TMIN = mean(TMIN, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    year_label = "Pre-2000 Avg",
+    plot_order = 1
+  )
+
+avg_2000_2014 <- weather_tmin |>
+  dplyr::filter(year >= 2000 & year < 2015) |>
+  dplyr::group_by(day_of_year) |>
+  dplyr::summarize(
+    TMIN = mean(TMIN, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    year_label = "2000-2014 Avg",
+    plot_order = 2
+  )
+```
+
+## Get individual years, 2015-present
+
+```{r}
+individual_years <- weather_tmin |>
+  dplyr::filter(year >= 2015) |>
+  dplyr::select(day_of_year, TMIN, year) |>
+  dplyr::mutate(
+    year_label = as.character(year),
+    plot_order = year - 2015 + 3  # 2015 = 3, 2016 = 4, etc.
+  )
+```
+
+```{r}
+ridge_data <- dplyr::bind_rows(
+  avg_pre2000,
+  avg_2000_2014,
+  individual_years
+) |>
+  # Shift temperature so 32°F is the baseline (0)
+  dplyr::mutate(
+    TMIN_shifted = TMIN - 32,
+    # Create fill categories
+    fill_category = case_when(
+      TMIN < 0 ~ "Below 0°F",
+      TMIN >= 0 & TMIN < 32 ~ "0°F to 32°F",
+      TMIN >= 32 ~ "Above 32°F"
+    ),
+    fill_category = factor(fill_category, 
+                           levels = c("Below 0°F", "0°F to 32°F", "Above 32°F"))
+  ) |>
+  # Create ordered factor for y-axis
+  dplyr::mutate(
+    year_label = factor(year_label, 
+                        levels = c("Pre-2000 Avg", "2000-2014 Avg", 
+                                   as.character(2015:2026)))
+  )
+
+# Reverse for plotting (most recent at top)
+ridge_data <- ridge_data |>
+  dplyr::mutate(
+    year_label = factor(year_label, levels = rev(levels(year_label)))
+  )
+
+# Check structure
+cat("\nYear labels in data:\n")
+print(levels(ridge_data$year_label))
+```
+
+```{r}
+# Find coldest day for each year 2015+
+coldest_by_year <- ridge_data |>
+  dplyr::filter(!(year_label %in% c("Pre-2000 Avg", "2000-2014 Avg"))) |>
+  dplyr::group_by(year_label) |>
+  dplyr::slice_min(order_by = TMIN, n = 1, with_ties = FALSE) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    label = paste0(round(TMIN, 0), "°F"),
+    extreme_type = "cold"
+  )
+
+# Find hottest min temp day for each year 2015+
+hottest_by_year <- ridge_data |>
+  dplyr::filter(!(year_label %in% c("Pre-2000 Avg", "2000-2014 Avg"))) |>
+  dplyr::group_by(year_label) |>
+  dplyr::slice_max(order_by = TMIN, n = 1, with_ties = FALSE) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    label = paste0(round(TMIN, 0), "°F"),
+    extreme_type = "hot"
+  )
+
+cat("\nColdest days by year:\n")
+print(coldest_by_year |> dplyr::select(year_label, day_of_year, TMIN))
+
+cat("\nHottest min temps by year:\n")
+print(hottest_by_year |> dplyr::select(year_label, day_of_year, TMIN))
+```
+
+```{r}
+ridge_diverging <- ridge_data |>
+  dplyr::mutate(
+    # Values above 32 (positive from baseline)
+    above_32 = pmax(TMIN_shifted, 0),
+    # Values below 32 but above 0 (negative from baseline, but above 0°F actual)
+    below_32_above_0 = case_when(
+      TMIN >= 0 & TMIN < 32 ~ TMIN_shifted,  # Negative value
+      TMIN < 0 ~ -32,  # Cap at -32 (which is 0°F actual)
+      TRUE ~ 0
+    ),
+    # Values below 0°F (very cold)
+    below_0 = case_when(
+      TMIN < 0 ~ TMIN_shifted + 32,  # Additional cold below 0°F
+      TRUE ~ 0
+    )
+  )
+
+```
+
+```{r}
+# Month breaks for x-axis
+month_breaks <- c(1, 32, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335)
+month_labels <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+# Create a function to generate one facet's worth of ribbons
+# We'll use facet_wrap for the ridgeline effect
+
+plot_ridges <- ggplot(ridge_diverging, aes(x = day_of_year)) +
+  
+  # ---- Layer 1: Fill for temps ABOVE 32°F (orange) ----
+  geom_ribbon(
+    aes(ymin = 0, ymax = above_32),
+    fill = "#FF922B",
+    alpha = 0.8
+  ) +
+  
+  # ---- Layer 2: Fill for temps 0°F to 32°F (blue) ----
+  geom_ribbon(
+    aes(ymin = below_32_above_0, ymax = 0),
+    fill = "#339AF0",
+    alpha = 0.8
+  ) +
+  
+  # ---- Layer 3: Fill for temps BELOW 0°F (icy blue) ----
+  geom_ribbon(
+    aes(ymin = TMIN_shifted, ymax = below_32_above_0),
+    fill = "#D0EBFF",
+    alpha = 0.9
+  ) +
+  
+  # ---- Layer 4: Line showing actual temperature ----
+  geom_line(
+    aes(y = TMIN_shifted),
+    color = "white",
+    linewidth = 0.3,
+    alpha = 0.7
+  ) +
+
+  # ---- Layer 5: Baseline at 32°F ----
+  geom_hline(yintercept = 0, color = "white", linewidth = 0.4, alpha = 0.5) +
+  
+  # ---- Layer 6: Reference line at 0°F (which is -32 on shifted scale) ----
+  geom_hline(yintercept = -32, color = "#D0EBFF", linewidth = 0.3, 
+             linetype = "dashed", alpha = 0.7) +
+  
+  # ---- Facet by year ----
+  facet_wrap(~ year_label, ncol = 1, scales = "free_y", strip.position = "left") +
+  
+  # ---- Scales ----
+  scale_x_continuous(
+    breaks = month_breaks,
+    labels = month_labels,
+    expand = c(0.01, 0)
+  ) +
+  scale_y_continuous(
+    breaks = c(-32, 0, 32, 64),
+    labels = c("0°F", "32°F", "64°F", "96°F"),
+    limits = c(-60, 50)
+  ) +
+  
+  # ---- Labels ----
+  labs(
+    title = "Daily Minimum Temperatures Relative to Freezing (32°F)",
+    subtitle = "Orange: Above freezing | Blue: Below freezing | Icy Blue: Below 0°F",
+    x = NULL,
+    y = NULL
+  ) +
+  
+  # ---- Theme ----
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major.x = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    
+    strip.background = element_rect(fill = "#1a1a2e", color = NA),
+    strip.text.y.left = element_text(angle = 0, color = "white", face = "bold", 
+                                      size = 9, hjust = 1),
+    strip.placement = "outside",
+    
+    panel.spacing = unit(0.15, "lines"),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 16, color = "white"),
+    plot.subtitle = element_text(size = 10, color = "gray70", margin = margin(b = 10)),
+    
+    axis.text.x = element_text(color = "gray80", size = 9),
+    axis.text.y = element_text(color = "gray60", size = 7),
+    
+    plot.margin = margin(15, 15, 5, 5)
+  )
+```
+
+```{r}
+# We need to add points and labels within each facet
+plot_ridges_callouts <- plot_ridges +
+  
+  # Cold extremes - points
+  geom_point(
+    data = coldest_by_year,
+    aes(x = day_of_year, y = TMIN_shifted),
+    color = "#D0EBFF",
+    size = 2,
+    shape = 16
+  ) +
+  
+  # Cold extremes - labels
+  geom_text(
+    data = coldest_by_year,
+    aes(x = day_of_year, y = TMIN_shifted - 8, label = label),
+    color = "#D0EBFF",
+    size = 2.2,
+    fontface = "bold"
+  ) +
+  
+  # Hot extremes - points
+  geom_point(
+    data = hottest_by_year,
+    aes(x = day_of_year, y = TMIN_shifted),
+    color = "#FF922B",
+    size = 2,
+    shape = 16
+  ) +
+  
+  # Hot extremes - labels
+  geom_text(
+    data = hottest_by_year,
+    aes(x = day_of_year, y = TMIN_shifted + 8, label = label),
+    color = "#FF922B",
+    size = 2.2,
+    fontface = "bold"
+  )
+```
+
+```{r}
+# Calculate era averages by day of year
+summary_data <- weather_tmin |>
+  dplyr::mutate(
+    era = case_when(
+      year >= 1900 & year < 1950 ~ "1900-1949",
+      year >= 1950 & year < 2000 ~ "1950-1999",
+      year >= 2000 & year < 2015 ~ "2000-2014",
+      year >= 2015 & year < 2025 ~ "2015-2024",
+      year == 2025 ~ "2025",
+      year == 2026 ~ "2026",
+      TRUE ~ NA_character_
+    )
+  ) |>
+  dplyr::filter(!is.na(era)) |>
+  dplyr::group_by(era, day_of_year) |>
+  dplyr::summarize(
+    avg_TMIN = mean(TMIN, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    era = factor(era, levels = c("1900-1949", "1950-1999", "2000-2014", 
+                                  "2015-2024", "2025", "2026"))
+  )
+
+# Check what eras we have
+cat("\nEras in summary data:\n")
+print(table(summary_data$era))
+
+# Define colors for each era
+era_colors <- c(
+  "1900-1949" = "gray30",
+  "1950-1999" = "gray70",
+  "2000-2014" = "#74C0FC",
+  "2015-2024" = "#4DABF7",
+  "2025" = "white",
+  "2026" = "#FFE066"
+)
+```
+
+```{r}
+tail(summary_data)
+summary_data_pre2025 <- summary_data |>
+    filter(!(era %in% c("2025", "2026")))
+summary_data_post2024 <- summary_data |>
+    filter(era %in% c("2025", "2026"))
+```
+
+```{r}
+plot_summary <- ggplot(summary_data_pre2025, aes(x = day_of_year, y = avg_TMIN, color = era)) +
+  
+  # Lines for each era
+  geom_line(aes(linewidth = era, alpha = era)) +
+    
+  geom_line(data = summary_data_post2024,
+            aes(y=rollmean(avg_TMIN, 7, na.pad=TRUE),
+                linewidth = era,
+                alpha = era,
+                ),
+            linetype="dashed"
+            ) +
+  
+  # Reference lines
+  geom_hline(yintercept = 32, color = "white", linewidth = 0.3, 
+             linetype = "dashed", alpha = 0.5) +
+  geom_hline(yintercept = 0, color = "#D0EBFF", linewidth = 0.3, 
+             linetype = "dashed", alpha = 0.5) +
+  
+  # Scales
+  scale_color_manual(values = era_colors, name = "Period") +
+  scale_linewidth_manual(
+    values = c("1900-1949" = 0.4, "1950-1999" = 0.4, "2000-2014" = 0.6,
+               "2015-2024" = 0.6, "2025" = 1, "2026" = 1),
+    guide = "none"
+  ) +
+  scale_alpha_manual(
+    values = c("1900-1949" = 0.4, "1950-1999" = 0.6, "2000-2014" = 0.7,
+               "2015-2024" = 0.8, "2025" = 1, "2026" = 1),
+    guide = "none"
+  ) +
+  
+  scale_x_continuous(
+    breaks = month_breaks,
+    labels = month_labels,
+    expand = c(0.01, 0)
+  ) +
+  scale_y_continuous(
+    breaks = seq(-20, 80, by = 20)
+  ) +
+  
+  # Labels
+  labs(
+    title = "Average Daily Minimum Temperature by Era",
+    subtitle = "Comparing temperature trends across different time periods",
+    x = NULL,
+    y = "Avg Min Temp (°F)",
+    caption = paste0(
+      "Data: NOAA Weather Station | ",
+      "Top panels show temperatures relative to 32°F baseline | ",
+      "Bottom panel compares era averages\n",
+      "Orange fill: Above freezing | Blue fill: 0-32°F | Icy blue fill: Below 0°F | ",
+      "Callouts show annual extremes for 2015+"
+    )
+  ) +
+
+  # Theme
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 14, color = "white"),
+    plot.subtitle = element_text(size = 9, color = "gray70"),
+    plot.caption = element_text(size = 8, color = "gray50", lineheight = 1.3,
+                                 margin = margin(t = 10)),
+    
+    axis.text = element_text(color = "gray80", size = 9),
+    axis.title.y = element_text(color = "white", size = 10, margin = margin(r = 5)),
+    
+    legend.position = "right",
+    legend.background = element_rect(fill = "#1a1a2e", color = NA),
+    legend.text = element_text(color = "gray80", size = 8),
+    legend.title = element_text(color = "white", face = "bold", size = 9),
+    legend.key = element_rect(fill = "#1a1a2e", color = NA),
+    
+    plot.margin = margin(10, 15, 15, 5)
+  )
+```
+
+```{r}
+combined_plot <- plot_ridges_callouts / plot_summary +
+  plot_layout(heights = c(4, 1)) +
+  plot_annotation(
+    theme = theme(
+      plot.background = element_rect(fill = "#1a1a2e", color = NA)
+    )
+  )
+
+# Display
+print(combined_plot)
+```
+
+```{r}
+ggsave(
+  "temperature_ridgeline_diverging.png",
+  combined_plot,
+  width = 16,
+  height = 22,
+  dpi = 300,
+  bg = "#1a1a2e"
+)
+
+cat("\nPlot saved as 'temperature_ridgeline_diverging.png' (16x22 inches, 300 DPI)\n")
+```

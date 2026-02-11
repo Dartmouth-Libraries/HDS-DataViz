@@ -1,0 +1,574 @@
+---
+title: "Data Viz with AI 2b: Winter Lows"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(patchwork)
+library(zoo)
+```
+
+```{r}
+weather_raw <- read.csv("../data/Hanover_weather-data_1884-2026-01.csv")
+```
+
+## 1. Prepare Base Data
+
+Group by winters (i.e. December 2022 goes with January 2023)
+
+```{r}
+weather_winter <- weather_raw |>
+ dplyr::mutate(
+    DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
+    year = year(DATE),
+    month = month(DATE),
+    day = day(DATE)
+  ) |>
+  # Filter to only December and January
+  dplyr::filter(month %in% c(12, 1)) |>
+  # Create winter_year: Dec 2025 + Jan 2026 = winter 2025
+  mutate(
+    winter_year = if_else(month == 12, year, year - 1),
+  ) |>
+  # Filter to winters from 1900 to present
+  dplyr::filter(winter_year >= 1900 & winter_year <= 2025) |>
+  # Remove rows with missing temperature data
+  dplyr::filter(!is.na(TMIN) & !is.na(TMAX))
+
+# Check data
+cat("Winter year range:", min(weather_winter$winter_year), "to", max(weather_winter$winter_year), "\n")
+cat("Total rows:", nrow(weather_winter), "\n")
+```
+
+## 2. Calculate average daily min and max temps for each winter
+
+```{r}
+winter_averages <- weather_winter |>
+  dplyr::group_by(winter_year) |>
+  dplyr::summarize(
+    avg_tmin = mean(TMIN, na.rm = TRUE),
+    avg_tmax = mean(TMAX, na.rm = TRUE),
+    days_tmin_below_0 = sum(TMIN < 0, na.rm = TRUE),
+    days_tmax_below_0 = sum(TMAX < 0, na.rm = TRUE),
+    total_days = n(),
+    .groups = "drop"
+  ) |>
+  # Shift min temp so 32°F is the baseline
+  dplyr::mutate(
+    avg_tmin_shifted = avg_tmin - 32,
+    # Separate above and below baseline for area fill
+    above_baseline = pmax(avg_tmin_shifted, 0),
+    below_baseline = pmin(avg_tmin_shifted, 0)
+  )
+
+# Check results
+cat("\nSample of winter averages:\n")
+print(head(winter_averages, 10))
+cat("\n...to...\n")
+print(tail(winter_averages, 10))
+```
+
+## 3b. Calculate 5-year rolling averages for min temps
+
+```{r}
+winter_averages <- winter_averages |>
+  dplyr::arrange(winter_year) |>
+  dplyr::mutate(
+    # 5-year rolling mean of average min temp
+    rolling_avg_tmin = zoo::rollmean(avg_tmin, k = 5, fill = NA, align = "right"),
+    # Shifted version for plotting on 32°F baseline
+    rolling_avg_tmin_shifted = rolling_avg_tmin - 32
+  )
+```
+
+## 3. Calculate era averages for reference lines
+
+```{r}
+era_averages <- weather_winter |>
+  dplyr::mutate(
+    era = case_when(
+      winter_year >= 1900 & winter_year <= 1949 ~ "1900-1949",
+      winter_year >= 1950 & winter_year <= 1999 ~ "1950-1999",
+      winter_year >= 2000 & winter_year <= 2014 ~ "2000-2014",
+      winter_year >= 2015 & winter_year <= 2025 ~ "2015-2025"
+    )
+  ) |>
+  dplyr::filter(!is.na(era)) |>
+  dplyr::group_by(era) |>
+  dplyr::summarize(
+    era_avg_tmin = mean(TMIN, na.rm = TRUE),
+    era_avg_tmax = mean(TMAX, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    era = factor(era, levels = c("1900-1949", "1950-1999", "2000-2014", "2015-2025")),
+    # Shift for plotting on same scale
+    era_avg_tmin_shifted = era_avg_tmin - 32
+  )
+
+cat("\nEra averages (Dec-Jan combined):\n")
+print(era_averages)
+
+# Define colors for era lines
+era_colors <- c(
+  "1900-1949" = "#868E96",
+  "1950-1999" = "#ADB5BD",
+  "2000-2014" = "#74C0FC",
+  "2015-2025" = "#FFFFFF"
+)
+```
+
+## 4. Create x-axis breaks (decades
+
+```{r}
+decade_breaks <- seq(1900, 2020, by = 10)
+decade_labels <- as.character(decade_breaks)
+
+# Also identify specific years for labeling
+label_years <- winter_averages |>
+  dplyr::filter(winter_year %% 10 == 0 | winter_year == 2025)
+```
+
+## 5. Create Line Plot
+
+```{r}
+plot_temp <- ggplot(winter_averages, aes(x = winter_year)) +
+    
+    # ---- Layer 1: Area fill BELOW baseline (blue - cold) ----
+  # geom_ribbon(
+  #   aes(ymin = below_baseline, ymax = 0),
+  #   fill = "#339AF0",
+  #   alpha = 0.8
+  # ) +
+  # 
+  # # ---- Layer 2: Area fill ABOVE baseline (orange - warm) ----
+  # geom_ribbon(
+  #   aes(ymin = 0, ymax = above_baseline),
+  #   fill = "#FF922B",
+  #   alpha = 0.8
+  # ) +
+  
+  # ---- Layer 3: Line showing actual avg min temp ----
+  geom_line(
+    aes(y = avg_tmin_shifted),
+    color = "darkslategray1",
+    linewidth = 1.3,
+    alpha = 0.7
+  ) +
+  
+  # ---- Layer 4: Line showing avg max temp (shifted to same baseline) ----
+  geom_line(
+    aes(y = avg_tmax - 32),
+    color = "#FFE066",
+    linewidth = 0.5,
+    linetype = "longdash",
+    alpha = 0.9
+  ) +
+  
+  # ---- Layer 5: Baseline at 32°F ----
+  geom_hline(yintercept = 0, color = "white", linewidth = 0.5, alpha = 0.7) +
+  
+  # ---- Layer 6: Era average reference lines ----
+  geom_hline(
+    data = era_averages,
+    aes(yintercept = era_avg_tmin_shifted, color = era),
+    linetype = "dashed",
+    linewidth = 0.8,
+    alpha = 0.9
+  ) +
+    
+          # ---- Layer 2b: 5-year rolling mean of min temp (dotted line) ----
+  geom_line(
+    aes(y = rolling_avg_tmin_shifted),
+    color = "#E599F7",
+    linewidth = 1.8,
+    linetype = "dotted",
+    alpha = 0.9,
+    na.rm = TRUE
+  ) +
+  
+  # ---- Layer 7: Era labels on right side ----
+  geom_text(
+    data = era_averages,
+    aes(
+      x = 2028,
+      y = era_avg_tmin_shifted,
+      label = paste0(era, ": ", round(era_avg_tmin, 1), "°F"),
+      color = era
+    ),
+    hjust = 0,
+    size = 3,
+    fontface = "bold"
+  ) +
+  
+  # ---- Scales ----
+  scale_x_continuous(
+    breaks = decade_breaks,
+    labels = decade_labels,
+    expand = c(0.01, 0)
+  ) +
+  scale_y_continuous(
+    breaks = seq(-20, 30, by = 10),
+    labels = function(x) paste0(x + 32, "°F"),
+    expand = expansion(mult = c(0.05, 0.1))
+  ) +
+  scale_color_manual(values = era_colors, guide = "none") +
+  
+  # Allow labels outside plot area
+  coord_cartesian(xlim = c(1900, 2025), clip = "off") +
+  
+  # ---- Labels ----
+  labs(
+    title = "Average Daily Minimum Temperature: December-January",
+    subtitle = paste0(
+      "Blue area: Below freezing (32°F) | Orange area: Above freezing | ",
+      "Yellow line: Average daily high | Purple dotted: 5-year rolling mean\n",
+      "Dashed lines show era averages for minimum temperatures"
+    ),
+    x = NULL,
+    y = "Temperature"
+  ) +
+  
+  # ---- Theme ----
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 18, color = "white"),
+    plot.subtitle = element_text(size = 10, color = "gray70", lineheight = 1.3,
+                                  margin = margin(b = 15)),
+    
+    axis.text = element_text(color = "gray80", size = 10),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title.y = element_text(color = "white", face = "bold", margin = margin(r = 10)),
+    
+    # Extra right margin for era labels
+    plot.margin = margin(15, 120, 5, 15)
+  )
+```
+
+```{r}
+plot_temp
+```
+
+```{r}
+# Prepare data for bar plot (long format)
+subzero_data <- winter_averages |>
+  dplyr::select(winter_year, days_tmin_below_0, days_tmax_below_0) |>
+  tidyr::pivot_longer(
+    cols = c(days_tmin_below_0, days_tmax_below_0),
+    names_to = "measure",
+    values_to = "days"
+  ) |>
+  dplyr::mutate(
+    measure = factor(measure,
+                     levels = c("days_tmin_below_0", "days_tmax_below_0"),
+                     labels = c("Min Temp < 0°F", "Max Temp < 0°F"))
+  )
+```
+
+```{r}
+subzero_data
+```
+
+```{r}
+subzero_data <- subzero_data |>
+  arrange(winter_year) |>
+  mutate(
+    # 5-year rolling mean of average min temp
+    rolling_avg_subzerodays = rollmean(days, k = 5, fill = NA, align = "right"),
+    # Shifted version for plotting on 32°F baseline
+    # rolling_avg_tmin_shifted = rolling_avg_tmin - 32
+  )
+```
+
+## 6. Create sub-zeros bar plot
+
+```{r}
+
+
+plot_bars <- ggplot(
+    filter(subzero_data, measure == "Min Temp < 0°F"),
+    aes(x=winter_year)) +
+
+    
+  # geom_line(
+  #     aes(y=rollmean(days_tmin_below_0, 5)),
+  #     color = "purple",
+  #     linetype = "dashed",
+  #     linewidth = 1.8
+  # ) +
+  
+  # ---- Layer 1: Bars for days with MIN temp < 0°F (blue, behind) ----
+  geom_col(
+    data = filter(subzero_data, measure == "Min Temp < 0°F"),
+    aes(x = winter_year, y = days),
+    fill = "#339AF0",
+    width = 0.8,
+    alpha = 0.9
+  ) +
+  
+  # ---- Layer 2: Bars for days with MAX temp < 0°F (icy blue, in front) ----
+  geom_col(
+    data = dplyr::filter(subzero_data, measure == "Max Temp < 0°F"),
+    aes(x = winter_year, y = days),
+    fill = "#D0EBFF",
+    width = 0.5,
+    alpha = 0.95
+  ) +
+    
+            # ---- Layer 2b: 5-year rolling mean of min temp (dotted line) ----
+  geom_line(
+    aes(y = rolling_avg_subzerodays),
+    color = "#E599F7",
+    linewidth = 1.8,
+    linetype = "dotted",
+    alpha = 0.9,
+    na.rm = TRUE
+  ) +
+  
+  # ---- Scales ----
+  scale_x_continuous(
+    breaks = decade_breaks,
+    labels = decade_labels,
+    expand = c(0.01, 0)
+  ) +
+  scale_y_continuous(
+    expand = expansion(mult = c(0, 0.1))
+  ) +
+  
+  coord_cartesian(xlim = c(1900, 2025)) +
+  
+  # ---- Labels ----
+  labs(
+    title = "Subzero Days Each Winter (December-January)",
+    subtitle = "Blue: Days with min temp < 0°F | Icy blue: Days with max temp < 0°F (all day subzero)",
+    x = "Winter (Dec-Jan)",
+    y = "Number of Days",
+    caption = paste0(
+      "Data: NOAA Weather Station | ",
+      "Each winter combines December with the following January (e.g., Dec 2024 + Jan 2025 = Winter 2024)\n",
+      "Top panel: Area shows average daily minimum temperature relative to 32°F baseline; ",
+      "yellow line shows average daily maximum temperature\n",
+      "Bottom panel: Count of subzero days; icy blue bars (max < 0°F) indicate days that never rose above 0°F"
+    )
+  ) +
+  
+  # ---- Theme ----
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.background = element_rect(fill = "#1a1a2e", color = NA),
+    panel.grid.major = element_line(color = "gray30", linewidth = 0.2),
+    panel.grid.minor = element_blank(),
+    
+    text = element_text(color = "white"),
+    plot.title = element_text(face = "bold", size = 16, color = "white"),
+    plot.subtitle = element_text(size = 10, color = "gray70", margin = margin(b = 10)),
+    plot.caption = element_text(size = 9, color = "gray50", lineheight = 1.3,
+                                 hjust = 0, margin = margin(t = 15)),
+    
+    axis.text = element_text(color = "gray80", size = 10),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    axis.title = element_text(color = "white", face = "bold"),
+    axis.title.y = element_text(margin = margin(r = 10)),
+    axis.title.x = element_text(margin = margin(t = 10)),
+    
+    plot.margin = margin(15, 15, 15, 15)
+  )
+
+```
+
+## 7. combine plots
+
+```{r}
+combined_plot <- plot_temp / plot_bars +
+  plot_layout(heights = c(1.2, 1)) +
+  plot_annotation(
+    theme = theme(
+      plot.background = element_rect(fill = "#1a1a2e", color = NA)
+    )
+  )
+
+# Display
+print(combined_plot)
+```
+
+## 8. Save as large, high-resolution graphic
+
+```{r}
+ggsave(
+  "winter_temperature_analysis.png",
+  combined_plot,
+  width = 18,
+  height = 14,
+  dpi = 300,
+  bg = "#1a1a2e"
+)
+
+cat("\nPlot saved as 'winter_temperature_analysis.png' (18x14 inches, 300 DPI)\n")
+```
+
+## Identify extremes, create callouts
+
+```{r}
+# Find extreme winters
+coldest_winters <- winter_averages |>
+  dplyr::slice_min(order_by = avg_tmin, n = 3) |>
+  dplyr::mutate(
+    label = paste0(winter_year, "-", str_sub(winter_year + 1, 3, 4), 
+                   "\n", round(avg_tmin, 1), "°F")
+  )
+
+warmest_winters <- winter_averages |>
+  dplyr::slice_max(order_by = avg_tmin, n = 3) |>
+  dplyr::mutate(
+    label = paste0(winter_year, "-", str_sub(winter_year + 1, 3, 4),
+                   "\n", round(avg_tmin, 1), "°F")
+  )
+
+most_subzero <- winter_averages |>
+  dplyr::slice_max(order_by = days_tmin_below_0, n = 3) |>
+  dplyr::mutate(
+    label = paste0(winter_year, "-", str_sub(winter_year + 1, 3, 4),
+                   "\n", days_tmin_below_0, " days")
+  )
+
+cat("\nColdest winters (by avg min temp):\n")
+print(coldest_winters |> dplyr::select(winter_year, avg_tmin))
+
+cat("\nWarmest winters (by avg min temp):\n")
+print(warmest_winters |> dplyr::select(winter_year, avg_tmin))
+
+cat("\nMost subzero days:\n")
+print(most_subzero |> dplyr::select(winter_year, days_tmin_below_0))
+```
+
+```{r}
+# Enhanced temperature plot with callouts
+plot_temp_enhanced <- plot_temp +
+  
+  # Coldest winters - points
+  geom_point(
+    data = coldest_winters,
+    aes(x = winter_year, y = avg_tmin_shifted),
+    color = "#D0EBFF",
+    size = 3,
+    shape = 16
+  ) +
+  
+  # Coldest winters - labels
+  ggrepel::geom_label_repel(
+    data = coldest_winters,
+    aes(x = winter_year, y = avg_tmin_shifted, label = label),
+    fill = "#1a1a2e",
+    color = "#D0EBFF",
+    size = 2.8,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = -8,
+    segment.color = "#D0EBFF",
+    segment.size = 0.3,
+    min.segment.length = 0,
+    max.overlaps = 20
+  ) +
+  
+  # Warmest winters - points
+  geom_point(
+    data = warmest_winters,
+    aes(x = winter_year, y = avg_tmin_shifted),
+    color = "#FF922B",
+    size = 3,
+    shape = 16
+  ) +
+  
+  # Warmest winters - labels
+  ggrepel::geom_label_repel(
+    data = warmest_winters,
+    aes(x = winter_year, y = avg_tmin_shifted, label = label),
+    fill = "#1a1a2e",
+    color = "#FF922B",
+    size = 2.8,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = 8,
+    segment.color = "#FF922B",
+    segment.size = 0.3,
+    min.segment.length = 0,
+    max.overlaps = 20
+  )
+```
+
+```{r}
+# Enhanced bar plot with callouts for most subzero days
+plot_bars_enhanced <- plot_bars +
+  
+  # Most subzero days - labels
+  ggrepel::geom_label_repel(
+    data = most_subzero,
+    aes(x = winter_year, y = days_tmin_below_0, label = label),
+    fill = "#1a1a2e",
+    color = "#339AF0",
+    size = 2.8,
+    fontface = "bold",
+    box.padding = 0.5,
+    point.padding = 0.3,
+    nudge_y = 5,
+    segment.color = "#339AF0",
+    segment.size = 0.3,
+    min.segment.length = 0,
+    max.overlaps = 20
+  )
+
+
+```
+
+```{r}
+# Combine enhanced plots
+combined_enhanced <- plot_temp_enhanced / plot_bars_enhanced +
+  plot_layout(heights = c(1.2, 1)) +
+  plot_annotation(
+    theme = theme(
+      plot.background = element_rect(fill = "#1a1a2e", color = NA)
+    )
+  )
+```
+
+```{r}
+# Display
+print(combined_enhanced)
+
+# Save enhanced version
+ggsave(
+  "winter_temperature_analysis_enhanced.png",
+  combined_enhanced,
+  width = 18,
+  height = 14,
+  dpi = 300,
+  bg = "#1a1a2e"
+)
+
+cat("\nEnhanced plot saved as 'winter_temperature_analysis_enhanced.png'\n")
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
