@@ -1,0 +1,16 @@
+---
+title: "AI as Data Viz Assistant"
+author: "Jeremy Mikecz"
+format: revealjs
+editor: visual
+---
+
+# Using AI as a Data Viz Assistant: Some Guidelines and Best Practices
+
+# 1. LLMs as Assistants not Replacements
+
+# 2. Automate the Tedious, Enhance the Learning
+
+# 3. Embrace Iterative, Conversational Coding
+
+# 4. Keep Humans in the Loop 

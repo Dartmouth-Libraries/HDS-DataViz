@@ -9,6 +9,28 @@ editor: visual
 
 ## Experimenting with Weather Graphics
 
+In previous notebooks, we created some exploratory visualizations using local weather data.
+
+Intermediate skills in data wrangling in R and data visualization with ggplot can get you a long way. With these skills - and regular consultation of some resources on the internet - we can create a wide range of plots (bar, line, scatter, etc.) relatively quickly.
+
+However, what if you envision a more complex plot that requires wrangling your data in complex ways and combining multiple plots and a variety of different annotations and labels in one graphic?
+
+For these more complex case, using a LLM as an assistant (not a replacement! your brain and your creativity still needed!) can help you make a complex graphic in an hour or two that normally would have taken all week (or more). Again, you should always make sure your use of AI complies with any stated AI policies (whether for a class or for a given publication).
+
+As an experiment, I created a variety of fun weather data graphics within these **Data Viz with AI** notebooks (01, 02a, and 02b). To create them, I used [**DartmouthChat**](chat.dartmouth.edu) and selected the powerful LLM *Claude Opus 4.5* (for more basic tasks Opus would be overkill). I then provided the following prompt:
+
+```         
+I am working with a weather dataset from NOAA containing temperature, precipation, snow fall, snow depth data for my hometown in these columns: “DATE”, "PRCP", "SNOW", "SNWD", "TMAX", "TMIN" .
+
+We have had a particularly cold winter (at least in December and January so far). I would like to group the data for every successive December-January (i.e. Dec 2010 and Jan 2011) in the dataset and then create the following visualizations in R and ggplot (using tidyverse):
+
+    1. a bar plot showing the number of below 0 Fahrenheit minimum temperature days (“TMIN”) every Dec-January combination in the dataset. These bars should be bold blue. Then have a smaller bar in front of each to represent the number of days in each two-month period where the TMAX was below 0.
+
+    2. a line plot on a dark background where each line represents snow depth for each successive day in that two-month period. Line up to 2014 should be render in faint gray. Lines for 2015 up to Dec 2024/ Jan 2025 should be rendered in a light blue. The line for this year (Dec 2025 / Jan 2026) should be rendered in a thicker white line.
+```
+
+Some suggest
+
 # 1. Setup
 
 ## 1.1 Import necessary packages
