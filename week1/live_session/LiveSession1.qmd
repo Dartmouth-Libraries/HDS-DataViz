@@ -1,15 +1,15 @@
 ---
-title: "Live Session 1": 
+title: "Live Session 1"
 author: "Jeremy Mikecz"
-format: revealjs
+format: pdf
 editor: visual
 ---
 
 ## Prep
 
 1.  [ ] finish setting up activity:
-    1.  [ ] images
-    2.  [ ] Github page with instructions
+    1.  [x] images
+    2.  [ ] Github page with instructions (no CANVAS!)
 2.  [x] for 1.2.1 review teaching philosophy
 3.  [ ] for 7.1 review Final Project documentation
 4.  [ ] for 7.2 review AI policy
@@ -38,7 +38,7 @@ editor: visual
         2.  [x] development model of education - not blank slates; instead we learn by making connections to prior knowledge and experiences (thus the learning experience for each person should be unique)
         3.  [x] experiential education - hands-on activities + completion of real-world-applicable project
             1.  [x] scaffolded assignment - Final Project
-    2.  [ ] weekly schedule
+    2.  [x] CANVAS - weekly schedule
         1.  [x] Weekly overviews - structure of most weeks
         2.  [x] what to have ready for live sessions: CANVAS, repository, github page,
     3.  [ ] final project (discuss at end) and AI
@@ -47,6 +47,7 @@ editor: visual
 # 2. Assign Collaborative Support Groups
 
 1.  [ ] Purpose of Teams
+
 2.  [ ] Show where (CANVAS / Pages)
 
 # 3. How Plots Lie Group Activity
@@ -74,7 +75,9 @@ editor: visual
 2.  show folder on my computer
 3.  open R Studio
     1.  briefly demo how to create a project
+
     2.  how I can move back and forth between projects
+
     3.  mention renv??
 
 # 7. Discussion of Syllabus / Final Projects
@@ -89,15 +92,3 @@ editor: visual
     1.  [ ] go over assignment for this week
 
 # Closing
-
-3.  How Plots Lie Group Activity
-
-    a.  Group Member Introductions
-
-    b.  Activity
-
-4.  Discuss: Group Activity + Readings
-
-5.  Demo of R Studio projects (if time allows)
-
-6.  Discussion of Syllabus / Final Project & Assignments
