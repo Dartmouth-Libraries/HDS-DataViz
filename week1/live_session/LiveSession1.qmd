@@ -10,7 +10,7 @@ editor: visual
 1.  [ ] finish setting up activity:
     1.  [ ] images
     2.  [ ] Github page with instructions
-2.  [ ] for 1.2.1 review teaching philosophy
+2.  [x] for 1.2.1 review teaching philosophy
 3.  [ ] for 7.1 review Final Project documentation
 4.  [ ] for 7.2 review AI policy
 
@@ -27,8 +27,8 @@ editor: visual
         2.  [x] key values: pattern recognition (including anomalies), communication
         3.  [x] don't save for the end to communicate what you already know; nor should you only create a few histograms and box plots at the beginning and then set them aside
     2.  [x] goal: create a group of information designers and literate and critical data viz consumers /
-    3.  [ ] me: - as alluded to in opening video: teacher –\> historian –\> digital historian –\> census project –\> Data Science job
-        1.  [ ] am not an expert on statistics or medical science; but you will get plenty of that throughout the rest of the program;
+    3.  [x] me: - as alluded to in opening video: teacher –\> historian –\> digital historian –\> census project –\> Data Science job
+        1.  [x] am not an expert on statistics or medical science; but you will get plenty of that throughout the rest of the program;
     4.  [ ] TA - Leah
 2.  [ ] Expectations
     1.  [ ] community / tone
@@ -47,7 +47,7 @@ editor: visual
 # 2. Assign Collaborative Support Groups
 
 1.  [ ] Purpose of Teams
-2.  [ ] Show where
+2.  [ ] Show where (CANVAS / Pages)
 
 # 3. How Plots Lie Group Activity
 
