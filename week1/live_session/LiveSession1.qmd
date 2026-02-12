@@ -18,12 +18,26 @@ editor: visual
 
 1.  [ ] Introduction
     1.  [ ] this course - Data Viz - why?
-    2.  [ ] me: teacher –\> historian –\> digital historian –\> census project –\> Data Science job
-        1.  [ ] am not an expert on statistics or medical science
-    3.  [ ] TA - Leah
+        1.  [x] opening video: Data Viz more than charts & graphs:
+            1.  [x] tell stories
+            2.  [x] make arguments
+            3.  [x] prove or disprove hypotheses
+            4.  [x] uncover insights
+            5.  [x] communicate complex ideas
+        2.  [x] key values: pattern recognition (including anomalies), communication
+        3.  [x] don't save for the end to communicate what you already know; nor should you only create a few histograms and box plots at the beginning and then set them aside
+    2.  [x] goal: create a group of information designers and literate and critical data viz consumers /
+    3.  [ ] me: - as alluded to in opening video: teacher –\> historian –\> digital historian –\> census project –\> Data Science job
+        1.  [ ] am not an expert on statistics or medical science; but you will get plenty of that throughout the rest of the program;
+    4.  [ ] TA - Leah
 2.  [ ] Expectations
     1.  [ ] community / tone
-        1.  [ ] collaborative learning community
+        1.  [x] collaborative learning community
+            1.  [x] inclusive of people with diverse backgrounds (career backgrounds, skillsets, approaches)
+            2.  [x] welcome experimentation, the revision of work, the evolution of ideas, the expression of diverse perspectives, and the pursuit of innovative approaches.
+        2.  [x] development model of education - not blank slates; instead we learn by making connections to prior knowledge and experiences (thus the learning experience for each person should be unique)
+        3.  [x] experiential education - hands-on activities + completion of real-world-applicable project
+            1.  [x] scaffolded assignment - Final Project
     2.  [ ] weekly schedule
         1.  [x] Weekly overviews - structure of most weeks
         2.  [x] what to have ready for live sessions: CANVAS, repository, github page,
@@ -65,13 +79,16 @@ editor: visual
 
 # 7. Discussion of Syllabus / Final Projects
 
-1.  [ ] AI policies
+1.  [ ] AI policies - critical and exploratory approach to AI (opening video)
 
     1.  [ ] share weather data viz
+    2.  [ ] my template?
 
 2.  [ ] final project
 
     1.  [ ] go over assignment for this week
+
+# Closing
 
 3.  How Plots Lie Group Activity
 
