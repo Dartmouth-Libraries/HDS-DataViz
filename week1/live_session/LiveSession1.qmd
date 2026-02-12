@@ -5,11 +5,34 @@ format: revealjs
 editor: visual
 ---
 
+## Prep
+
+1.  [ ] finish setting up activity: images + Github page
+2.  [ ] for 1.2.1 review teaching philosophy
+3.  [ ] for 7.1 review Final Project documentation
+4.  [ ] for 7.2 review AI policy
+
 # 1. Course Welcome & Introduction
+
+1.  [ ] Introduction
+    1.  [ ] this course - Data Viz - why?
+    2.  [ ] me:
+    3.  [ ] TA - Leah
+2.  [ ] Expectations
+    1.  [ ] community / tone
+        1.  [ ] collaborative learning community
+    2.  [ ] weekly schedule
+        1.  [x] Weekly overviews - structure of most weeks
+        2.  [x] what to have ready for live sessions: CANVAS, repository, github page,
+    3.  [ ] final project (discuss at end) and AI
+    4.  [ ] collaborative support teams...
 
 # 2. Assign Collaborative Support Groups
 
-# 3. How PLots Lie Group Activity
+1.  [ ] Purpose of Teams
+2.  [ ] Show where
+
+# 3. How Plots Lie Group Activity
 
 ## Group Member Introductions
 
@@ -22,6 +45,9 @@ editor: visual
 # 6. Demo of R Studio projects
 
 # 7. Discussion of Syllabus / Final Projects
+
+1.  [ ] final project
+2.  [ ] AI
 
 3.  How Plots Lie Group Activity
 
