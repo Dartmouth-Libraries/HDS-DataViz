@@ -7,7 +7,9 @@ editor: visual
 
 ## Prep
 
-1.  [ ] finish setting up activity: images + Github page
+1.  [ ] finish setting up activity:
+    1.  [ ] images
+    2.  [ ] Github page with instructions
 2.  [ ] for 1.2.1 review teaching philosophy
 3.  [ ] for 7.1 review Final Project documentation
 4.  [ ] for 7.2 review AI policy
@@ -16,7 +18,8 @@ editor: visual
 
 1.  [ ] Introduction
     1.  [ ] this course - Data Viz - why?
-    2.  [ ] me:
+    2.  [ ] me: teacher –\> historian –\> digital historian –\> census project –\> Data Science job
+        1.  [ ] am not an expert on statistics or medical science
     3.  [ ] TA - Leah
 2.  [ ] Expectations
     1.  [ ] community / tone
@@ -40,14 +43,35 @@ editor: visual
 
 # 4. Discuss Activity
 
+1.  Rules of transparent, legible, honest data viz (or truthful, functional, beautiful, insightful, enlightening)
+2.  ITA shares Nathan Yau site - some rules
+
 # 5. Discuss Lecture / Readings
+
+1.  \[general Q abt Cairo?\]
+    1.  defining data viz
+    2.  additional criteria (reading discussion Q)
+2.  How has your view of data visualization changed already after reading Alberto Cairo's book and viewing my videos?
+3.  Lingering Questions / concerns
 
 # 6. Demo of R Studio projects
 
+1.  open Github, download button vs. clone
+2.  show folder on my computer
+3.  open R Studio
+    1.  briefly demo how to create a project
+    2.  how I can move back and forth between projects
+    3.  mention renv??
+
 # 7. Discussion of Syllabus / Final Projects
 
-1.  [ ] final project
-2.  [ ] AI
+1.  [ ] AI policies
+
+    1.  [ ] share weather data viz
+
+2.  [ ] final project
+
+    1.  [ ] go over assignment for this week
 
 3.  How Plots Lie Group Activity
 
