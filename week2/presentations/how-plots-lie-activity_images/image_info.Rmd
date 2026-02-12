@@ -1,0 +1,35 @@
+---
+title: "image_info"
+output: html_document
+---
+
+# 01. Iraq Deaths graphic
+**filename**: 01a_raqdeaths.jpg / 01b_iraqdeaths2.png
+**source**: Simon Scarr, "Iraq's bloody toll," *South China Morning Post* (17 Dec 2011)[https://www.scmp.com/infographics/article/1284683/iraqs-bloody-toll] reproduced on Scarr's [personal blog](https://www.simonscarr.com/iraqs-bloody-toll)
+
+# 02. Film Box Office Records
+**filename**: 02_9.BiggestBoxOfficeBLUE.png
+**source**: Alberto Cairo, *How Charts Lie*.
+
+# 03. 2012 UFO Sightings Map
+**filename**: 03_UFO_sightings2012.png
+**source**: ArcGIS.com project gallery
+
+# 04. Global annual temperatures, 1880 - 2012
+**filename**: 04_PDF16.NationalReviewTemperatures.pdf
+**source**: Alberto Cairo, *How Charts Lie*.
+
+# Map - U.S. Poverty Rate
+**filename**: 05_34.PovertyBadA.pdf
+**source**: Alberto Cairo, *How Charts Lie*.
+
+# Federal Budget Chart
+**filename**: fed_budget.jpg
+**source**: Reddit: https://www.reddit.com/r/dataisugly/comments/x865m5/one_of_the_worst_pie_charts_ive_ever_seen/ (should find original source)
+
+**filename**: 
+**source**:
+
+**filename**: 
+**source**:
+
