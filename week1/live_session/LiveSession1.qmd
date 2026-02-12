@@ -5,19 +5,32 @@ format: revealjs
 editor: visual
 ---
 
-
 # 1. Course Welcome & Introduction
 
 # 2. Assign Collaborative Support Groups
 
-3. How Plots Lie Group Activity
+# 3. How PLots Lie Group Activity
 
-    a. Group Member Introductions
+## Group Member Introductions
 
-    b. Activity
+## Activity
 
-4. Discuss: Group Activity + Readings
+# 4. Discuss Activity
 
-5. Demo of R Studio projects (if time allows)
+# 5. Discuss Lecture / Readings
 
-6. Discussion of Syllabus / Final Project & Assignments
+# 6. Demo of R Studio projects
+
+# 7. Discussion of Syllabus / Final Projects
+
+3.  How Plots Lie Group Activity
+
+    a.  Group Member Introductions
+
+    b.  Activity
+
+4.  Discuss: Group Activity + Readings
+
+5.  Demo of R Studio projects (if time allows)
+
+6.  Discussion of Syllabus / Final Project & Assignments
