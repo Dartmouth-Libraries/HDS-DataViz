@@ -3,33 +3,83 @@ title: "image_info"
 output: html_document
 ---
 
-# 01. Iraq Deaths graphic
+# How Plots Lie Activity
+
+1. divide into your collaborative support teams
+
+2. introduce yourselves (name, where you are from, career trajectory, interest in data viz) [5 minutes]
+
+    a. look for connections
+    b. look for potential areas of assistance (i.e. Member A is experienced with statistics, Member B has experience making maps, etc.)
+
+2. Review assigned images [15 minutes]
+    
+    a. the following teams should review the following images:
+    
+        + Cairo: 01a/b and 05
+        
+        + DuBois: 02 and 06
+        
+        + Lupi: 03 and 07
+        
+        + Minard: 04 and 10 
+        
+        + Nightingale: 08 and 11
+        
+    b. Review each image: in what way may it not comply with Cairo's principles of data visualization (truthful, functional, beautiful, insightful, enlightening)
+
+        + identify where the designer may have gone wrong
+        
+        + describe how you would fix it / re-design it
+        
+        + Do this for at least the two assigned images (if time allows you can look at some of the others)
+
+5. Reflect: Identify some rules data visualizers should abide by (but know that rules are supposed to be broken depending on the purpose of the graphic)
+
+
+
+# Image Information & Sources
+
+## 01. Iraq Deaths graphic
 **filename**: 01a_raqdeaths.jpg / 01b_iraqdeaths2.png
 **source**: Simon Scarr, "Iraq's bloody toll," *South China Morning Post* (17 Dec 2011)[https://www.scmp.com/infographics/article/1284683/iraqs-bloody-toll] reproduced on Scarr's [personal blog](https://www.simonscarr.com/iraqs-bloody-toll)
 
-# 02. Film Box Office Records
+## 02. Film Box Office Records
 **filename**: 02_9.BiggestBoxOfficeBLUE.png
 **source**: Alberto Cairo, *How Charts Lie*.
 
-# 03. 2012 UFO Sightings Map
+## 03. 2012 UFO Sightings Map
 **filename**: 03_UFO_sightings2012.png
 **source**: ArcGIS.com project gallery
 
-# 04. Global annual temperatures, 1880 - 2012
+## 04. Global annual temperatures, 1880 - 2012
 **filename**: 04_PDF16.NationalReviewTemperatures.pdf
 **source**: Alberto Cairo, *How Charts Lie*.
 
-# Map - U.S. Poverty Rate
+## 05. Map - U.S. Poverty Rate
 **filename**: 05_34.PovertyBadA.pdf
 **source**: Alberto Cairo, *How Charts Lie*.
 
-# Federal Budget Chart
+
+
+## 06. Federal Budget Chart
 **filename**: fed_budget.jpg
 **source**: Reddit: https://www.reddit.com/r/dataisugly/comments/x865m5/one_of_the_worst_pie_charts_ive_ever_seen/ (should find original source)
 
+## 07
 **filename**: 
 **source**:
 
 **filename**: 
 **source**:
 
+**filename**: 
+**source**:
+
+
+# Read More
+
+Alberto Cairo, *How Charts Lie*
+
+Nathan Yau:
++ ["How to spot viz lies"](https://flowingdata.com/2017/02/09/how-to-spot-visualization-lies/)
