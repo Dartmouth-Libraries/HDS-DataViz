@@ -37,7 +37,6 @@ output: html_document
 5. Reflect: Identify some rules data visualizers should abide by (but know that rules are supposed to be broken depending on the purpose of the graphic)
 
 
-
 # Image Information & Sources
 
 ## 01. Iraq Deaths graphic
@@ -60,26 +59,41 @@ output: html_document
 **filename**: 05_34.PovertyBadA.pdf
 **source**: Alberto Cairo, *How Charts Lie*.
 
-
-
 ## 06. Federal Budget Chart
 **filename**: fed_budget.jpg
 **source**: Reddit: https://www.reddit.com/r/dataisugly/comments/x865m5/one_of_the_worst_pie_charts_ive_ever_seen/ (should find original source)
 
-## 07
-**filename**: 
-**source**:
+## 07. Budget Surpluses - Europe
+
+**filename**: budget_surpluses.png
+**source**: Sarah Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
+
+## 08. Brazil's golden oldie blowout
+
+**filename**: 08_Brazil_elderly_cropped.png
+**source**: Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
+
+## 09. UK Politicians' Facebook posts
+
+**filename**: 09_UK_politicians_FB_likes_cropped.png
+**source**: Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
+
+**filename**: 10_free_markets-and-workers_cropped.png
+**source**: Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
+
+**filename**: 11_researchers_gender_cropped.png
+**source**: Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
 
 **filename**: 
 **source**:
-
-**filename**: 
-**source**:
-
 
 # Read More
 
 Alberto Cairo, *How Charts Lie*
 
-Nathan Yau:
+Sarah Leo, ["Mistakes, we've drawn a few"](https://medium.economist.com/mistakes-weve-drawn-a-few-8cdd8a42d368), *Medium* 2019.
+
+Nathan Yau's blog - many great articles, especially relevant:
 + ["How to spot viz lies"](https://flowingdata.com/2017/02/09/how-to-spot-visualization-lies/)
++ ["Real Chart Rules to Follow"](https://flowingdata.com/2015/08/11/real-chart-rules-to-follow/)
++ ["Defense Against Dishonest Charts"](https://flowingdata.com/projects/dishonest-charts/)
