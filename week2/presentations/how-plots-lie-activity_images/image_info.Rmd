@@ -1,6 +1,8 @@
 ---
 title: "image_info"
-output: html_document
+author: "Jeremy Mikecz"
+format: html
+editor: visual
 ---
 
 # How Plots Lie Activity
