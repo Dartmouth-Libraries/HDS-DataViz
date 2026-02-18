@@ -36,6 +36,8 @@ Review the following 5 sets of data visualizations. For each:
 While technically correct in the sense that the data on the x and y axes are accurate; this is extremely misleading. As a response in the *Washington Post* points out, the scale of the graphic, "intentionally hides the actual change in the temperatures. Its akin to suggesting that Shaquille O'Neal and Mini-Me are the same height because they're both tiny compared to the planet Jupiter."
 :::
 
+---
+
 ![Adding meaningful context to the National Review climate chart.](images/PDF18.NationalReviewGOOD.svg)
 
 ::: notes
