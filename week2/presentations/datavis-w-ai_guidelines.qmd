@@ -13,4 +13,4 @@ editor: visual
 
 # 3. Embrace Iterative, Conversational Coding
 
-# 4. Keep Humans in the Loop 
+# 4. Keep Humans in the Loop
