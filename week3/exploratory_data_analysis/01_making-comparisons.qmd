@@ -1,0 +1,202 @@
+---
+title: "2 Making Comparisons"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+```
+
+```{r}
+nes <- read.csv("data/nes.csv")
+world <- read.csv("data/world.csv")
+```
+
+```{r}
+colnames(nes)
+```
+
+```{r}
+nes |>
+  count(pid3)
+```
+
+```{r}
+summary(nes)
+```
+
+311
+
+## Comparing Two Categorical Variables
+
+1.  mosaic plot
+
+I had some difficulty installing the ggmosaic package. Since, I use `renv` to manage a local environment, this code worked for me:
+
+```{r}
+# renv::install("devtools")
+# renv::install("haleyjeppson/ggmosaic")
+library(ggmosaic)
+```
+
+We can begin by comparing the political identification of respondents to their opinions about whether police exhibit racial favoritism.
+
+A common way to do is by creating a Cross Tabs:
+
+```{r}
+library(gmodels)
+CrossTable(nes$pid3, nes$dpolice.new, prop.chisq = FALSE)
+```
+
+But this takes some time and effort to interpret. A visualization can convey the comparison between political identification and opinions about police favoritism much more efficiently.
+
+First, let's simplify the categories for
+
+```{r}
+nes$pid3.new <- ifelse(nes$pid3 == "Other", NA,
+                ifelse(nes$pid3 == "Not sure", NA, nes$pid3))
+
+# Code Chunk 5-23
+nes$pid3.new <- as.factor(nes$pid3.new)
+
+levels(nes$pid3.new)=c("Democrat", "Republican", "Independent")
+
+nes$pid3.new = factor(nes$pid3.new,levels(nes$pid3.new)
+                      [c(1,3,2)])
+```
+
+```{r}
+table(nes$pid3)
+table(nes$pid3.new)
+```
+
+```{r}
+nes$dpolice.new <- ifelse(
+  nes$disc_police=="Treats blacks a little better" |
+    nes$disc_police=="Treats blacks both the same" |
+    nes$disc_police=="Treats blacks moderately better" |
+    nes$disc_police=="Treats Blacks much better" |
+    nes$disc_police=="Skipped",
+  NA,
+  nes$disc_police)
+
+nes$dpolice.new <- as.factor(nes$dpolice.new)
+
+levels(nes$dpolice.new)=c(
+  "Treats whites much better",
+  "Treats whites moderately better",
+  "Treats whites a little better",
+  "Treats both the same")
+
+```
+
+```{r}
+ggplot(data = na.omit(nes)) +
+  geom_mosaic(
+    aes(x = product(pid3.new, dpolice.new),
+        fill=pid3.new, na.rm=TRUE)) +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, face = "bold"), axis.title = element_text(size = 8, face = "bold")) +
+  xlab("") +
+  ylab("") +
+  coord_flip() +
+  ggtitle("Figure 10-1: How Do Police Treat Whites and Blacks?") +
+  scale_fill_brewer(palette="Blues") +
+  theme(legend.position="none")
+
+```
+
+## Comparing Continuous and Categorical Variables
+
+1.  box plots
+
+2.  violin plots
+
+3.  jitter plots
+
+```{r}
+ggplot(subset(nes, !is.na(pid7)), aes(pid7, ftobama)) +
+  geom_boxplot(col="#0000ff") + theme_minimal() +
+               theme(plot.title = element_text(size = 8, face = "bold"),
+                     axis.title = element_text(size = 8, face = "bold")) +
+                 ggtitle("Figure 10-3: Partisanship Determines Obama’s Popularity") +
+                 ylab("Obama Thermometer") +
+                 xlab("Party Identification") +
+                 coord_flip()
+```
+
+```{r}
+ggplot(subset(nes, !is.na(pid7)), aes(pid7, ftobama)) +
+  geom_violin(col="#0000ff") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, face = "bold"),
+        axis.title = element_text(size = 8, face = "bold")) +
+                 ggtitle("Figure 10-3: Partisanship Determines Obama’s Popularity") +
+                 ylab("Obama Thermometer") +
+                 xlab("Party Identification") +
+                 coord_flip()
+```
+
+```{r}
+ggplot(world, aes(region, polity2, col=region)) +
+  geom_jitter() +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, face = "bold"),
+        axis.title = element_text(size = 8, face = "bold")) +
+  theme(axis.text.x = element_text(size=8, vjust=.7),
+        legend.position="none") +
+  ggtitle("Figure 10-4: Most Authoritarian Regimes Reside in Africa") +
+  ylab("Democracy (Polity2)") +
+  xlab("") +
+  scale_color_manual(values=c("#0000ff", "#008b00", "#bf0000",
+                               "#ff7300", "#00e6e6", "#263333",
+                               "#73e600")) +
+                               coord_flip()
+```
+
+```{r}
+
+```
+
+## Comparing Two Continuous Variables
+
+1.  Scatter plots
+
+```{r}
+ggplot(world, aes(gtbeduc, inf)) +
+  geom_point(col="#bf0000") +
+  geom_text_repel(
+    size=3,
+    vjust=2,
+    col="black",
+    aes(label= ifelse(iso3c=="PAK" |
+                        iso3c=="YEM" |
+                        iso3c=="AFG" |
+                        iso3c=="SDN" |
+                        iso3c=="SWZ" |
+                        iso3c=="ETH",
+                      as.character(iso3c), '')
+        )
+    ) +
+  ggtitle("Figure 10-5: Infant Mortality and Women’s Education") +
+  ylab("Infant Mortality: Deaths per 1,000 Live Births") +
+  xlab("Ratio of Girls to Boys Educational Attainment") +
+  theme_minimal() +
+  theme(plot.title = element_text(size = 8, face = "bold"),
+  axis.title = element_text(size = 8, face = "bold"))
+```
+
+See notebook 01 in this folder for more examples of scatterplots.
+
+## Exercise:
+
+**Option 1:** Explore your own data by creating 3 plots:
+
+1.  one that allows comparison between 2 categorical variables
+2.  one that allows comparison between 1 continuous and 1 categorical variable
+3.  one that allows comparsion between 2 continuous variables
+
+**Option 2:** Follow the instructions for Option 1, except use some not-yet-explored variables from the **world** or **nes** datasets used above.

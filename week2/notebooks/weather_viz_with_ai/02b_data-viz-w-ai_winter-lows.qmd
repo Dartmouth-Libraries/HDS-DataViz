@@ -22,22 +22,22 @@ Group by winters (i.e. December 2022 goes with January 2023)
 
 ```{r}
 weather_winter <- weather_raw |>
- dplyr::mutate(
+ mutate(
     DATE = parse_date_time(DATE, orders = c("mdy", "ymd")) |> as.Date(),
     year = year(DATE),
     month = month(DATE),
     day = day(DATE)
   ) |>
   # Filter to only December and January
-  dplyr::filter(month %in% c(12, 1)) |>
+  filter(month %in% c(12, 1)) |>
   # Create winter_year: Dec 2025 + Jan 2026 = winter 2025
   mutate(
     winter_year = if_else(month == 12, year, year - 1),
   ) |>
   # Filter to winters from 1900 to present
-  dplyr::filter(winter_year >= 1900 & winter_year <= 2025) |>
+  filter(winter_year >= 1900 & winter_year <= 2025) |>
   # Remove rows with missing temperature data
-  dplyr::filter(!is.na(TMIN) & !is.na(TMAX))
+  filter(!is.na(TMIN) & !is.na(TMAX))
 
 # Check data
 cat("Winter year range:", min(weather_winter$winter_year), "to", max(weather_winter$winter_year), "\n")
@@ -48,8 +48,8 @@ cat("Total rows:", nrow(weather_winter), "\n")
 
 ```{r}
 winter_averages <- weather_winter |>
-  dplyr::group_by(winter_year) |>
-  dplyr::summarize(
+  group_by(winter_year) |>
+  summarize(
     avg_tmin = mean(TMIN, na.rm = TRUE),
     avg_tmax = mean(TMAX, na.rm = TRUE),
     days_tmin_below_0 = sum(TMIN < 0, na.rm = TRUE),
@@ -58,7 +58,7 @@ winter_averages <- weather_winter |>
     .groups = "drop"
   ) |>
   # Shift min temp so 32°F is the baseline
-  dplyr::mutate(
+  mutate(
     avg_tmin_shifted = avg_tmin - 32,
     # Separate above and below baseline for area fill
     above_baseline = pmax(avg_tmin_shifted, 0),
@@ -76,8 +76,8 @@ print(tail(winter_averages, 10))
 
 ```{r}
 winter_averages <- winter_averages |>
-  dplyr::arrange(winter_year) |>
-  dplyr::mutate(
+  arrange(winter_year) |>
+  mutate(
     # 5-year rolling mean of average min temp
     rolling_avg_tmin = zoo::rollmean(avg_tmin, k = 5, fill = NA, align = "right"),
     # Shifted version for plotting on 32°F baseline

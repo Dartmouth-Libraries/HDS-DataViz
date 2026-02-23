@@ -1,0 +1,346 @@
+---
+title: "Developing Hypotheses"
+author: "Jeremy Mikecz"
+format: html
+editor: visual
+---
+
+# Developing Hypotheses from Quantitative and Categorical Data
+
+## Data
+
+Data for this assignment acquired from the online resources for:
+
+-   Brown, David S. *Statistics and Data Visualization Using R: The Art and Practice of Data Analysis*. SAGE Publications, Inc, 2022.
+
+# 0. Setup
+
+```{r}
+library(tidyverse)
+library(ggrepel)
+```
+
+```{r}
+world <- read.csv("data/world.csv")
+```
+
+```{r}
+glimpse(world)
+```
+
+## 1. Hypothesis 1: Ethnic & Linguistic Diversity correlates with countries' GDP per capita.
+
+### 1.1 Create a Scatterplot
+
+```{r}
+p1 <- ggplot(world, aes(ethfrac, log(gdppc), label = iso3c)) +
+  geom_point(color="red", alpha=0.5) +
+  # geom_smooth(method="lm", se=FALSE, color="blue")+
+  ggtitle("Figure 1-1: ELF Lowers Income") +
+  ylab("GDP Per Capita (logged") +
+  xlab("Ethnolinguistic Fractionalization (ELF)") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+
+p1
+```
+
+### 1.2 Add a trend line
+
+```{r}
+p1 <- p1 +
+  geom_smooth(method="lm", se=FALSE, color="blue", alpha = 0.6)
+p1
+```
+
+The pattern seems clear here: ethnolinguistic fractionalization *increases* as the wealth of countries increases. This is an apparent correlation, but still begs the question about causation: does ethnic fractionalization interfere with economic productivity? Or does ??? However, this seems counter-intuitive.
+
+Regardless, such complex data requires a closer examination.
+
+### 1.3 Label Countries of interest
+
+The countries in this dataset uses the ISO 3166-1 alpha-3 three-letter codes stored in the variable `iso3c`. Review the [wikipedia page](https://en.wikipedia.org/wiki/ISO_3166-1_alpha-3) for a list of these codes. The code below identifies the countries of the United States, Sweden, Peru, and Yemen for some basic exploration. Add in a few more countries you are interest in exploring
+
+```{r}
+colnames(world)
+```
+
+```{r}
+
+# select countries
+highlight_iso3 <- c("USA", "SWE", "PER", "YEM")
+
+p2 <- ggplot(world, aes(ethfrac, log(gdppc), label = iso3c)) +
+  # here we created two types of point symbols: highlighted and other
+  geom_point(
+    aes(
+      color = ifelse(iso3c %in% highlight_iso3, "Highlighted", "Other"),
+      size  = ifelse(iso3c %in% highlight_iso3, "Highlighted", "Other")
+    ),
+    alpha = 0.8
+  ) +
+  
+  # then set two different types of labels: highlighted and other
+  geom_label_repel(
+    aes(
+      label = ifelse(iso3c %in% highlight_iso3, iso3c, NA),
+      color = ifelse(iso3c %in% highlight_iso3, "Highlighted", "Other")
+    ),
+    fill          = "white",
+    fontface      = "bold",
+    size          = 4,
+    box.padding   = 0.5,
+    point.padding = 0.4,
+    segment.size  = 0.5,
+    max.overlaps  = Inf,
+    na.rm         = TRUE   # silently drop the NA labels for non-highlighted rows
+  ) +
+  
+  # now we can use scale_color_manual and scale_size_manual to manually set the color and size of these two groups
+  scale_color_manual(
+    values = c("Highlighted" = "#7B2D8B", "Other" = "grey65"),
+    guide  = "none"
+  ) +
+  scale_size_manual(
+    values = c("Highlighted" = 4.5, "Other" = 2),
+    guide  = "none"
+  ) +
+
+  # same code we had before:
+  geom_smooth(method="lm", se=FALSE, color="black")+
+  ggtitle("Figure 1-3: ELF Lowers Income") +
+  ylab("GDP Per Capita (logged") +
+  xlab("Ethnolinguistic Fractionalization (ELF)") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+  
+p2
+```
+
+Now we can observe that Sweden, a wealthy, not-very-diverse European country is found within a concentrated group of countries at the top left. It's possible this group of countries is skewing our curve.
+
+To better examine what's going on, we can examine groups of countries sharing economic, geographic, or historical attributes. Fortunately, our world dataset has just such a category already built in: the column `aclpregion`. Let's first explore the frequency of these countries:
+
+```{r}
+world |>
+  count(aclpregion, sort=TRUE)
+  
+```
+
+```{r}
+p2 <- p2 +
+  geom_point(color=ifelse(world$aclpregion=="Industrial Countries",
+                          "blue", NA)) +
+  
+  geom_point(color=ifelse(world$aclpregion=="Oil States",
+                          "orange", NA)) +
+  
+  geom_smooth(
+    data=subset(world,
+                aclpregion != "Industrial Countries"),
+    color="gray", se=FALSE, method="lm", linetype="dashed") +
+  ggtitle("Industrial Countries are Clustered")
+
+p2
+  
+```
+
+Note: it appears that nearly all countries in the wealthy / non-ethnolinguistically-diverse cluster in the top left are industrial countries, with other more diverse, but still wealthy industrial countries (like the USA) scattered along the top middle and right. Oil states, while sharing the wealth of industrialized countries, are more randomly scattered along the x axis. This makes sense: while having abundant oil resources is a geographic accident, the result is wealth.
+
+Also, in the plot above, we created a second trend line (dashed and light gray) showing a flatter trend line for countries that are not in the industrial group.
+
+```{r}
+# world$aclpregion <- as.factor(world$aclpregion)
+# class(world$aclpregion)
+```
+
+### 1.4 Examining nonlinear curves?
+
+```{r}
+p2 +
+  geom_smooth(color="black", se=FALSE, linetype="longdash")
+```
+
+```{r}
+
+ggplot(world, aes(ethfrac, log(gdppc), label = iso3c)) +
+  # here we created two types of point symbols: highlighted and other
+  geom_point(aes(color=aclpregion)) +
+  geom_smooth(aes(color=aclpregion), se=FALSE, linewidth=0.5)
+  theme_minimal()
+```
+
+## Hypothesis 2: Women's Suffrage impacted per capita GDP
+
+```{r}
+ggplot(world, aes(womyear, log(gdppc))) +
+  geom_point(color="red") +
+  geom_smooth(method="lm", se=FALSE, color="blue")+
+  ggtitle("Figure 2-1: The Later the Suffrage, the Poorer the Country") +
+  ylab("GDP Per Capita (logged)") +
+  xlab("Year Women Gained Suffrage") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+```
+
+There is a clear correlation between the year women were granted the right to vote and country wealth. What is driving this difference?
+
+Two hypotheses about the date of women's suffrage:
+
+-   Industrial countries granted women the right to vote relatively early
+
+-   African countries were all subjugated by Europe and remained colonies until ca. 1960, meaning they should be among the last countries to have granted women the right to vote.
+
+Let's explore these two groups:
+
+```{r}
+p3 <- ggplot(world, aes(womyear, log(gdppc))) +
+  geom_point(alpha = 0.6, color=ifelse(world$aclpregion=="Industrial Countries", "blue", ifelse(
+    world$aclpregion=="Sub-Saharan Africa", "red", "gray"))) +
+  annotate("text", x=1905, y=11.3, label = "Industrial Countries", color="blue") +
+  annotate("text", x=1975, y=6.2, label = "Sub-Saharan Africa", color="red") +
+  geom_smooth(method="lm", se=FALSE, color="blue")+
+  ggtitle("Figure 2-2: The Industrial Countries and Sub-Saharan Africa Form Clusters: The Later the Suffrage, the Poorer the Country") +
+  ylab("GDP Per Capita (logged)") +
+  xlab("Year Women Gained Suffrage") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+
+p3
+```
+
+Generally, it appears that the negative correlation between women's suffrage and per capita GDP weakens significantly when examining these two groups individually.
+
+Also, I'm curious about two data points with these two groups: a few industrialized countries granted women suffrage after 1950 and two Sub-Saharan African countries had women voting before 1940. Let's see what those countries are:
+
+```{r}
+class(world$womyear)
+```
+
+```{r}
+
+p3 +
+  geom_label_repel(
+      aes(
+        label = ifelse(
+          (aclpregion == "Industrial Countries" & womyear > 1950) |
+            (aclpregion == "Sub-Saharan Africa" & womyear < 1940),
+        iso3c,
+        NA),
+      )
+  )
+```
+
+Notice: Kenya's date of women's suffrage - according to this dataset - is 1919. That right to vote, however, was just granted to white European women living in Kenya, then still a colony (British East Africa). A more nuanced analysis should combine women's suffrage with suffrage by race.
+
+Also, when we examine these two groups in isolation, there does not seem to be a strong correlation between the onset of women's suffrage and wealth (GDP per capita). We can create smoothed lines for both to examine this further. First, let's create a simplifed version of the `aclpregion` column, one that divides the world into three groups:
+
+-   Industrial Countries
+
+-   Sub-Saharan Africa
+
+-   everyone else
+
+We can do this using the **mutate()** and **case_when()** functions:
+
+```{r}
+world <- world |>
+  mutate(
+    #aclpregion_simple = "Other",
+    aclpregion_simple = case_when(
+      aclpregion == "Sub-Saharan Africa" ~ "SSA",
+      aclpregion == "Industrial Countries" ~ "IC",
+      TRUE ~ "Other"
+    )
+  )
+```
+
+Next, we can add smoothed lines for these three groups:
+
+```{r}
+p4 <- ggplot(world, aes(womyear, log(gdppc), col=aclpregion_simple)) +
+  geom_point(alpha = 0.6, color=ifelse(world$aclpregion=="Industrial Countries", "blue", ifelse(
+    world$aclpregion=="Sub-Saharan Africa", "red", "gray"))) +
+  annotate("text", x=1905, y=11.3, label = "Industrial Countries", color="blue") +
+  annotate("text", x=1975, y=6.2, label = "Sub-Saharan Africa", color="red") +
+  geom_smooth(method="lm", se=FALSE)+
+  ggtitle("Figure 2-3: The Industrial Countries and Sub-Saharan Africa Form Clusters: The Later the Suffrage, the Poorer the Country") +
+  ylab("GDP Per Capita (logged)") +
+  xlab("Year Women Gained Suffrage") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+
+p4
+```
+
+Interestingly, there seems to be no significant correlation between women's suffrage and per capita GDP when we divide countries into economic and geographic groups.
+
+Before we move on to our next hypothesis, let's examine the dates of women's suffrage more closely.
+
+Let's ignore the y axis (GDP per capita) for a moment and just focus on the distribution of women's suffrage dates. We can see above that women's suffrage really began to take off around 1920 (women in the U.S., for example, gained the right to vote in 1920 with the passage of the 19th amendment). It also appears that the women's suffrage movement slowed around 1940. Given the build up to World War II (ca, 1935 - 1939) and the war itself (1939 - 1945), this is not surprising, but let's examine the distribution of these dates in isolation.
+
+One way to do that is through a beeswarm plot (aka. "swarm plot").
+
+```{r}
+library(beeswarm)
+beeswarm(world$womyear, pch=16, col="blue", horizontal=TRUE)
+```
+
+We can see two main bursts of women's suffrage: ca. 1920 and again after World War II, from 1945 to 1965. We can group countries by date of women's suffrage:
+
+```{r}
+p4 <- ggplot(world, aes(womyear, log(gdppc))) +
+  geom_point(
+    alpha = 0.6,
+    color=ifelse(world$womyear < 1935,
+                 "blue",
+                 ifelse(world$womyear >= 1945,
+                        "red",
+                        "grey"))) +
+  geom_vline(xintercept = 1935, col="grey", linetype="dashed") +
+  geom_vline(xintercept = 1945, col="grey", linetype="dashed") +
+  annotate("text", x=1905, y=11.3, label = "Industrial Countries", color="blue") +
+  annotate("text", x=1975, y=6.2, label = "Sub-Saharan Africa", color="red") +
+  geom_smooth(method="lm", se=FALSE, color="blue")+
+  ggtitle("Figure 2-4: Gap during World War II") +
+  ylab("GDP Per Capita (logged)") +
+  xlab("Year Women Gained Suffrage") +
+  theme_minimal() +
+  theme(plot.title = element_text(size=12, face="bold"), 
+        axis.title = element_text(size=8, face="italic"))
+
+p4
+```
+
+## 3. Developing other hypotheses
+
+To prove any of these hypotheses, we would have to turn to statistics, especially multiple regression. Visualizations, however, allows us to develop new hypotheses, ask new questions, quickly identify data quality issues, make disparities visceral, and more quickly recognize patterns that may be obscured by statistics.
+
+Even when testing hypotheses through statistical methods, you will want to validate the results by visualizing residuals, model fit, and interaction effects.
+
+## Exercise
+
+Develop and explore your own hypothesis about the relationship:
+
+1.  Option 1: between other data variables in the world dataset
+
+2.  Option 2: between data variables in your own dataset(s)
+
+    Choose two (or more) variables, explore their relationship and the way this relationship interacts with other data by creating similar exploratory plots to the ones above.
+
+For option 1, here are the available columns:
+
+```{r}
+colnames(world)
+```
+
+This dataset is an adaptation of the [World dataset](https://search.r-project.org/CRAN/refmans/RCPA3/html/world.html) for the *R Companion to Political Analysis*. View the dataset information page (at the link just above) for more information about dataset variables.
+
+```{r}
+
+```
