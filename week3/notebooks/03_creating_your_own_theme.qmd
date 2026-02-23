@@ -5,8 +5,6 @@ format: html
 editor: visual
 ---
 
-## 
-
 # Creating your own visualization theme
 
 Large Language Models can serve as helpful assistants for coding. Some keys:
@@ -44,7 +42,7 @@ An example approach:
 
 3. add a light background
 
-4. simplify the axis, showing only major gridlines
+4. simplify the axes, showing only major gridlines
 
 # troubleshoot any errors:
 
@@ -110,3 +108,24 @@ p
 ```
 
 ## 3. Using a LLM
+
+1.  Visit [Dartmouth Chat](chat.dartmouth.edu) or a LLM provider of your choosing.
+2.  Choose a reliable LLM for use helping you write code.
+3.  Write a detailed prompt specifically requesting R code to create a new ggplot theme according to the specifications you outlined in your Visual Style Guide.
+4.  Here's a simple prompt example:
+
+```         
+Create a new custom ggplot theme that includes the following elements:
+
+1. uses the Playfair font famiy for titles and subtitles
+     
+2. the Raleway font family for all other text
+
+3. color-blind friendly color palettes with an emphasis on blues
+
+4. a background that gives the feel of 19th century lithograpic-printed graphics
+     
+5. a general historical look
+```
+
+Review and test out the code that is returned. Refine your instructions and engage in a conversation with the LLM. Copy and paste the code into a new `.R` script.
