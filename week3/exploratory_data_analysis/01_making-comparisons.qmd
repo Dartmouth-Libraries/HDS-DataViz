@@ -38,7 +38,7 @@ I had some difficulty installing the ggmosaic package. Since, I use `renv` to ma
 
 ```{r}
 # renv::install("devtools")
-# renv::install("haleyjeppson/ggmosaic")
+renv::install("haleyjeppson/ggmosaic")
 library(ggmosaic)
 ```
 
